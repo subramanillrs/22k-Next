@@ -1,0 +1,146 @@
+/* ==========================================================================
+   CHENNAI 22K GOLD NEXT: LUXURY INSTITUTIONAL DESIGN SYSTEM
+   Tokens: Strict 2-Mode Fidelity (Day: Ivory/Espresso | Night: OLED/#ffd700)
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+  --font-display: "Fraunces", "Iowan Old Style", "Georgia", serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Typographic scale */
+  --fs-3xs: 8.5px;
+  --fs-2xs: 9.5px;
+  --fs-xs: 10.5px;
+  --fs-sm: 11.5px;
+  --fs-base: 13px;
+  --fs-md: 14.5px;
+  --fs-lg: 16px;
+  --fs-xl: 19px;
+  --fs-2xl: 24px;
+  --fs-3xl: 32px;
+  --fs-hero: clamp(38px, 10vw, 54px);
+
+  /* Radius tokens */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 26px;
+  --r-full: 9999px;
+
+  /* Day Theme (Default / Light) */
+  --bg-canvas: #f8f4ea;
+  --surface-ground: #faf6ed;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f0eadb;
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --surface-glass-strong: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(169, 127, 52, 0.22);
+  --glass-highlight: rgba(255, 255, 255, 0.8);
+  --glass-blur: 24px;
+
+  --border-subtle: rgba(28, 23, 18, 0.08);
+  --border-strong: rgba(169, 127, 52, 0.35);
+
+  --ink-primary: #1c1712;
+  --ink-secondary: #6b6255;
+  --ink-muted: #8a8174;
+  --ink-faint: #b3a998;
+
+  --gold-primary: #a97f34;
+  --gold-deep: #6b5223;
+  --gold-tint: rgba(169, 127, 52, 0.08);
+  --gold-glow: #e8c988;
+
+  --good: #2d7a48;
+  --good-bg: #e1efe4;
+  --good-border: #337a4c;
+  --good-glow: rgba(45, 122, 72, 0.3);
+
+  --bad: #ad3d30;
+  --bad-bg: #f5e2df;
+  --bad-border: #e0897c;
+  --bad-glow: rgba(173, 61, 48, 0.3);
+
+  /* Elevation */
+  --shadow-sm: 0 1px 3px rgba(28, 23, 18, 0.05);
+  --shadow-md: 0 4px 16px -4px rgba(28, 23, 18, 0.10);
+  --shadow-lg: 0 12px 32px -8px rgba(28, 23, 18, 0.15);
+  --shadow-glow: 0 0 20px rgba(169, 127, 52, 0.25);
+
+  --transition-fast: 0.15s cubic-bezier(0.2, 0, 0, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-spring: 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   OLED NIGHT THEME (True Pitch Black & Radiant 24K Gold)
+   ========================================================================== */
+html[data-theme="oled"] {
+  --bg-canvas: #000000;
+  --surface-ground: #040404;
+  --surface-raised: #0a0a0a;
+  --surface-sunken: #020202;
+  --surface-glass: rgba(12, 12, 12, 0.82);
+  --surface-glass-strong: rgba(18, 18, 18, 0.95);
+  --glass-border: rgba(255, 215, 0, 0.24);
+  --glass-highlight: rgba(255, 215, 0, 0.12);
+  --glass-blur: 24px;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 215, 0, 0.45);
+
+  --ink-primary: #ffffff;
+  --ink-secondary: #a89d88;
+  --ink-muted: #787062;
+  --ink-faint: #444444;
+
+  --gold-primary: #ffd700;
+  --gold-deep: #ffec6e;
+  --gold-tint: rgba(255, 215, 0, 0.12);
+  --gold-glow: rgba(255, 215, 0, 0.45);
+
+  --good: #00e676;
+  --good-bg: rgba(0, 230, 118, 0.14);
+  --good-border: rgba(0, 230, 118, 0.45);
+  --good-glow: rgba(0, 230, 118, 0.4);
+
+  --bad: #ff5252;
+  --bad-bg: rgba(255, 82, 82, 0.14);
+  --bad-border: rgba(255, 82, 82, 0.45);
+  --bad-glow: rgba(255, 82, 82, 0.4);
+
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.8);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.9);
+  --shadow-lg: 0 12px 36px -6px rgba(0, 0, 0, 0.95);
+  --shadow-glow: 0 0 24px rgba(255, 215, 0, 0.25);
+}
+
+/* Base resets & layout */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--bg-canvas);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body {
+  padding-bottom: 96px; /* Room for floating bottom nav */
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: var(--r-full); }

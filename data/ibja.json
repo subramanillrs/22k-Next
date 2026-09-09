@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-09",
+  "rate_22k": 14004,
+  "rate_24k": 15277,
+  "rate_22k_10g": 140036,
+  "rate_24k_10g": 152767,
+  "am_22k": 14004,
+  "pm_22k": 14004,
+  "am_24k": 15277,
+  "pm_24k": 15277,
+  "unit": "1g",
+  "purity_22k": "916",
+  "purity_24k": "999",
+  "source": "IBJA Benchmark Mirror (GoodReturns National)",
+  "url": "https://www.goodreturns.in/gold-rates/",
+  "fetched_at": "2026-09-09T23:35:33.013315+05:30",
+  "status": "degraded_mirror",
+  "is_fallback": true
+}
