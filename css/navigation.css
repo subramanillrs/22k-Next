@@ -213,6 +213,48 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
   transform: scale(0.95);
 }
 
+/* Mobile-Specific Bottom Bar & Safe-Area Alignment (< 640px) */
+@media (max-width: 640px) {
+  .masthead {
+    padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;
+  }
+  .dynamic-island {
+    top: max(8px, env(safe-area-inset-top, 0px));
+    max-width: calc(100vw - 24px);
+    padding: 5px 12px;
+    gap: 8px;
+  }
+  .bottom-dock {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    justify-content: space-around;
+    gap: 2px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  }
+  .tab-btn {
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 2px;
+    font-size: 10px;
+    min-width: 0;
+    border-radius: var(--r-sm);
+  }
+  .tab-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* Views Container */
 .views-viewport {
   width: 100%;

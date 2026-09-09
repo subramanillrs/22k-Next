@@ -91,7 +91,7 @@
         <div class="hero-sub-stats">
           <div class="stat-col">
             <span class="stat-label">Rate per gram</span>
-            <span class="stat-val" id="hero1Rate">₹ 14,145/g</span>
+            <span class="stat-val" id="hero1Rate">₹ 14,145 <span id="change1Mini" class="change-badge down" style="padding: 2px 5px; font-size: 9.5px;">-125</span></span>
           </div>
           <div class="stat-col" style="text-align: right;">
             <span class="stat-label">Official Market Date</span>
@@ -107,19 +107,23 @@
         <div class="bento-card full-width">
           <div class="card-label-row">
             <span class="card-label">Today's Market Fix Timeline</span>
-            <span class="status-indicator" style="padding: 2px 7px; font-size: 8.5px;">Live MJDMA Verified</span>
+            <span class="status-indicator" id="timingStatusBadgeText" style="padding: 2px 7px; font-size: 8.5px;">Live MJDMA Verified</span>
           </div>
           <div class="fix-chips-wrap">
             <div class="fix-chip" id="amFixChip">
               <span class="fix-chip-title">Morning Fix (AM)</span>
               <span class="fix-chip-rate" id="amFixRate">₹ 14,270</span>
-              <span class="fix-chip-time">10:15 AM · Prev Close</span>
+              <span class="fix-chip-time" id="amFixTime">10:15 AM · Prev Close</span>
             </div>
             <div class="fix-chip confirmed" id="pmFixChip">
               <span class="fix-chip-title">Evening Fix (PM)</span>
               <span class="fix-chip-rate" id="pmFixRate">₹ 14,145</span>
-              <span class="fix-chip-time">19:30 PM · Confirmed</span>
+              <span class="fix-chip-time" id="pmFixTime">19:30 PM · Confirmed</span>
             </div>
+          </div>
+          <div class="next-fix-line" id="nextFixLine" style="margin-top: 8px; font-size: var(--fs-2xs); color: var(--ink-secondary); display: flex; align-items: center; gap: 4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span id="nextFixText">Next Fix Prediction: Tomorrow ~09:53 AM (Gaussian KDE)</span>
           </div>
         </div>
 
@@ -148,50 +152,80 @@
           </div>
         </div>
 
-        <!-- Bento 3: Regional Basis Parity Swipe Carousel -->
+        <!-- Bento 3: Submarket Basis & Regional Parity -->
         <div class="bento-card full-width">
           <div class="card-label-row">
-            <span class="card-label">Regional Basis Parity (Tamil Nadu)</span>
+            <span class="card-label">Chennai Sub-Market Basis & Wholesale Engine</span>
+            <span class="status-indicator" style="font-size: 8.5px; color: var(--gold-primary);">Live Basis</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px;">
+            <div style="background: var(--surface-sunken); padding: 8px 10px; border-radius: var(--r-md); border: 1px solid var(--border-subtle);">
+              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">Sowcarpet Wholesale</span>
+              <div style="font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700;" id="sowcarpetWholesaleVal">₹ 14,100</div>
+              <span style="font-size: var(--fs-3xs); color: var(--good);" id="sowcarpetDiscountPct">-₹ 45/g (-0.32%) Bullion Disc</span>
+            </div>
+            <div style="background: var(--surface-sunken); padding: 8px 10px; border-radius: var(--r-md); border: 1px solid var(--border-subtle);">
+              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">T. Nagar Showroom</span>
+              <div style="font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700;" id="retailShowroomVal">₹ 14,325</div>
+              <span style="font-size: var(--fs-3xs); color: var(--gold-primary);" id="retailShowroomSpreadVal">+₹ 180/g (+1.27%) Retail Markup</span>
+            </div>
+          </div>
+          <div style="font-size: var(--fs-2xs); color: var(--ink-secondary); margin-bottom: 8px;" id="arbitrageSpreadVal">
+            Wholesale-to-Retail Value Chain Spread: <strong>₹ 225/g</strong>
+          </div>
+
+          <!-- Regional Basis Parity Carousel -->
+          <div class="card-label-row" style="margin-top: 6px;">
+            <span class="card-label">Regional Basis Parity (Tamil Nadu Hubs)</span>
             <span style="font-size: var(--fs-3xs); color: var(--gold-primary);">← Swipe Hubs →</span>
           </div>
           <div class="carousel-track">
             <div class="carousel-item">
               <span class="city-name">Salem</span>
               <span class="city-rate" id="salemRate">₹ 14,135</span>
-              <span class="city-basis">(-₹10/g Discount)</span>
+              <span class="city-basis" id="salemBasis">(-₹10/g Discount)</span>
             </div>
             <div class="carousel-item">
               <span class="city-name">Coimbatore</span>
               <span class="city-rate" id="cbeRate">₹ 14,130</span>
-              <span class="city-basis">(-₹15/g Discount)</span>
+              <span class="city-basis" id="cbeBasis">(-₹15/g Discount)</span>
             </div>
             <div class="carousel-item">
               <span class="city-name">Madurai</span>
               <span class="city-rate" id="maduraiRate">₹ 14,160</span>
-              <span class="city-basis" style="color: var(--bad);">(+₹15/g Premium)</span>
+              <span class="city-basis" id="maduraiBasis" style="color: var(--bad);">(+₹15/g Premium)</span>
             </div>
             <div class="carousel-item">
               <span class="city-name">Tiruchirappalli</span>
               <span class="city-rate" id="trichyRate">₹ 14,140</span>
-              <span class="city-basis">(-₹5/g Discount)</span>
+              <span class="city-basis" id="trichyBasis">(-₹5/g Discount)</span>
             </div>
           </div>
         </div>
 
-        <!-- Bento 4: National Wholesale IBJA Spread -->
+        <!-- Bento 4: National Wholesale IBJA Spread & Consensus -->
         <div class="bento-card full-width">
           <div class="card-label-row">
             <span class="card-label">National Spot vs Retail Fix</span>
-            <span class="status-indicator" style="font-size: 8.5px;">IBJA Benchmark</span>
+            <span class="confidence-badge" id="consensusBadge" style="font-size: 8.5px; color: var(--gold-primary);">
+              <span id="consensusBadgeText">100% Multi-Source Confidence</span>
+            </span>
           </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px;">
             <div>
-              <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">IBJA National Spot (22K)</div>
-              <div style="font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700;" id="ibjaSpotRate">₹ 14,004</div>
+              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">IBJA 24K Spot</div>
+              <div style="font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 700;" id="ibja24k">₹ 15,277</div>
+              <div style="font-size: 9px; color: var(--ink-faint);">22K: <strong id="ibja22k">₹ 14,004</strong></div>
             </div>
-            <div style="text-align: right;">
-              <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">Chennai Retail Margin</div>
-              <div style="font-weight: 700; color: var(--gold-primary);" id="spreadPremiumVal">+₹ 141/g (+1.01%)</div>
+            <div>
+              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">Chennai Retail Spread</div>
+              <div style="font-weight: 700; font-size: var(--fs-sm); color: var(--gold-primary);" id="retailSpreadVal">+₹ 141/g</div>
+              <div style="font-size: 9px; color: var(--ink-faint);" id="retailSpreadPct">+1.01% Premium</div>
+            </div>
+            <div>
+              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">Quantitative Risk</div>
+              <div style="font-weight: 700; font-size: var(--fs-sm);" id="realizedVol">σ₃₀d: 16.26%</div>
+              <div style="font-size: 9px; color: var(--ink-faint);">VaR: <strong id="varExposure">₹ 238/g</strong></div>
             </div>
           </div>
         </div>
@@ -204,19 +238,143 @@
          ==================================================================== -->
     <section class="view-page" id="view-analytics">
       
-      <!-- Interactive Spline Chart -->
-      <div class="chart-container">
-        <div class="card-label-row">
-          <span class="card-label">Historical Price Trend (MJDMA Fix)</span>
-          <div class="timeframe-pill-group">
-            <button class="tf-btn" data-tf="7">7D</button>
-            <button class="tf-btn active" data-tf="30">30D</button>
-            <button class="tf-btn" data-tf="90">90D</button>
-            <button class="tf-btn" data-tf="365">1Y</button>
+      <!-- Interactive Spline & Candlestick Chart Panel -->
+      <div class="chart-panel">
+        <div class="segment-ctrl" id="ranges">
+          <button data-range="7">7D</button>
+          <button class="active" data-range="30">30D</button>
+          <button data-range="90">3M</button>
+          <button data-range="180">6M</button>
+          <button data-range="365">1Y</button>
+          <button data-range="1095">3Y</button>
+          <button data-range="all">ALL</button>
+        </div>
+
+        <div class="chart-mode-bar">
+          <div class="chart-mode-switch" id="chartModeSwitch">
+            <button type="button" class="chart-mode-btn active" id="modeSplineBtn" data-mode="spline">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18l6-6 4 4 8-8"/></svg>
+              22K Line Spline
+            </button>
+            <button type="button" class="chart-mode-btn" id="modeSpreadBtn" data-mode="spread">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="6" width="4" height="12" rx="1"/><line x1="7" y1="2" x2="7" y2="6"/><line x1="7" y1="18" x2="7" y2="22"/><rect x="15" y="9" width="4" height="9" rx="1"/><line x1="17" y1="5" x2="17" y2="9"/><line x1="17" y1="18" x2="17" y2="21"/></svg>
+              Session Candles
+            </button>
           </div>
         </div>
-        <canvas id="priceSplineCanvas" style="width: 100%; height: 220px;"></canvas>
+
+        <div class="chart-header-metrics">
+          <div class="primary-metric">
+            <span id="chartMetricLabel">Period Performance</span>
+            <strong id="periodChange">—</strong>
+          </div>
+          <div class="secondary-metrics">
+            <div class="sec-metric">
+              <span>High</span>
+              <b id="periodHigh">—</b>
+            </div>
+            <div class="sec-metric">
+              <span>Low</span>
+              <b id="periodLow">—</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="chartwrap" id="chartWrap">
+          <canvas id="chart" aria-label="Interactive 22K gold price history"></canvas>
+          <div class="chart-tooltip" id="chartTooltip" hidden aria-live="polite">
+            <div class="chart-tooltip-date" id="chartTipDate">—</div>
+            <strong id="chartTipRate">₹ —</strong>
+            <span id="chartTipSession">Benchmark</span>
+          </div>
+        </div>
+        <div class="chartmeta">
+          <span id="chartStart">—</span>
+          <span class="chart-legend">22K Benchmark</span>
+          <span id="chartEnd">—</span>
+        </div>
       </div>
+
+      <!-- Returns by Period Multi-Horizon Collapsible -->
+      <details class="collapsible" id="returnsBlock" open>
+        <summary>
+          <div class="summary-title">
+            <h3>Returns by period</h3>
+            <span>Multi-horizon percentage performance</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="horizon-grid">
+            <div class="horizon-box"><small>1W</small><b id="ret1W">—</b></div>
+            <div class="horizon-box"><small>1M</small><b id="ret1M">—</b></div>
+            <div class="horizon-box"><small>3M</small><b id="ret3M">—</b></div>
+            <div class="horizon-box"><small>6M</small><b id="ret6M">—</b></div>
+            <div class="horizon-box"><small>1Y</small><b id="ret1Y">—</b></div>
+            <div class="horizon-box"><small>3Y</small><b id="ret3Y">—</b></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 30-Day Moving Average & Last Movement -->
+      <details class="collapsible">
+        <summary>
+          <div class="summary-title">
+            <h3>Moving average & Last movement</h3>
+            <span>30-day benchmark trend</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="sma-row">
+            <div><span class="sma-label">30-day average</span><br><b id="smaValue" class="sma-value">₹ —</b></div>
+            <div class="change-badge same" id="smaPill">Calculating…</div>
+          </div>
+          <div class="last-box">
+            <div>
+              <h4>Last movement</h4>
+              <p id="lastDate">Analyzing…</p>
+              <p id="lastTime" class="last-box-sub">—</p>
+            </div>
+            <div class="amount" id="lastAmount">—</div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Compare Dates Tool -->
+      <details class="collapsible">
+        <summary>
+          <div class="summary-title">
+            <h3>Compare dates</h3>
+            <span>Analyze historical price movement</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="compare-grid">
+            <div class="compare-field">
+              <label for="dateA">Earlier Date</label>
+              <input class="calc-input" type="date" id="dateA">
+            </div>
+            <div class="compare-field">
+              <label for="dateB">Later Date</label>
+              <input class="calc-input" type="date" id="dateB">
+            </div>
+          </div>
+          <div class="compare-result-panel">
+            <span class="compare-result-label">Net comparison</span>
+            <div class="compare-result-card" id="compareResult">
+              <span class="compare-result-top">Select two dates</span>
+              <span class="compare-result-sub">—</span>
+            </div>
+          </div>
+          <div class="compare-visual" id="compareVisual" hidden>
+            <div class="compare-visual-head"><span>Price movement</span><span id="compareVisualPct">—</span></div>
+            <div class="compare-track"><span id="compareTrackFill"></span></div>
+            <div class="compare-visual-labels"><span id="compareVisualA">—</span><span id="compareVisualB">—</span></div>
+          </div>
+        </div>
+      </details>
 
       <!-- ML Multi-Horizon Forecast Card -->
       <div class="ml-forecast-card">
@@ -277,19 +435,85 @@
         </div>
       </div>
 
-      <!-- Technical Signals & Algorithmic Decision -->
-      <div class="bento-card full-width">
+      <!-- Market Signals & Indicators -->
+      <div class="bento-card full-width" style="margin-bottom: 14px;">
         <div class="card-label-row">
-          <span class="card-label">Algorithmic Purchase Decision</span>
+          <span class="card-label">Technical Signals & Algorithmic Decision</span>
           <span class="change-badge up" id="actionDecisionBadge">ACCUMULATE ON DIP</span>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin: 6px 0;">
-          <span style="font-size: var(--fs-xs); color: var(--ink-secondary);">14-Period RSI: <b id="rsiVal">29.7 (Oversold < 30)</b></span>
-          <span style="font-size: var(--fs-xs); color: var(--ink-secondary);">EMA 9/21: <b>Bearish Drift</b></span>
+        
+        <!-- Sentiment Dial & RSI Bar -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
+          <div style="background: var(--surface-sunken); border-radius: var(--r-md); padding: 10px; text-align: center;">
+            <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">Market Sentiment</span>
+            <div class="sentiment-dial-wrap" style="margin: 6px auto;">
+              <svg class="sentiment-dial" width="70" height="70" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" class="dial-bg"></circle>
+                <circle cx="50" cy="50" r="40" class="dial-fill" id="sentimentRing" stroke-dasharray="251.2" stroke-dashoffset="138.16"></circle>
+              </svg>
+              <div class="dial-center">
+                <span class="dial-num" id="sentimentScore">45</span>
+                <small>/100</small>
+              </div>
+            </div>
+            <span style="font-size: var(--fs-2xs); font-weight: 700; color: var(--ink-primary);" id="sentimentLabel">Neutral</span>
+          </div>
+
+          <div style="background: var(--surface-sunken); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">14-Period RSI</span>
+              <div class="rsi-scale-bar" style="margin: 12px 0 6px;">
+                <div class="rsi-zone zone-oversold"></div>
+                <div class="rsi-zone zone-neutral"></div>
+                <div class="rsi-zone zone-overbought"></div>
+                <div class="rsi-needle" id="rsiNeedle" style="left: 29.7%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 8px; color: var(--ink-muted);">
+                <span>0 (Dip)</span><span>50</span><span>100</span>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: var(--fs-xs);">
+              <span>RSI: <b id="rsiVal">29.7</b></span>
+              <span style="color: var(--good); font-weight: 700;" id="rsiZone">Oversold</span>
+            </div>
+          </div>
         </div>
-        <p style="font-size: var(--fs-xs); color: var(--ink-muted); margin-top: 4px;" id="actionDecisionHint">
+
+        <div class="ema-status-strip" id="emaStrip" style="margin-top: 4px;">
+          <div class="ema-left">
+            <span class="ema-chip">EMA 9/21</span>
+            <span class="ema-signal-txt" id="emaSignalText">EMA 9: ₹ 14,263 · EMA 21: ₹ 14,349 (Bearish Drift)</span>
+          </div>
+          <div class="ema-action" id="emaAction">DEFENSIVE</div>
+        </div>
+
+        <p style="font-size: var(--fs-xs); color: var(--ink-muted); margin-top: 8px;" id="actionDecisionHint">
           Technical indicators show oversold conditions. High-probability entry window.
         </p>
+      </div>
+
+      <!-- Historical Rate Log Table Section -->
+      <div class="bento-card full-width">
+        <div class="card-label-row">
+          <span class="card-label">Historical Rate Log</span>
+          <div class="history-actions">
+            <span id="historyCount" style="font-size: var(--fs-2xs); color: var(--ink-muted);">—</span>
+            <button class="export-csv-btn" id="exportCsvBtn" type="button" aria-label="Export history to CSV">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap" style="max-height: 280px; overflow-y: auto;">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr><th>Date</th><th>Per Gram (22K)</th><th>1 Sov (8g)</th></tr>
+            </thead>
+            <tbody id="historyBody">
+              <tr><td colspan="3" style="text-align:center; padding: 16px 0;">Loading records…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </section>
@@ -300,112 +524,427 @@
     <section class="view-page" id="view-calc">
       <div class="calc-card">
         <div class="card-label-row">
-          <span class="card-label">Itemized Jewellery Purchase Estimator</span>
+          <span class="card-label">Jewellery Purchase Calculator</span>
           <span style="font-size: var(--fs-3xs); color: var(--gold-primary);">Official 3% GST Included</span>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-          <div class="calc-input-group">
-            <label class="calc-label" for="calcGrams">Ornament Weight (Grams)</label>
-            <input class="calc-input" type="number" id="calcGrams" value="8.0" step="0.5" inputmode="decimal">
-          </div>
-          <div class="calc-input-group">
-            <label class="calc-label" for="calcMaking">Making Charges (VA %)</label>
-            <input class="calc-input" type="number" id="calcMaking" value="8.0" step="0.5" inputmode="decimal">
+        <!-- Segmented Mode (By Weight vs By Budget) -->
+        <div class="calc-segmented-mode">
+          <button class="calc-mode-btn active" type="button" data-mode="value">By Weight</button>
+          <button class="calc-mode-btn" type="button" data-mode="grams">By Budget</button>
+          <select id="calcMode" hidden>
+            <option value="value" selected>Calculate Price for Weight</option>
+            <option value="grams">Calculate Weight for Budget</option>
+          </select>
+        </div>
+
+        <!-- Weight Presets -->
+        <div class="calc-input-group" id="weightChipsGroup">
+          <span class="calc-group-label">Gold weight presets</span>
+          <div class="chip-container" id="weightChips">
+            <button class="chip" data-val="1" type="button">1g</button>
+            <button class="chip" data-val="4" type="button">4g</button>
+            <button class="chip active" data-val="8" type="button">8g · 1 Sov</button>
+            <button class="chip" data-val="16" type="button">16g · 2 Sov</button>
           </div>
         </div>
 
+        <!-- Making Charge Presets -->
         <div class="calc-input-group">
-          <label class="calc-label" for="calcOldCredit">Old Gold Exchange Credit (₹ Deduction)</label>
-          <input class="calc-input" type="number" id="calcOldCredit" value="0" step="500" placeholder="e.g. 25000" inputmode="numeric">
-        </div>
-
-        <!-- Quotation Total Box -->
-        <div class="quote-box">
-          <div class="quote-line">
-            <span>Base 22K Gold Cost:</span>
-            <b id="qBaseCost">₹ 1,13,160</b>
-          </div>
-          <div class="quote-line">
-            <span>Making Charges (VA):</span>
-            <b id="qMakingCost">₹ 9,053</b>
-          </div>
-          <div class="quote-line">
-            <span>Hallmarking / Flat Fee:</span>
-            <b>₹ 53</b>
-          </div>
-          <div class="quote-line">
-            <span>GST (3% on Total):</span>
-            <b id="qGstCost">₹ 3,668</b>
-          </div>
-
-          <div class="quote-total-row">
-            <span class="quote-total-label">Net Payable Amount</span>
-            <span class="quote-total-val" id="qNetTotal">₹ 1,25,934</span>
+          <span class="calc-group-label">Making charge (VA presets)</span>
+          <div class="chip-container" id="makingChips">
+            <button class="chip" data-val="3.0" type="button">Coin · 3%</button>
+            <button class="chip active" data-val="8.0" type="button">Plain · 8%</button>
+            <button class="chip" data-val="12.0" type="button">Studded · 12%</button>
+            <button class="chip" data-val="16.0" type="button">Antique · 16%</button>
           </div>
         </div>
 
-        <!-- Shop Bill Auditor Warning -->
-        <div id="auditMarkupAlert" hidden style="margin-top: 10px; padding: 8px 12px; border-radius: var(--r-md); background: var(--bad-bg); border: 1px solid var(--bad-border); color: var(--bad); font-size: var(--fs-xs); font-weight: 600;"></div>
+        <!-- Input Grid Form -->
+        <div class="calc-grid-form">
+          <div class="calc-field" id="weightField">
+            <label for="weight">Weight (g)</label>
+            <input class="calc-input" id="weight" type="number" inputmode="decimal" value="8" step="0.01">
+          </div>
+          <div class="calc-field" id="budgetField" style="display: none;">
+            <label for="budget">Budget (₹)</label>
+            <input class="calc-input" id="budget" type="number" inputmode="decimal" value="100000" step="100">
+          </div>
+          <div class="calc-field">
+            <label for="making">Making charge (%)</label>
+            <input class="calc-input" id="making" type="number" inputmode="decimal" value="8.0" step="0.1">
+          </div>
+          <div class="calc-field">
+            <label for="gstRate">GST (%)</label>
+            <input class="calc-input" id="gstRate" type="number" inputmode="decimal" value="3.0" step="0.1">
+          </div>
+          <div class="calc-field">
+            <label for="flatFee">Hallmarking fee (₹)</label>
+            <input class="calc-input" id="flatFee" type="number" inputmode="decimal" value="45" step="1">
+          </div>
+        </div>
 
-        <button class="btn-primary" id="shareReceiptActionBtn" type="button">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          Share Itemized Receipt Card
-        </button>
+        <!-- Old Gold Exchange Drawer -->
+        <div class="exchange-drawer">
+          <span class="exchange-header">Old gold exchange deduction (optional)</span>
+          <div class="calc-grid-form">
+            <div class="calc-field">
+              <label for="oldWeight">Scrap weight (g)</label>
+              <input class="calc-input" id="oldWeight" type="number" inputmode="decimal" value="0" step="0.01">
+            </div>
+            <div class="calc-field">
+              <label for="oldPurity">Scrap purity</label>
+              <select class="calc-input" id="oldPurity">
+                <option value="22" selected>22K · 91.6%</option>
+                <option value="18">18K · 75.0%</option>
+                <option value="24">24K · 99.9%</option>
+                <option value="20">Standard melt · 84%</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Itemized Purchase Quotation Receipt Card -->
+        <div class="receipt-card">
+          <div class="receipt-title">Itemized Purchase Quotation</div>
+          <div class="receipt-line"><span>Base 22K Gold Cost:</span><span id="receiptBase">₹ 1,13,160</span></div>
+          <div class="receipt-line"><span id="receiptMakingLabel">Making Charges (8%):</span><span id="receiptMaking">₹ 9,053</span></div>
+          <div class="receipt-line"><span id="receiptGstLabel">GST (3%):</span><span id="receiptGst">₹ 3,668</span></div>
+          <div class="receipt-line"><span>Hallmarking / Flat Fees:</span><span id="receiptFee">₹ 45</span></div>
+          <div class="receipt-line deduction" id="receiptOldGoldLine" style="display:none;"><span>Old Gold Exchange Credit:</span><span id="receiptOldGold">-₹ 0</span></div>
+
+          <div class="receipt-total">
+            <span class="label" id="receiptTotalLabel">Net Payable Amount</span>
+            <span class="final-val" id="calcResult">₹ 1,25,926</span>
+          </div>
+          <div class="calc-sub" id="calcSub">Based on live 22K MJDMA rate.</div>
+
+          <div class="receipt-actions-grid">
+            <button class="quote-btn" id="copyQuoteBtn" type="button">Copy Quotation</button>
+            <button class="share-link-inline" id="shareReceiptBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share Receipt
+            </button>
+          </div>
+        </div>
       </div>
+
+      <!-- Jeweller Bill Verifier & Bargain Auditor -->
+      <details class="collapsible" id="billAuditorBlock" open>
+        <summary>
+          <div class="summary-title">
+            <h3>Jewellery Bill Verifier & Bargain Auditor</h3>
+            <span>Audit shop quote against fair Chennai benchmarks</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="auditor-card">
+            <div class="auditor-grid">
+              <div class="auditor-input-box">
+                <label for="auditWeight">Ornament Weight (grams)</label>
+                <input type="number" id="auditWeight" class="calc-input" placeholder="e.g. 16.0" value="16.0" step="0.1">
+              </div>
+              <div class="auditor-input-box">
+                <label for="auditType">Jewellery Design Type</label>
+                <select id="auditType" class="calc-input">
+                  <option value="plain">Plain Gold Bangles / Chains (8% - 12% VA)</option>
+                  <option value="antique">Antique / Kundan Work (14% - 18% VA)</option>
+                  <option value="temple">Temple Artwork / Nakshi (16% - 22% VA)</option>
+                  <option value="coin">Bullion Coin / Bar (1% - 3% VA)</option>
+                </select>
+              </div>
+              <div class="auditor-input-box">
+                <label for="auditShopPrice">Shop Quoted Total Bill (₹)</label>
+                <input type="number" id="auditShopPrice" class="calc-input" placeholder="e.g. 260000" value="256000" step="100">
+              </div>
+              <div class="auditor-input-box">
+                <label for="auditVaPct">Shop Quoted Wastage / VA (%)</label>
+                <input type="number" id="auditVaPct" class="calc-input" placeholder="e.g. 14.0" value="14.0" step="0.5">
+              </div>
+            </div>
+
+            <div class="meter-container">
+              <div class="meter-head">
+                <span class="meter-title">Chennai Fair Price Audit</span>
+                <span class="meter-badge fair" id="meterBadge">Fair Deal</span>
+              </div>
+
+              <div class="meter-breakdown">
+                <div class="meter-metric-item">
+                  <span>Pure Gold Worth</span>
+                  <b id="auditGoldVal">₹ 2,26,320</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>Fair Making (VA)</span>
+                  <b id="auditFairMaking">₹ 23,764</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>GST (3%) + Hallmark</span>
+                  <b id="auditGstFee">₹ 7,547</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>Fair Net Price</span>
+                  <b id="auditFairTotal" style="color: var(--good);">₹ 2,57,631</b>
+                </div>
+              </div>
+
+              <div class="bargain-tip" id="auditBargainTip">
+                ✅ <strong>Excellent Deal:</strong> Quoted price matches the official Chennai benchmark. No excessive markup detected.
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Old Gold Melt & Exchange Valuation -->
+      <details class="collapsible" id="oldGoldMeltBlock">
+        <summary>
+          <div class="summary-title">
+            <h3>Old Gold Melt & Exchange Estimator</h3>
+            <span>Valuate old jewellery before visiting showroom</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="auditor-card">
+            <div class="auditor-grid">
+              <div class="auditor-input-box">
+                <label for="meltWeight">Old Gold Gross Weight (g)</label>
+                <input type="number" id="meltWeight" class="calc-input" placeholder="e.g. 24.0" value="24.0" step="0.1">
+              </div>
+              <div class="auditor-input-box">
+                <label for="meltPurity">Hallmark Purity</label>
+                <select id="meltPurity" class="calc-input">
+                  <option value="916">22K 916 Hallmarked (91.6% Pure)</option>
+                  <option value="850">850 KDM / Traditional Melt (85.0% Pure)</option>
+                  <option value="750">18K 750 Hallmarked (75.0% Pure)</option>
+                  <option value="999">24K 999 Coin / Bar (99.9% Pure)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="meter-container">
+              <div class="meter-breakdown">
+                <div class="meter-metric-item">
+                  <span>Net Pure Gold</span>
+                  <b id="meltPureGrams">23.64g (22K equiv)</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>Melt Loss (1.5%)</span>
+                  <b id="meltLossGrams">-0.36g</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>Immediate Cash Out</span>
+                  <b id="meltCashVal">₹ 3,27,698</b>
+                </div>
+                <div class="meter-metric-item">
+                  <span>New Exchange Value</span>
+                  <b id="meltExchangeVal" style="color: var(--gold-primary);">₹ 3,34,386 (100%)</b>
+                </div>
+              </div>
+              <div class="bargain-tip">
+                💡 <strong>Chennai Trade Practice:</strong> Exchanging old 22K jewellery for new 22K items carries 0% melt deduction at reputable showrooms. Insist on 100% weight-to-weight exchange!
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
     </section>
 
     <!-- ====================================================================
-         TAB 4: 💰 SCHEMES & WEALTH ADVISOR
+         TAB 4: 💰 SCHEMES & PORTFOLIO TRACKER
          ==================================================================== -->
     <section class="view-page" id="view-schemes">
+      
+      <!-- 11-Month Jeweller Scheme (Chit) vs Direct Gold SIP -->
       <div class="calc-card">
         <div class="card-label-row">
-          <span class="card-label">Gold Scheme Yield Optimizer</span>
-          <span style="font-size: var(--fs-3xs); color: var(--gold-primary);">Newton-Raphson XIRR Engine</span>
+          <span class="card-label">11-Month Jeweller Scheme vs Gold SIP</span>
+          <span style="font-size: var(--fs-3xs); color: var(--gold-primary);">Newton-Raphson XIRR</span>
         </div>
 
-        <div class="calc-input-group">
-          <label class="calc-label" for="schemeMonthly">Monthly Investment Amount (₹)</label>
-          <input class="calc-input" type="number" id="schemeMonthly" value="10000" step="1000" inputmode="numeric">
+        <div class="calc-grid-form" style="margin-bottom: 12px;">
+          <div class="calc-field">
+            <label for="schemeMonthlyAmount">Monthly Installment (₹)</label>
+            <input type="number" id="schemeMonthlyAmount" class="calc-input" placeholder="e.g. 10000" value="10000" step="1000">
+          </div>
+          <div class="calc-field">
+            <label for="schemeJewellerProfile">Jeweller Chit Scheme Model</label>
+            <select id="schemeJewellerProfile" class="calc-input">
+              <option value="grt">GRT Golden Eleven (Weight + 14% VA waiver)</option>
+              <option value="lalitha">Lalitha Jewellery 11-Mo (Weight + 14% VA)</option>
+              <option value="tanishq">Tanishq Golden Harvest (Cash + 1-Mo Bonus)</option>
+              <option value="kalyan">Kalyan Dhanvarsha (Cash + 1-Mo Bonus)</option>
+            </select>
+          </div>
+          <div class="calc-field">
+            <label for="schemeVaPct">Expected Jewellery VA / Making (%)</label>
+            <input type="number" id="schemeVaPct" class="calc-input" placeholder="e.g. 14.0" value="14.0" step="0.5">
+          </div>
+          <div class="calc-field">
+            <label for="schemeGrowthPct">Projected Gold Appreciation (%)</label>
+            <input type="number" id="schemeGrowthPct" class="calc-input" placeholder="e.g. 10.0" value="10.0" step="1">
+          </div>
         </div>
 
         <!-- Comparative Matrix -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
-          <div class="bento-card" style="border-color: var(--gold-primary);">
-            <span style="font-size: var(--fs-2xs); font-weight: 700; color: var(--gold-primary);">Weight Scheme</span>
-            <span style="font-size: var(--fs-3xs); color: var(--ink-muted);">GRT 11-Month / Lalitha</span>
-            <div style="margin-top: 6px;">
-              <div style="font-size: var(--fs-xs); color: var(--ink-secondary);">Gold Grams: <b id="weightGramsVal">7.77 g</b></div>
-              <div style="font-size: var(--fs-xs); color: var(--good); font-weight: 700;">XIRR Yield: <span id="weightXirrVal">30.8%</span></div>
-              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">VA Waived up to 18%</div>
+        <div class="meter-container">
+          <div class="meter-head">
+            <span class="meter-title">11-Month Yield Comparison</span>
+            <span class="meter-badge fair" id="schemeVerdictBadge">Weight Scheme Wins</span>
+          </div>
+
+          <div class="meter-breakdown">
+            <div class="meter-metric-item">
+              <span>Jeweller Scheme Gold</span>
+              <b id="schemeGoldGrams">7.78g</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Effective XIRR Yield</span>
+              <b id="schemeXirrVal" style="color: var(--gold-primary);">38.3% p.a.</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Direct Coin SIP</span>
+              <b id="schemeSipGrams">7.26g</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Coin SIP XIRR</span>
+              <b id="schemeSipXirr">14.2% p.a.</b>
             </div>
           </div>
 
-          <div class="bento-card">
-            <span style="font-size: var(--fs-2xs); font-weight: 700; color: var(--ink-secondary);">Cash Scheme</span>
-            <span style="font-size: var(--fs-3xs); color: var(--ink-muted);">Tanishq 1-Month Bonus</span>
-            <div style="margin-top: 6px;">
-              <div style="font-size: var(--fs-xs); color: var(--ink-secondary);">Voucher: <b id="cashVoucherVal">₹ 1,20,000</b></div>
-              <div style="font-size: var(--fs-xs); color: var(--ink-secondary); font-weight: 700;">XIRR Yield: <span id="cashXirrVal">15.78%</span></div>
-              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">Subject to live rate at maturity</div>
+          <div class="meter-breakdown" style="margin-top: 8px; border-top: 1px dashed var(--border-subtle); padding-top: 8px;">
+            <div class="meter-metric-item">
+              <span>Total Capital Paid</span>
+              <b id="schemeTotalPaid">₹ 1,10,000 (11 mo)</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Making Charge Savings</span>
+              <b id="schemeVaSavings" style="color: var(--good);">₹ 15,400</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Parity Breakeven Rate</span>
+              <b id="schemeBreakevenRate">₹ 14,754/g</b>
+            </div>
+            <div class="meter-metric-item">
+              <span>Accumulation Advantage</span>
+              <b id="schemeAdvantageGrams" style="color: var(--gold-primary);">+0.52g (+7.1%)</b>
             </div>
           </div>
-        </div>
 
-        <!-- Breakeven Theorem Card -->
-        <div style="margin-top: 14px; padding: 12px 14px; background: var(--surface-sunken); border-radius: var(--r-md); border: 1px solid var(--border-subtle);">
-          <div style="font-size: var(--fs-2xs); font-weight: 700; color: var(--ink-secondary); text-transform: uppercase;">Harmonic Mean Breakeven Theorem</div>
-          <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;">
-            <span style="font-size: var(--fs-xs); color: var(--ink-muted);">Cash scheme beats weight scheme only if maturity price drops below:</span>
-            <b style="font-size: var(--fs-base); color: var(--gold-primary);" id="breakevenPriceVal">₹ 12,212/g</b>
+          <div class="bargain-tip" id="schemeVerdictTip">
+            ⚖️ <strong>Quantitative Verdict:</strong> For jewellery buyers, the <strong>Weight-based Scheme (GRT/Lalitha)</strong> outperforms Cash Bonus chits because you accumulate gold at each month's fix while securing a 100% making charge waiver at maturity.
           </div>
-        </div>
-
-        <div style="margin-top: 12px; font-size: var(--fs-xs); font-weight: 600; color: var(--good);" id="schemeVerdict">
-          👑 Weight Scheme (GRT / Lalitha) is mathematically optimal when making charges exceed 10%.
         </div>
       </div>
+
+      <!-- Personal Gold Portfolio & ROI Tracker -->
+      <details class="collapsible" id="portfolioBlock" open>
+        <summary>
+          <div class="summary-title">
+            <h3>Gold Portfolio & ROI Ledger</h3>
+            <span id="portfolioHeaderSummary">0.0g tracked</span>
+          </div>
+          <span class="chevron">▼</span>
+        </summary>
+        <div class="collapsible-content">
+          <div class="port-summary-card">
+            <div class="port-summary-grid">
+              <div class="port-metric">
+                <span>Total Gold</span>
+                <strong id="portTotalGrams">0.00g</strong>
+                <small id="portTotalSov">0.00 Sovereigns</small>
+              </div>
+              <div class="port-metric">
+                <span>Invested Cost</span>
+                <strong id="portTotalInvested">₹ 0</strong>
+                <small id="portAvgBuyRate">₹ 0/g avg</small>
+              </div>
+              <div class="port-metric">
+                <span>Current Value</span>
+                <strong id="portTotalCurrent">₹ 0</strong>
+                <small>At live benchmark</small>
+              </div>
+              <div class="port-metric">
+                <span>Net Return</span>
+                <strong id="portNetProfit" class="profit-val">₹ 0 (0.0%)</strong>
+                <small id="portCagrText">—</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Purchase Lot Form -->
+          <div class="port-form-box">
+            <div class="port-form-title">Add Gold Purchase Lot</div>
+            <div class="calc-grid-form">
+              <div class="calc-field">
+                <label for="portDate">Purchase Date</label>
+                <input class="calc-input" type="date" id="portDate">
+              </div>
+              <div class="calc-field">
+                <label for="portWeight">Weight (g)</label>
+                <input class="calc-input" type="number" id="portWeight" value="8" step="0.01">
+              </div>
+              <div class="calc-field">
+                <label for="portRate">Buy Rate / g (₹)</label>
+                <input class="calc-input" type="number" id="portRate" placeholder="e.g. 14145" step="10">
+              </div>
+              <div class="calc-field">
+                <label for="portNote">Label / Occasion</label>
+                <input class="calc-input" type="text" id="portNote" placeholder="e.g. Akshaya Tritiya">
+              </div>
+            </div>
+            <div class="port-form-actions">
+              <div class="chip-container" id="portWeightChips" style="margin-bottom: 0;">
+                <button class="chip" data-val="1" type="button">1g</button>
+                <button class="chip" data-val="4" type="button">4g</button>
+                <button class="chip active" data-val="8" type="button">8g · 1 Sov</button>
+                <button class="chip" data-val="16" type="button">16g · 2 Sov</button>
+                <button class="chip" data-val="32" type="button">32g · 4 Sov</button>
+              </div>
+              <button class="btn-gold" id="portAddBtn" type="button">+ Save to Portfolio</button>
+            </div>
+          </div>
+
+          <!-- Portfolio Table -->
+          <div class="port-table-wrap">
+            <table class="port-table">
+              <thead>
+                <tr>
+                  <th>Date & Label</th>
+                  <th>Weight</th>
+                  <th>Buy Rate</th>
+                  <th>Current Val</th>
+                  <th>P&L</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="portBody">
+                <tr><td colspan="6" style="text-align:center; padding:16px 0; color:var(--ink-muted);">No purchases saved yet. Add your first gold purchase above!</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- Target Price Alarm Watchdog Card -->
+      <div class="target-card">
+        <div class="target-header">
+          <span class="target-title">Target Price Alarm Watchdog</span>
+          <span class="status-indicator" style="font-size: 8.5px;">Acoustic Chime Alert</span>
+        </div>
+        <p style="font-size: var(--fs-xs); color: var(--ink-secondary); margin-bottom: 10px;">
+          Set a dip-buying or profit-booking target price. The terminal checks live fix feeds and fires physical acoustic coin chimes and haptic vibrations when triggered.
+        </p>
+        <div class="target-input-row">
+          <input class="calc-input" type="number" id="targetRateInput" placeholder="Target rate e.g. 14000" step="50" inputmode="numeric">
+          <button class="btn-gold" id="setAlarmBtn" type="button" style="white-space: nowrap;">Set Alarm</button>
+        </div>
+        <div id="activeAlarmStatus" style="font-size: var(--fs-2xs); color: var(--gold-primary); font-weight: 600; margin-top: 6px;"></div>
+      </div>
+
     </section>
 
   </main>
@@ -423,11 +962,11 @@
     </p>
 
     <div class="calc-input-group">
-      <label class="calc-label" for="targetRateInput">Target Price (₹ per gram)</label>
-      <input class="calc-input" type="number" id="targetRateInput" placeholder="e.g. 14000" step="50" inputmode="numeric">
+      <label class="calc-label" for="modalTargetRateInput">Target Price (₹ per gram)</label>
+      <input class="calc-input" type="number" id="modalTargetRateInput" placeholder="e.g. 14000" step="50" inputmode="numeric">
     </div>
 
-    <button class="btn-primary" id="setAlarmBtn" type="button">Activate Watchdog Alarm</button>
+    <button class="btn-primary" id="modalSetAlarmBtn" type="button">Activate Watchdog Alarm</button>
   </div>
 
   <!-- Floating Liquid Glass Bottom Navigation Dock -->
