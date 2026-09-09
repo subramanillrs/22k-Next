@@ -1,0 +1,139 @@
+name: Monitor and Update Chennai 22K Gold Next
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Dense polling (every 5 min) across two comprehensive bands covering
+    # Chennai MJDMA morning fix (~09:30-11:30 IST) and evening fix (~16:00-20:45 IST)
+    # in UTC (IST = UTC+5:30):
+    #   AM Window: 07:30-12:25 IST = 02:00-06:55 UTC (cron: "*/5 2-6 * * *")
+    #   PM Window: 15:30-22:25 IST = 10:00-16:55 UTC (cron: "*/5 10-16 * * *")
+    - cron: "*/5 2-6 * * *"
+    - cron: "*/5 10-16 * * *"
+
+    # Low-cost heartbeat outside dense bands:
+    - cron: "0 0,1,7-9,17-23 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: chennai-gold-update-next
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-requests-bs4
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Determine fetch mode
+        id: mode
+        shell: bash
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "force_fetch=true" >> "$GITHUB_OUTPUT"
+            echo "Manual Fetch button detected."
+          else
+            echo "force_fetch=false" >> "$GITHUB_OUTPUT"
+            echo "Scheduled run detected."
+          fi
+
+      - name: Update Chennai 22K rate & Next-Gen Quant Metrics
+        env:
+          GITHUB_ACTIONS: "true"
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          FORCE_FETCH: ${{ steps.mode.outputs.force_fetch }}
+          ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          echo "============================================================"
+          echo "CHENNAI 22K GOLD TERMINAL NEXT | AUTOMATED UPDATE"
+          echo "============================================================"
+          python update_gold.py
+
+      - name: Run Quant & Pipeline Regression Tests
+        shell: bash
+        run: |
+          echo "============================================================"
+          echo "RUNNING QUANTITATIVE & PIPELINE REGRESSION TESTS"
+          echo "============================================================"
+          python tests/test_quant_pipeline.py
+
+      - name: Verify generated data
+        shell: bash
+        run: |
+          echo "============================================================"
+          echo "VERIFYING GENERATED DATA INTEGRITY"
+          echo "============================================================"
+          test -f data/live.json || { echo "data/live.json missing"; exit 1; }
+          test -f data/history.json || echo "[]" > data/history.json
+          test -f data/quant_metrics.json || { echo "data/quant_metrics.json missing"; exit 1; }
+          test -f data/signals.json || { echo "data/signals.json missing"; exit 1; }
+          echo "All critical data files present and validated."
+
+      - name: Save updated data
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/live.json
+          git add data/history.json
+          git add data/monitoring_windows.json
+          git add data/summary.json 2>/dev/null || true
+          git add data/alert_state.json 2>/dev/null || true
+          git add data/health_status.json 2>/dev/null || true
+          git add data/bootstrap.json 2>/dev/null || true
+          git add data/quant_metrics.json 2>/dev/null || true
+          git add data/ibja.json 2>/dev/null || true
+          git add data/signals.json 2>/dev/null || true
+          git add data/source_reliability.json 2>/dev/null || true
+          git add index.html 2>/dev/null || true
+
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+          else
+            git commit -m "Update Chennai 22K gold data [skip ci]"
+            attempt=1
+            max_attempts=3
+            until git push; do
+              if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "ERROR: push failed after $attempt attempts, aborting."
+                git rebase --abort 2>/dev/null || true
+                exit 1
+              fi
+              echo "Push rejected (attempt $attempt/$max_attempts) - rebasing onto latest and retrying..."
+              if ! git pull --rebase origin HEAD; then
+                echo "ERROR: rebase failed (likely a real conflict). Aborting rebase."
+                git rebase --abort 2>/dev/null || true
+                exit 1
+              fi
+              attempt=$((attempt + 1))
+            done
+          fi
