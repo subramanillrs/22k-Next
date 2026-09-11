@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v8";
+const CACHE_NAME = "gold-terminal-v10";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
@@ -44,6 +44,22 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
 
+  // Navigation / HTML requests: Network-first with cache fallback
+  if (event.request.mode === "navigate" || url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request, { ignoreSearch: true }))
+    );
+    return;
+  }
+
   // Data requests: Network-first with cache fallback
   if (url.pathname.includes("/data/")) {
     event.respondWith(
@@ -60,9 +76,9 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // App shell / static assets: Stale-while-revalidate
+  // App shell / static assets: Stale-while-revalidate with search query tolerance
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(event.request, { ignoreSearch: true }).then(cached => {
       const networkFetch = fetch(event.request).then(response => {
         if (response && response.status === 200) {
           const clone = response.clone();

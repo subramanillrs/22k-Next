@@ -95,6 +95,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   margin-bottom: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .bento-card {
@@ -108,6 +110,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .bento-card.full-width {
   grid-column: span 2;
@@ -120,6 +125,8 @@
   margin-bottom: 8px;
   gap: 6px;
   min-height: 22px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .card-label {
   font-size: var(--fs-2xs);
@@ -130,12 +137,16 @@
   line-height: 1.2;
   flex: 1;
   min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card-sub-label {
   font-size: var(--fs-3xs);
   color: var(--ink-muted);
   line-height: 1.2;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 /* Fix Timeline Chips */
@@ -207,6 +218,8 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .purity-col {
   text-align: center;
@@ -220,7 +233,9 @@
   align-items: center;
   min-height: 78px;
   min-width: 0;
+  width: 100%;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .purity-col.highlight {
   border-color: var(--gold-primary);
@@ -720,6 +735,11 @@ html[data-theme="oled"] .btn-primary {
   gap: 2px;
   z-index: 10;
   transform: none;
+}
+.chart-tooltip[hidden] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 .chart-tooltip-date {
   font-size: var(--fs-3xs);
@@ -1553,6 +1573,8 @@ html[data-theme="oled"] .btn-primary {
   .purity-row-bento {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .purity-col {
     padding: 8px 4px;
@@ -1563,6 +1585,8 @@ html[data-theme="oled"] .btn-primary {
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
   }
   .purity-carat {
     height: 26px;
@@ -1573,6 +1597,8 @@ html[data-theme="oled"] .btn-primary {
     line-height: 1.15;
     text-align: center;
     width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .purity-rate {
     font-size: clamp(11px, 3.2vw, 13.5px);
@@ -1582,6 +1608,70 @@ html[data-theme="oled"] .btn-primary {
   .purity-fineness {
     font-size: 8.5px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .fix-chips-wrap {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+  .fix-chip {
+    padding: 6px 6px;
+    min-height: 68px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .fix-chip-title {
+    font-size: clamp(8px, 2.2vw, 9.5px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fix-chip-rate {
+    font-size: clamp(13px, 3.8vw, 15px);
+    margin: 1px 0;
+    white-space: nowrap;
+  }
+  .fix-chip-time {
+    font-size: clamp(8px, 2vw, 9.5px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .basis-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+  .basis-box {
+    padding: 8px 6px;
+    min-height: 72px;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .basis-title {
+    font-size: clamp(8px, 2.2vw, 9.5px);
+    height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .basis-rate {
+    font-size: clamp(13px, 3.8vw, 15px);
+    margin: 1px 0;
+    white-space: nowrap;
+  }
+  .basis-sub {
+    font-size: clamp(7.5px, 2vw, 8.5px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .forecast-grid {
     grid-template-columns: repeat(2, 1fr);

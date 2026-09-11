@@ -67,6 +67,20 @@ def test_mobile_alignment():
     assert "min-height: 32px" in bento_css and ".hero-eyebrow" in bento_css
     print("  ✓ [TEST 13] .hero-eyebrow enforces 32px vertical center alignment with action button")
 
+    # Inactive chart tooltip hidden rule
+    assert ".chart-tooltip[hidden]" in bento_css and "display: none !important" in bento_css
+    print("  ✓ [TEST 14] .chart-tooltip[hidden] enforces complete dismissal when inactive")
+
+    # Single-line masthead alignment
+    assert "flex-wrap: nowrap;" in nav_css and ".masthead-actions" in nav_css
+    print("  ✓ [TEST 15] .masthead-inner enforces flex-wrap: nowrap preventing mobile multi-row splitting")
+
+    # Service worker v10 cache invalidation
+    sw_js = (BASE_DIR / "sw.js").read_text()
+    assert 'CACHE_NAME = "gold-terminal-v10"' in sw_js
+    assert 'request.mode === "navigate"' in sw_js
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v10 and network-first navigation policy")
+
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")
     print("============================================================")

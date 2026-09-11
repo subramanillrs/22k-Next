@@ -247,6 +247,56 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
 @media (max-width: 640px) {
   .masthead-inner {
     padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .brand-group {
+    gap: 6px;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+  }
+  .brand-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .brand-info {
+    min-width: 0;
+    overflow: hidden;
+  }
+  .brand-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .brand-sub {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .masthead-actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .status-indicator {
+    padding: 3px 7px;
+    font-size: 9.5px;
+    gap: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .icon-btn svg {
+    width: 13px;
+    height: 13px;
   }
   .views-viewport {
     padding: 10px 12px 14px;
