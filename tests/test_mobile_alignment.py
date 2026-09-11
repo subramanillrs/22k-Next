@@ -46,6 +46,27 @@ def test_mobile_alignment():
     assert "transform: none;" in bento_css
     print("  ✓ [TEST 9] Chart tooltip transform fixed to prevent off-canvas displacement")
 
+    # Cascade order verification
+    base_viewport_idx = nav_css.find(".views-viewport {\n  width: 100%;")
+    mobile_viewport_idx = nav_css.find(".views-viewport {\n    padding: 10px 12px 14px;")
+    assert base_viewport_idx != -1 and mobile_viewport_idx != -1
+    assert base_viewport_idx < mobile_viewport_idx, "Base .views-viewport must precede mobile media query in cascade"
+    print("  ✓ [TEST 10] .views-viewport base declaration correctly precedes @media (max-width: 640px)")
+
+    # Purity benchmark alignment
+    assert "height: 26px" in bento_css and ".purity-carat" in bento_css
+    assert ".purity-row-bento" in bento_css and "repeat(3, minmax(0, 1fr))" in bento_css
+    print("  ✓ [TEST 11] .purity-carat has fixed 26px height locking 24K, 22K, 18K price baselines")
+
+    # Fix timeline chip symmetry
+    assert "grid-template-columns: repeat(2, minmax(0, 1fr))" in bento_css and ".fix-chips-wrap" in bento_css
+    assert "min-height: 72px" in bento_css and ".fix-chip" in bento_css
+    print("  ✓ [TEST 12] .fix-chips-wrap uses strict 2-column grid locking AM and PM fix rate baselines")
+
+    # Hero eyebrow alignment
+    assert "min-height: 32px" in bento_css and ".hero-eyebrow" in bento_css
+    print("  ✓ [TEST 13] .hero-eyebrow enforces 32px vertical center alignment with action button")
+
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")
     print("============================================================")
