@@ -84,6 +84,7 @@
   font-size: var(--fs-sm);
 }
 .stat-col { display: flex; flex-direction: column; gap: 2px; }
+.stat-col.text-right { text-align: right; align-items: flex-end; }
 .stat-label { font-size: var(--fs-2xs); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .stat-val { font-weight: 700; color: var(--ink-primary); }
 
@@ -177,6 +178,11 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.carousel-track::-webkit-scrollbar {
+  display: none;
 }
 .carousel-item {
   scroll-snap-align: start;
@@ -188,10 +194,99 @@
   display: flex;
   flex-direction: column;
   gap: 3px;
+  flex-shrink: 0;
 }
 .city-name { font-size: var(--fs-xs); font-weight: 700; color: var(--ink-primary); }
 .city-rate { font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700; color: var(--gold-primary); }
 .city-basis { font-size: var(--fs-2xs); font-weight: 600; color: var(--good); }
+
+/* Submarket Basis Grid (Sowcarpet vs T. Nagar) */
+.basis-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.basis-box {
+  background: var(--surface-sunken);
+  padding: 10px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 76px;
+  min-width: 0;
+}
+.basis-title {
+  font-size: var(--fs-3xs);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.basis-rate {
+  font-family: var(--font-display);
+  font-size: var(--fs-base);
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin: 3px 0 1px;
+  white-space: nowrap;
+}
+.basis-sub {
+  font-size: var(--fs-3xs);
+  line-height: 1.2;
+  font-weight: 600;
+}
+.arbitrage-spread-line {
+  font-size: var(--fs-2xs);
+  color: var(--ink-secondary);
+  margin-bottom: 8px;
+}
+
+/* National Wholesale IBJA Spread Grid */
+.national-spread-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 6px;
+}
+.national-col {
+  background: var(--surface-sunken);
+  padding: 8px 6px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 68px;
+  min-width: 0;
+}
+.national-label {
+  font-size: var(--fs-3xs);
+  color: var(--ink-muted);
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.national-val {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  margin: 3px 0 1px;
+  white-space: nowrap;
+}
+.national-sub {
+  font-size: 8.5px;
+  color: var(--ink-faint);
+  line-height: 1.1;
+  white-space: nowrap;
+}
 
 /* Analytics View Cards */
 .chart-container {
@@ -356,8 +451,42 @@ html[data-theme="oled"] .btn-primary {
    RESTORED FEATURE MODULES & RESPONSIVE MOBILE ALIGNMENT
    ========================================================================== */
 
-/* Segmented Control (Pills) */
-.segment-ctrl, .calc-segmented-mode {
+/* Segmented Control (Pills) - Strict 7-Column Grid on Mobile */
+.segment-ctrl {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-full);
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+.segment-ctrl button {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-full);
+  padding: 6px 2px;
+  font-family: var(--font-sans);
+  font-size: clamp(9px, 2.5vw, 11px);
+  font-weight: 600;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.segment-ctrl button.active {
+  background: var(--surface-raised);
+  color: var(--gold-primary);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.calc-segmented-mode {
   position: relative;
   display: flex;
   background: var(--surface-sunken);
@@ -366,12 +495,10 @@ html[data-theme="oled"] .btn-primary {
   padding: 3px;
   gap: 2px;
   margin-bottom: 12px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
-.segment-ctrl button, .calc-mode-btn {
+.calc-mode-btn {
   flex: 1;
-  min-width: max-content;
+  min-width: 0;
   background: transparent;
   border: none;
   border-radius: var(--r-full);
@@ -383,8 +510,9 @@ html[data-theme="oled"] .btn-primary {
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  text-align: center;
 }
-.segment-ctrl button.active, .calc-mode-btn.active {
+.calc-mode-btn.active {
   background: var(--surface-raised);
   color: var(--gold-primary);
   border: 1px solid var(--glass-border);
@@ -498,7 +626,7 @@ html[data-theme="oled"] .btn-primary {
   flex-direction: column;
   gap: 2px;
   z-index: 10;
-  transform: translate(-50%, -120%);
+  transform: none;
 }
 .chart-tooltip-date {
   font-size: var(--fs-3xs);
@@ -531,6 +659,73 @@ html[data-theme="oled"] .btn-primary {
   height: 2px;
   background: var(--gold-primary);
   border-radius: 1px;
+}
+
+/* Quantitative Risk Metric Grid */
+.quant-risk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+.quant-risk-box {
+  background: var(--surface-sunken);
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 58px;
+  min-width: 0;
+}
+.quant-risk-label {
+  font-size: var(--fs-2xs);
+  color: var(--ink-muted);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.quant-risk-val {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Technical Sentiment & RSI Meter Grid */
+.technical-meter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+.tech-meter-box {
+  background: var(--surface-sunken);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-subtle);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 124px;
+  min-width: 0;
+}
+.tech-meter-box.text-center {
+  text-align: center;
+}
+.tech-meter-title {
+  font-size: var(--fs-3xs);
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.sentiment-label-text {
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  color: var(--ink-primary);
 }
 
 /* Collapsible Accordion Cards */
@@ -750,7 +945,54 @@ html[data-theme="oled"] .btn-primary {
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
   margin-bottom: 10px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.chip-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Strict 4-Column Preset Chip Grid for Calculator & Forms */
+#weightChips, #makingChips, .chip-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+}
+#weightChips .chip, #makingChips .chip, .chip-grid-4 .chip {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 2px;
+  font-size: clamp(9px, 2.4vw, 11px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#portWeightChips {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+#portWeightChips .chip {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 2px;
+  font-size: clamp(8.5px, 2.2vw, 10.5px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .chip {
   flex: 1;
   min-width: max-content;
@@ -779,24 +1021,25 @@ html[data-theme="oled"] .btn-primary {
   margin-bottom: 4px;
 }
 
-/* Calculator Grid Form */
+/* Calculator Grid Form (Consistent 2-column layout on all viewports) */
 .calc-grid-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-@media (max-width: 480px) {
-  .calc-grid-form { grid-template-columns: 1fr; }
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 .calc-field {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 .calc-field label {
   font-size: var(--fs-2xs);
   font-weight: 600;
   color: var(--ink-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Exchange Drawer */
@@ -966,17 +1209,34 @@ html[data-theme="oled"] .btn-primary {
 @media (min-width: 500px) {
   .meter-breakdown { grid-template-columns: repeat(4, 1fr); }
 }
+.meter-metric-item {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  padding: 8px 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 56px;
+  min-width: 0;
+}
 .meter-metric-item span {
-  font-size: 9px;
+  font-size: 8.5px;
   color: var(--ink-muted);
   text-transform: uppercase;
-  display: block;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 .meter-metric-item b {
   font-family: var(--font-display);
   color: var(--ink-primary);
   font-size: var(--fs-sm);
-  display: block;
+  line-height: 1.2;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .bargain-tip {
   font-size: var(--fs-xs);
@@ -998,28 +1258,37 @@ html[data-theme="oled"] .btn-primary {
 }
 .port-summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 @media (min-width: 540px) {
-  .port-summary-grid { grid-template-columns: repeat(4, 1fr); }
+  .port-summary-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 .port-metric {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: space-between;
+  min-height: 64px;
+  min-width: 0;
 }
 .port-metric span {
-  font-size: var(--fs-3xs);
+  font-size: 8.5px;
   font-weight: 700;
   color: var(--ink-muted);
   text-transform: uppercase;
+  line-height: 1.2;
 }
 .port-metric strong {
   font-family: var(--font-display);
   font-size: var(--fs-base);
   font-weight: 700;
   color: var(--ink-primary);
+  line-height: 1.2;
+  white-space: nowrap;
 }
 .port-metric small {
   font-size: var(--fs-3xs);
@@ -1195,6 +1464,10 @@ html[data-theme="oled"] .btn-primary {
   .purity-col {
     padding: 8px 4px;
     min-width: 0;
+    min-height: 68px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   .purity-rate {
     font-size: var(--fs-xs);
@@ -1211,6 +1484,7 @@ html[data-theme="oled"] .btn-primary {
     height: 190px;
   }
   .receipt-actions-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 }

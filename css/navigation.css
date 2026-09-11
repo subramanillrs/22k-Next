@@ -3,11 +3,8 @@
    ========================================================================== */
 
 /* Top Masthead */
+/* Top Masthead */
 .masthead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -16,6 +13,18 @@
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-bottom: 1px solid var(--border-subtle);
   transition: all var(--transition-normal);
+  padding: 0;
+  width: 100%;
+}
+
+.masthead-inner {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .brand-group {
@@ -215,8 +224,11 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
 
 /* Mobile-Specific Bottom Bar & Safe-Area Alignment (< 640px) */
 @media (max-width: 640px) {
-  .masthead {
+  .masthead-inner {
     padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;
+  }
+  .views-viewport {
+    padding: 10px 12px 14px;
   }
   .dynamic-island {
     top: max(8px, env(safe-area-inset-top, 0px));
@@ -248,6 +260,11 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
     font-size: 10px;
     min-width: 0;
     border-radius: var(--r-sm);
+  }
+  .tab-btn span {
+    font-size: clamp(9px, 2.5vw, 11px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .tab-btn svg {
     width: 18px;

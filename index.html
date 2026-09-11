@@ -35,28 +35,30 @@
 
   <!-- Top Masthead -->
   <header class="masthead">
-    <div class="brand-group">
-      <div class="brand-badge" id="brandBadge" title="Tap for physical 22K gold coin harmonic acoustic chime">Au</div>
-      <div class="brand-info">
-        <span class="brand-title">Gold 22k rate</span>
-        <span class="brand-sub">Chennai · MJDMA Fix</span>
-      </div>
-    </div>
-
-    <div class="masthead-actions">
-      <div class="status-indicator">
-        <span class="pulse-dot"></span>
-        <span id="mastheadStatusText">Live Consensus</span>
+    <div class="masthead-inner">
+      <div class="brand-group">
+        <div class="brand-badge" id="brandBadge" title="Tap for physical 22K gold coin harmonic acoustic chime">Au</div>
+        <div class="brand-info">
+          <span class="brand-title">Gold 22k rate</span>
+          <span class="brand-sub">Chennai · MJDMA Fix</span>
+        </div>
       </div>
 
-      <button class="icon-btn" id="openAlarmBtn" type="button" aria-label="Target Price Alarm">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </button>
+      <div class="masthead-actions">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span id="mastheadStatusText">Live Consensus</span>
+        </div>
 
-      <button class="icon-btn theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle Day and Night mode">
-        <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
-      </button>
+        <button class="icon-btn" id="openAlarmBtn" type="button" aria-label="Target Price Alarm">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+
+        <button class="icon-btn theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle Day and Night mode">
+          <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -93,7 +95,7 @@
             <span class="stat-label">Rate per gram</span>
             <span class="stat-val" id="hero1Rate">₹ 14,145 <span id="change1Mini" class="change-badge down" style="padding: 2px 5px; font-size: 9.5px;">-125</span></span>
           </div>
-          <div class="stat-col" style="text-align: right;">
+          <div class="stat-col text-right">
             <span class="stat-label">Official Market Date</span>
             <span class="stat-val" id="marketDateVal">Sep 9, 2026 · 22:40</span>
           </div>
@@ -158,19 +160,19 @@
             <span class="card-label">Chennai Sub-Market Basis & Wholesale Engine</span>
             <span class="status-indicator" style="font-size: 8.5px; color: var(--gold-primary);">Live Basis</span>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px;">
-            <div style="background: var(--surface-sunken); padding: 8px 10px; border-radius: var(--r-md); border: 1px solid var(--border-subtle);">
-              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">Sowcarpet Wholesale</span>
-              <div style="font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700;" id="sowcarpetWholesaleVal">₹ 14,100</div>
-              <span style="font-size: var(--fs-3xs); color: var(--good);" id="sowcarpetDiscountPct">-₹ 45/g (-0.32%) Bullion Disc</span>
+          <div class="basis-grid">
+            <div class="basis-box">
+              <span class="basis-title">Sowcarpet Wholesale</span>
+              <div class="basis-rate" id="sowcarpetWholesaleVal">₹ 14,100</div>
+              <span class="basis-sub" style="color: var(--good);" id="sowcarpetDiscountPct">-₹ 45/g (-0.32%) Bullion Disc</span>
             </div>
-            <div style="background: var(--surface-sunken); padding: 8px 10px; border-radius: var(--r-md); border: 1px solid var(--border-subtle);">
-              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">T. Nagar Showroom</span>
-              <div style="font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700;" id="retailShowroomVal">₹ 14,325</div>
-              <span style="font-size: var(--fs-3xs); color: var(--gold-primary);" id="retailShowroomSpreadVal">+₹ 180/g (+1.27%) Retail Markup</span>
+            <div class="basis-box">
+              <span class="basis-title">T. Nagar Showroom</span>
+              <div class="basis-rate" id="retailShowroomVal">₹ 14,325</div>
+              <span class="basis-sub" style="color: var(--gold-primary);" id="retailShowroomSpreadVal">+₹ 180/g (+1.27%) Retail Markup</span>
             </div>
           </div>
-          <div style="font-size: var(--fs-2xs); color: var(--ink-secondary); margin-bottom: 8px;" id="arbitrageSpreadVal">
+          <div class="arbitrage-spread-line" id="arbitrageSpreadVal">
             Wholesale-to-Retail Value Chain Spread: <strong>₹ 225/g</strong>
           </div>
 
@@ -211,21 +213,21 @@
               <span id="consensusBadgeText">100% Multi-Source Confidence</span>
             </span>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px;">
-            <div>
-              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">IBJA 24K Spot</div>
-              <div style="font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 700;" id="ibja24k">₹ 15,277</div>
-              <div style="font-size: 9px; color: var(--ink-faint);">22K: <strong id="ibja22k">₹ 14,004</strong></div>
+          <div class="national-spread-grid">
+            <div class="national-col">
+              <div class="national-label">IBJA 24K Spot</div>
+              <div class="national-val" id="ibja24k">₹ 15,277</div>
+              <div class="national-sub">22K: <strong id="ibja22k">₹ 14,004</strong></div>
             </div>
-            <div>
-              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">Chennai Retail Spread</div>
-              <div style="font-weight: 700; font-size: var(--fs-sm); color: var(--gold-primary);" id="retailSpreadVal">+₹ 141/g</div>
-              <div style="font-size: 9px; color: var(--ink-faint);" id="retailSpreadPct">+1.01% Premium</div>
+            <div class="national-col">
+              <div class="national-label">Chennai Retail Spread</div>
+              <div class="national-val" style="color: var(--gold-primary);" id="retailSpreadVal">+₹ 141/g</div>
+              <div class="national-sub" id="retailSpreadPct">+1.01% Premium</div>
             </div>
-            <div>
-              <div style="font-size: var(--fs-3xs); color: var(--ink-muted);">Quantitative Risk</div>
-              <div style="font-weight: 700; font-size: var(--fs-sm);" id="realizedVol">σ₃₀d: 16.26%</div>
-              <div style="font-size: 9px; color: var(--ink-faint);">VaR: <strong id="varExposure">₹ 238/g</strong></div>
+            <div class="national-col">
+              <div class="national-label">Quantitative Risk</div>
+              <div class="national-val" id="realizedVol">σ₃₀d: 16.26%</div>
+              <div class="national-sub">VaR: <strong id="varExposure">₹ 238/g</strong></div>
             </div>
           </div>
         </div>
@@ -415,22 +417,22 @@
           <span class="card-label">Merton Jump Diffusion Risk Engine (10,000 Paths)</span>
           <span style="font-size: var(--fs-3xs); color: var(--ink-muted);">95% Parametric VaR</span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 6px;">
-          <div>
-            <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">1-Day 95% Value at Risk</div>
-            <div style="font-weight: 700; font-size: var(--fs-base);" id="var95Val">₹ 238/g (₹ 1,907 / 8g)</div>
+        <div class="quant-risk-grid">
+          <div class="quant-risk-box">
+            <div class="quant-risk-label">1-Day 95% Value at Risk</div>
+            <div class="quant-risk-val" id="var95Val">₹ 238/g (₹ 1,907 / 8g)</div>
           </div>
-          <div>
-            <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">1-Day 99% Tail VaR</div>
-            <div style="font-weight: 700; font-size: var(--fs-base);" id="var99Val">₹ 356/g</div>
+          <div class="quant-risk-box">
+            <div class="quant-risk-label">1-Day 99% Tail VaR</div>
+            <div class="quant-risk-val" id="var99Val">₹ 356/g</div>
           </div>
-          <div>
-            <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">Expected Shortfall (CVaR)</div>
-            <div style="font-weight: 700; font-size: var(--fs-base);" id="cvar95Val">₹ 292/g</div>
+          <div class="quant-risk-box">
+            <div class="quant-risk-label">Expected Shortfall (CVaR)</div>
+            <div class="quant-risk-val" id="cvar95Val">₹ 292/g</div>
           </div>
-          <div>
-            <div style="font-size: var(--fs-2xs); color: var(--ink-muted);">Annualized Volatility</div>
-            <div style="font-weight: 700; font-size: var(--fs-base);" id="volAnnualVal">16.26% (GARCH 1,1)</div>
+          <div class="quant-risk-box">
+            <div class="quant-risk-label">Annualized Volatility</div>
+            <div class="quant-risk-val" id="volAnnualVal">16.26% (GARCH 1,1)</div>
           </div>
         </div>
       </div>
@@ -443,9 +445,9 @@
         </div>
         
         <!-- Sentiment Dial & RSI Bar -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0;">
-          <div style="background: var(--surface-sunken); border-radius: var(--r-md); padding: 10px; text-align: center;">
-            <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">Market Sentiment</span>
+        <div class="technical-meter-grid">
+          <div class="tech-meter-box text-center">
+            <span class="tech-meter-title">Market Sentiment</span>
             <div class="sentiment-dial-wrap" style="margin: 6px auto;">
               <svg class="sentiment-dial" width="70" height="70" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="40" class="dial-bg"></circle>
@@ -456,12 +458,12 @@
                 <small>/100</small>
               </div>
             </div>
-            <span style="font-size: var(--fs-2xs); font-weight: 700; color: var(--ink-primary);" id="sentimentLabel">Neutral</span>
+            <span class="sentiment-label-text" id="sentimentLabel">Neutral</span>
           </div>
 
-          <div style="background: var(--surface-sunken); border-radius: var(--r-md); padding: 10px; display: flex; flex-direction: column; justify-content: space-between;">
+          <div class="tech-meter-box">
             <div>
-              <span style="font-size: var(--fs-3xs); color: var(--ink-muted); text-transform: uppercase;">14-Period RSI</span>
+              <span class="tech-meter-title">14-Period RSI</span>
               <div class="rsi-scale-bar" style="margin: 12px 0 6px;">
                 <div class="rsi-zone zone-oversold"></div>
                 <div class="rsi-zone zone-neutral"></div>
