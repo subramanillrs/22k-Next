@@ -1,9 +1,9 @@
 {
   "status": "ok",
-  "checked_at": "2026-09-15T17:50:39.545028+05:30",
-  "updated_at": "2026-09-15T12:20:22.958427+05:30",
-  "verified_at": "2026-09-15T12:20:22.958427+05:30",
-  "age_hours": 5.5,
+  "checked_at": "2026-09-15T20:06:51.484126+05:30",
+  "updated_at": "2026-09-15T20:06:51.441359+05:30",
+  "verified_at": "2026-09-15T20:06:51.441359+05:30",
+  "age_hours": 0.0,
   "source_count": 3,
   "single_source": false,
   "agreement": true,
