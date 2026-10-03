@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T02:35:14.922759+05:30",
+  "generated_at": "2026-10-03T06:18:45.436779+05:30",
   "all_time_high": {
     "rate_22k": 16800,
     "date": "2026-01-29"
@@ -10,13 +10,13 @@
   },
   "current_month": {
     "month": "2026-10",
-    "average_22k": 13718,
+    "average_22k": 13724,
     "high": 13775,
     "low": 13680
   },
   "current_year": {
     "year": "2026",
-    "average_22k": 14093,
+    "average_22k": 14092,
     "high": 16800,
     "low": 12440
   },
@@ -25,9 +25,9 @@
     "high": 14360,
     "low": 13640
   },
-  "total_records": 1246,
+  "total_records": 1247,
   "quant": {
-    "calculated_at": "2026-10-03T02:35:14.912771+05:30",
+    "calculated_at": "2026-10-03T06:18:45.427481+05:30",
     "rate_22k": 13775,
     "rate_8g": 110200,
     "volatility_30d_annualized": 0.1326,
@@ -47,7 +47,7 @@
     "retail_showroom_rate_22k": 13955,
     "retail_showroom_markup_pct": 1.31,
     "submarket_spreads": {
-      "calculated_at": "2026-10-03T02:35:14.913438+05:30",
+      "calculated_at": "2026-10-03T06:18:45.428110+05:30",
       "reference_mjdma_22k": 13775,
       "reference_mjdma_24k": 15027,
       "sowcarpet": {
