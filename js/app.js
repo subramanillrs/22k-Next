@@ -170,9 +170,9 @@
   // ==========================================================================
   // 4. DATA HYDRATION & REPOSITORIES
   // ==========================================================================
-  async function loadMarketData() {
+  async function loadMarketData({ hydrateBootstrap = true } = {}) {
     // 1. Instant bootstrap pre-bake payload
-    const bootEl = $("gold-bootstrap") || $("bootstrapPayload");
+    const bootEl = hydrateBootstrap && ($("gold-bootstrap") || $("bootstrapPayload"));
     if (bootEl && bootEl.textContent.trim()) {
       try {
         const boot = JSON.parse(bootEl.textContent);
@@ -185,19 +185,9 @@
     }
 
     // 2. Network live fetch
-    try {
-      const res = await fetch(`data/live.json?_v=${Date.now()}`, { cache: "no-store" });
-      if (res.ok) {
-        const live = await res.json();
-        state.live = live;
-        renderMarketView(live);
-        checkTargetPrice(live);
-      }
-    } catch (e) {
-      console.warn("Live fetch:", e);
-    }
+    await refreshLiveData();
 
-    // 3. Network history fetch
+    // 3. Network history fetch (once per page load)
     try {
       const resHist = await fetch(`data/history.json?_v=${Date.now()}`, { cache: "no-store" });
       if (resHist.ok) {
@@ -210,6 +200,46 @@
     } catch (e) {
       console.warn("History fetch:", e);
     }
+  }
+
+  let liveRefreshInFlight = false;
+
+  async function refreshLiveData({ showFeedback = false } = {}) {
+    if (liveRefreshInFlight) return;
+    liveRefreshInFlight = true;
+    try {
+      const res = await fetch(`data/live.json?_v=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache" }
+      });
+      if (res.ok) {
+        const live = await res.json();
+        state.live = live;
+        renderMarketView(live);
+        checkTargetPrice(live);
+        if (showFeedback) showToast("Latest price data refreshed");
+      } else if (showFeedback) {
+        showToast("Price refresh failed; showing last available rate");
+      }
+    } catch (e) {
+      console.warn("Live fetch:", e);
+      if (showFeedback) showToast("Offline; showing last available rate");
+    } finally {
+      liveRefreshInFlight = false;
+    }
+  }
+
+  function initLiveRefresh() {
+    const refreshBtn = $("refreshPriceBtn");
+    if (refreshBtn) refreshBtn.onclick = () => refreshLiveData({ showFeedback: true });
+
+    window.setInterval(() => {
+      if (document.visibilityState === "visible") refreshLiveData();
+    }, 60_000);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") refreshLiveData();
+    });
   }
 
   function hydrateWithData(payload) {
@@ -271,6 +301,11 @@
     const prevClose = Number(live.previous_close_22k) || 14270;
     if ($("amFixRate")) $("amFixRate").textContent = formatMoney(prevClose);
     if ($("pmFixRate")) $("pmFixRate").textContent = formatMoney(r22);
+    if ($("amFixTime")) $("amFixTime").textContent = "Previous close";
+    if ($("pmFixTime")) {
+      const updateTime = live.time ? timeText(live.time.slice(0, 5)) : "Latest update";
+      $("pmFixTime").textContent = `${updateTime} · ${session === "PM" ? "Confirmed" : "Live"}`;
+    }
     if ($("pmFixChip")) $("pmFixChip").classList.toggle("confirmed", session === "PM");
 
     // Sowcarpet wholesale vs Retail spread
@@ -1418,6 +1453,7 @@
     initPortfolio();
     initTargetWatchdog();
     initShareButtons();
+    initLiveRefresh();
 
     // Au Coin chime on brand badge tap
     const brandBadge = $("brandBadge");

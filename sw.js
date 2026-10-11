@@ -5,20 +5,20 @@
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v10";
+const CACHE_NAME = "gold-terminal-v12";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./css/design-system.css",
-  "./css/navigation.css",
-  "./css/bento-grid.css",
-  "./js/app.js",
-  "./js/ml-engine.js",
-  "./js/quant-risk.js",
-  "./js/scheme-optimizer.js",
-  "./js/share-cards.js",
-  "./js/audio-chimes.js"
+  "./css/design-system.css?v=12",
+  "./css/navigation.css?v=12",
+  "./css/bento-grid.css?v=12",
+  "./js/app.js?v=12",
+  "./js/ml-engine.js?v=12",
+  "./js/quant-risk.js?v=12",
+  "./js/scheme-optimizer.js?v=12",
+  "./js/share-cards.js?v=12",
+  "./js/audio-chimes.js?v=12"
 ];
 
 self.addEventListener("install", event => {
@@ -76,9 +76,10 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // App shell / static assets: Stale-while-revalidate with search query tolerance
+  // App shell / static assets: stale-while-revalidate. Keep query strings in
+  // cache keys so a versioned URL never receives an older build.
   event.respondWith(
-    caches.match(event.request, { ignoreSearch: true }).then(cached => {
+    caches.match(event.request).then(cached => {
       const networkFetch = fetch(event.request).then(response => {
         if (response && response.status === 200) {
           const clone = response.clone();

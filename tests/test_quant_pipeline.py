@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 import update_gold
+from bs4 import BeautifulSoup
 
 
 def test_pipeline_quant_and_bootstrap():
@@ -39,6 +40,19 @@ def test_pipeline_quant_and_bootstrap():
     assert consensus_res["valid"] is True
     assert consensus_res["consensus_rate"] == 14145
     print(f"  ✓ [TEST 2] Bayesian consensus locked ₹{consensus_res['consensus_rate']} with confidence {consensus_res['confidence']}%")
+
+    # 2b. IBJA extraction must not mistake the Platinum 999 row for Gold 999.
+    ibja_fixture = BeautifulSoup("""
+        <table id="TodayRatesTableDataYes">
+          <tr><td>Gold 999</td><td>148048</td><td>147980</td></tr>
+          <tr><td>Gold 916</td><td>135612</td><td>135550</td></tr>
+          <tr><td>Platinum 999</td><td>58980</td><td>59133</td></tr>
+        </table>
+    """, "html.parser")
+    ibja_rates = update_gold.extract_ibja_rates_from_soup(ibja_fixture)
+    assert ibja_rates["24k_pm_10g"] == 147980
+    assert ibja_rates["22k_pm_10g"] == 135550
+    print("  ✓ [TEST 2b] IBJA gold rows are isolated from platinum rows")
 
     # 3. Probabilistic KDE Fix Timing
     kde_res = update_gold.predict_session_times()

@@ -75,11 +75,11 @@ def test_mobile_alignment():
     assert "flex-wrap: nowrap;" in nav_css and ".masthead-actions" in nav_css
     print("  ✓ [TEST 15] .masthead-inner enforces flex-wrap: nowrap preventing mobile multi-row splitting")
 
-    # Service worker v10 cache invalidation
+    # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v10"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v12"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v10 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v12 and network-first navigation policy")
 
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")

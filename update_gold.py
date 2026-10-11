@@ -1029,7 +1029,13 @@ def extract_ibja_rates_from_soup(soup):
         cells = [td.get_text(strip=True) for td in tr.find_all(["td", "th"])]
         if not cells or len(cells) < 2:
             continue
-        row_str = " ".join(cells).upper()
+        # The table also contains rows such as "Platinum 999".  Matching a
+        # bare purity number here lets that row overwrite Gold 999, producing
+        # an impossible 24K rate in the terminal.  Only accept explicit gold
+        # rows and inspect the purity from the row label.
+        row_label = cells[0].upper()
+        if "GOLD" not in row_label:
+            continue
         nums = []
         for c in cells[1:]:
             clean_c = re.sub(r"[^\d.]", "", c)
@@ -1043,10 +1049,10 @@ def extract_ibja_rates_from_soup(soup):
         if not nums:
             continue
 
-        if "999" in row_str or "24" in row_str:
+        if "999" in row_label or "24" in row_label:
             rates["24k_am_10g"] = nums[0]
             rates["24k_pm_10g"] = nums[1] if len(nums) > 1 else nums[0]
-        elif "916" in row_str or "22" in row_str:
+        elif "916" in row_label or "22" in row_label:
             rates["22k_am_10g"] = nums[0]
             rates["22k_pm_10g"] = nums[1] if len(nums) > 1 else nums[0]
 
