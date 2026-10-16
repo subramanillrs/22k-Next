@@ -1,17 +1,12 @@
 {
   "policybazaar": {
-    "attempts": 263,
+    "attempts": 264,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 263,
+    "failure_streak": 264,
     "history": [
-      {
-        "ts": "2026-10-12T21:46:56.729671+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-13T01:05:25.360869+05:30",
         "success": false,
@@ -106,22 +101,22 @@
         "ts": "2026-10-16T04:54:33.210869+05:30",
         "success": false,
         "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-16T11:59:00.954340+05:30",
+        "success": false,
+        "confidence": 0.0
       }
     ]
   },
   "bankbazaar": {
-    "attempts": 263,
+    "attempts": 264,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 263,
+    "failure_streak": 264,
     "history": [
-      {
-        "ts": "2026-10-12T21:46:56.215351+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-13T01:05:24.635277+05:30",
         "success": false,
@@ -216,22 +211,22 @@
         "ts": "2026-10-16T04:54:32.912300+05:30",
         "success": false,
         "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-16T11:59:00.272165+05:30",
+        "success": false,
+        "confidence": 0.0
       }
     ]
   },
   "moneycontrol": {
-    "attempts": 263,
+    "attempts": 264,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 263,
+    "failure_streak": 264,
     "history": [
-      {
-        "ts": "2026-10-12T21:46:56.665341+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-13T01:05:24.248919+05:30",
         "success": false,
@@ -324,6 +319,11 @@
       },
       {
         "ts": "2026-10-16T04:54:32.549867+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-16T11:59:00.870024+05:30",
         "success": false,
         "confidence": 0.0
       }
