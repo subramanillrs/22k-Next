@@ -1,5 +1,5 @@
 {
-  "baked_at": "2026-10-16T17:14:54.685549+05:30",
+  "baked_at": "2026-10-16T17:29:34.066169+05:30",
   "live": {
     "rate_22k": 13515,
     "rate_8g": 108120,
@@ -1754,7 +1754,7 @@
     }
   ],
   "quant": {
-    "calculated_at": "2026-10-16T17:14:54.682649+05:30",
+    "calculated_at": "2026-10-16T17:29:34.061567+05:30",
     "rate_22k": 13515,
     "rate_8g": 108120,
     "volatility_30d_annualized": 0.1075,
@@ -1774,7 +1774,7 @@
     "retail_showroom_rate_22k": 13695,
     "retail_showroom_markup_pct": 1.33,
     "submarket_spreads": {
-      "calculated_at": "2026-10-16T17:14:54.683329+05:30",
+      "calculated_at": "2026-10-16T17:29:34.062207+05:30",
       "reference_mjdma_22k": 13515,
       "reference_mjdma_24k": 14744,
       "sowcarpet": {
@@ -1944,7 +1944,7 @@
     "is_fallback": true
   },
   "signals": {
-    "calculated_at": "2026-10-16T17:14:54.684392+05:30",
+    "calculated_at": "2026-10-16T17:29:34.065013+05:30",
     "price_points_used": 30,
     "rsi": {
       "rsi_14": 31.43,
