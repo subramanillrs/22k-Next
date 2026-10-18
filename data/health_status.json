@@ -1,9 +1,9 @@
 {
   "status": "degraded",
-  "checked_at": "2026-10-18T05:07:27.238116+05:30",
+  "checked_at": "2026-10-18T07:31:41.703819+05:30",
   "updated_at": "2026-10-18T05:07:27.185835+05:30",
   "verified_at": "2026-10-18T05:07:27.185835+05:30",
-  "age_hours": 0.0,
+  "age_hours": 2.4,
   "source_count": 2,
   "single_source": false,
   "agreement": null,
