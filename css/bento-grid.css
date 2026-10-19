@@ -277,11 +277,6 @@
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.carousel-track::-webkit-scrollbar {
-  display: none;
 }
 .carousel-item {
   scroll-snap-align: start;
@@ -720,37 +715,6 @@ html[data-theme="oled"] .btn-primary {
   height: 100% !important;
   display: block;
 }
-.chart-tooltip {
-  position: absolute;
-  pointer-events: none;
-  background: var(--surface-glass-strong);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-md);
-  padding: 6px 10px;
-  box-shadow: var(--shadow-md);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  z-index: 10;
-  transform: none;
-}
-.chart-tooltip[hidden] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-.chart-tooltip-date {
-  font-size: var(--fs-3xs);
-  color: var(--ink-muted);
-  font-weight: 600;
-}
-.chart-tooltip strong {
-  font-family: var(--font-display);
-  font-size: var(--fs-md);
-  color: var(--gold-primary);
-}
 .chartmeta {
   display: flex;
   justify-content: space-between;
@@ -1058,11 +1022,6 @@ html[data-theme="oled"] .btn-primary {
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
   margin-bottom: 10px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.chip-container::-webkit-scrollbar {
-  display: none;
 }
 
 /* Strict 4-Column Preset Chip Grid for Calculator & Forms */

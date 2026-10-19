@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v17";
+const CACHE_NAME = "gold-terminal-v19";
 const STATIC_ASSETS = [
   "./",
   "./index.html",

@@ -146,7 +146,7 @@
         const target = btn.getAttribute("data-tab");
         if (!target || target === state.activeTab) return;
 
-        dismissChartTooltip();
+        endChartScrub();
 
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(8);
 
@@ -592,9 +592,7 @@
     }
   }
 
-  function dismissChartTooltip() {
-    const tooltip = $("chartTooltip");
-    if (tooltip) tooltip.hidden = true;
+  function endChartScrub() {
     if (state.scrubIndex !== -1) {
       state.scrubIndex = -1;
       renderInteractiveChart();
@@ -603,7 +601,6 @@
 
   function initChartScrub() {
     const canvas = $("chart");
-    const tooltip = $("chartTooltip");
     if (!canvas) return;
 
     const handleScrub = e => {
@@ -623,20 +620,9 @@
         renderInteractiveChart();
       }
 
-      if (tooltip && idx >= 0 && idx < filtered.length) {
-        const item = filtered[idx];
-        tooltip.hidden = false;
-        if ($("chartTipDate")) $("chartTipDate").textContent = dateText(item.date);
-        if ($("chartTipRate")) $("chartTipRate").textContent = formatMoney(item.rate_22k);
-        if ($("chartTipSession")) $("chartTipSession").textContent = item.session ? `${item.session} Fix` : "Benchmark";
-
-        const tipX = Math.max(10, Math.min(rect.width - 110, x - 50));
-        tooltip.style.left = `${tipX}px`;
-        tooltip.style.top = `10px`;
-      }
     };
 
-    const endScrub = dismissChartTooltip;
+    const endScrub = endChartScrub;
 
     canvas.addEventListener("touchstart", handleScrub, { passive: true });
     canvas.addEventListener("touchmove", handleScrub, { passive: true });

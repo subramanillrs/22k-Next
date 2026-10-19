@@ -1,7 +1,7 @@
-/* ==========================================================================
-   CHENNAI 22K GOLD NEXT: LUXURY INSTITUTIONAL DESIGN SYSTEM
-   Tokens: Strict 2-Mode Fidelity (Day: Ivory/Espresso | Night: OLED/#ffd700)
-   ========================================================================== */
+/* ============================================================================
+   CHENNAI 22K GOLD NEXT — MARKET LEDGER SYSTEM
+   Canonical runtime tokens: warm stock, ink, and one restrained brass accent.
+   ============================================================================ */
 
 :root {
   color-scheme: light;
@@ -9,65 +9,71 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typographic scale */
-  --fs-3xs: 8.5px;
-  --fs-2xs: 9.5px;
-  --fs-xs: 10.5px;
-  --fs-sm: 11.5px;
-  --fs-base: 13px;
-  --fs-md: 14.5px;
-  --fs-lg: 16px;
-  --fs-xl: 19px;
-  --fs-2xl: 24px;
-  --fs-3xl: 32px;
-  --fs-hero: clamp(38px, 10vw, 54px);
+  --fs-3xs: 10px;
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-md: 16px;
+  --fs-lg: 18px;
+  --fs-xl: 22px;
+  --fs-2xl: 28px;
+  --fs-3xl: 36px;
+  --fs-hero: clamp(42px, 8vw, 68px);
 
   /* Radius tokens */
   --r-xs: 4px;
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 26px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
   --r-full: 9999px;
 
   /* Day Theme (Default / Light) */
-  --bg-canvas: #f8f4ea;
-  --surface-ground: #faf6ed;
-  --surface-raised: #ffffff;
-  --surface-sunken: #f0eadb;
-  --surface-glass: rgba(255, 255, 255, 0.72);
-  --surface-glass-strong: rgba(255, 255, 255, 0.90);
-  --glass-border: rgba(169, 127, 52, 0.22);
-  --glass-highlight: rgba(255, 255, 255, 0.8);
-  --glass-blur: 24px;
+  --bg-canvas: #f3f0e8;
+  --surface-ground: #f8f6f0;
+  --surface-raised: #fffefa;
+  --surface-sunken: #ece8df;
+  --surface-glass: rgba(255, 254, 250, 0.96);
+  --surface-glass-strong: rgba(255, 254, 250, 0.98);
+  --glass-border: rgba(28, 23, 18, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.68);
+  --glass-blur: 12px;
 
-  --border-subtle: rgba(28, 23, 18, 0.08);
-  --border-strong: rgba(169, 127, 52, 0.35);
+  --border-subtle: rgba(28, 23, 18, 0.12);
+  --border-strong: rgba(28, 23, 18, 0.24);
 
-  --ink-primary: #1c1712;
-  --ink-secondary: #6b6255;
-  --ink-muted: #8a8174;
-  --ink-faint: #b3a998;
+  --ink-primary: #211d17;
+  --ink-secondary: #5e584d;
+  --ink-muted: #756e62;
+  --ink-faint: #918a7e;
 
-  --gold-primary: #a97f34;
-  --gold-deep: #6b5223;
-  --gold-tint: rgba(169, 127, 52, 0.08);
-  --gold-glow: #e8c988;
+  --masthead-bg: #211d17;
+  --masthead-ink: #f8f6ef;
+  --masthead-gold: #eac36b;
+  --surface-hero: #211d17;
+  --ink-on-hero: #f8f6ef;
 
-  --good: #2d7a48;
-  --good-bg: #e1efe4;
-  --good-border: #337a4c;
-  --good-glow: rgba(45, 122, 72, 0.3);
+  --gold-primary: #946b24;
+  --gold-deep: #72521c;
+  --gold-tint: rgba(148, 107, 36, 0.10);
+  --gold-glow: rgba(148, 107, 36, 0.18);
 
-  --bad: #ad3d30;
-  --bad-bg: #f5e2df;
-  --bad-border: #e0897c;
-  --bad-glow: rgba(173, 61, 48, 0.3);
+  --good: #28633c;
+  --good-bg: #e4eee4;
+  --good-border: #a6c7a9;
+  --good-glow: rgba(40, 99, 60, 0.18);
+
+  --bad: #a23c31;
+  --bad-bg: #f2e5e1;
+  --bad-border: #d8aaa1;
+  --bad-glow: rgba(162, 60, 49, 0.18);
 
   /* Elevation */
-  --shadow-sm: 0 1px 3px rgba(28, 23, 18, 0.05);
-  --shadow-md: 0 4px 16px -4px rgba(28, 23, 18, 0.10);
-  --shadow-lg: 0 12px 32px -8px rgba(28, 23, 18, 0.15);
-  --shadow-glow: 0 0 20px rgba(169, 127, 52, 0.25);
+  --shadow-sm: 0 1px 2px rgba(28, 23, 18, 0.04);
+  --shadow-md: 0 8px 24px -12px rgba(28, 23, 18, 0.20);
+  --shadow-lg: 0 12px 30px -18px rgba(28, 23, 18, 0.24);
+  --shadow-glow: 0 0 16px rgba(148, 107, 36, 0.14);
 
   --transition-fast: 0.15s cubic-bezier(0.2, 0, 0, 1);
   --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -79,43 +85,49 @@
    ========================================================================== */
 html[data-theme="oled"] {
   color-scheme: dark;
-  --bg-canvas: #000000;
-  --surface-ground: #040404;
-  --surface-raised: #0a0a0a;
-  --surface-sunken: #020202;
-  --surface-glass: rgba(12, 12, 12, 0.82);
-  --surface-glass-strong: rgba(18, 18, 18, 0.95);
-  --glass-border: rgba(255, 215, 0, 0.24);
-  --glass-highlight: rgba(255, 215, 0, 0.12);
-  --glass-blur: 24px;
+  --bg-canvas: #050505;
+  --surface-ground: #090908;
+  --surface-raised: #11110f;
+  --surface-sunken: #0b0b09;
+  --surface-glass: rgba(17, 17, 15, 0.96);
+  --surface-glass-strong: rgba(17, 17, 15, 0.98);
+  --glass-border: rgba(255, 215, 0, 0.18);
+  --glass-highlight: rgba(255, 215, 0, 0.08);
+  --glass-blur: 12px;
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 215, 0, 0.45);
+  --border-subtle: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.22);
 
   --ink-primary: #ffffff;
-  --ink-secondary: #a89d88;
-  --ink-muted: #787062;
-  --ink-faint: #444444;
+  --ink-secondary: #c0b8a7;
+  --ink-muted: #a49b89;
+  --ink-faint: #827a6d;
 
-  --gold-primary: #ffd700;
-  --gold-deep: #ffec6e;
-  --gold-tint: rgba(255, 215, 0, 0.12);
-  --gold-glow: rgba(255, 215, 0, 0.45);
+  --masthead-bg: #11110f;
+  --masthead-ink: #fffdf5;
+  --masthead-gold: #f0c95e;
+  --surface-hero: #17160f;
+  --ink-on-hero: #fffdf5;
 
-  --good: #00e676;
-  --good-bg: rgba(0, 230, 118, 0.14);
-  --good-border: rgba(0, 230, 118, 0.45);
-  --good-glow: rgba(0, 230, 118, 0.4);
+  --gold-primary: #f0c95e;
+  --gold-deep: #d4a93f;
+  --gold-tint: rgba(240, 201, 94, 0.12);
+  --gold-glow: rgba(240, 201, 94, 0.18);
 
-  --bad: #ff5252;
-  --bad-bg: rgba(255, 82, 82, 0.14);
-  --bad-border: rgba(255, 82, 82, 0.45);
-  --bad-glow: rgba(255, 82, 82, 0.4);
+  --good: #73c58b;
+  --good-bg: rgba(64, 143, 84, 0.16);
+  --good-border: rgba(115, 197, 139, 0.42);
+  --good-glow: rgba(115, 197, 139, 0.18);
 
-  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.8);
-  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.9);
-  --shadow-lg: 0 12px 36px -6px rgba(0, 0, 0, 0.95);
-  --shadow-glow: 0 0 24px rgba(255, 215, 0, 0.25);
+  --bad: #ed8b80;
+  --bad-bg: rgba(162, 60, 49, 0.18);
+  --bad-border: rgba(237, 139, 128, 0.4);
+  --bad-glow: rgba(237, 139, 128, 0.18);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.55);
+  --shadow-md: 0 8px 24px -12px rgba(0, 0, 0, 0.78);
+  --shadow-lg: 0 12px 30px -16px rgba(0, 0, 0, 0.86);
+  --shadow-glow: 0 0 18px rgba(240, 201, 94, 0.16);
 }
 
 /* Base resets & layout */

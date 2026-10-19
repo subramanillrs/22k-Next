@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def test_mobile_alignment():
     nav_css = (BASE_DIR / "css/navigation.css").read_text()
     bento_css = (BASE_DIR / "css/bento-grid.css").read_text()
+    upgrade_css = (BASE_DIR / "css/upgrade.css").read_text()
     index_html = (BASE_DIR / "index.html").read_text()
 
     print("============================================================")
@@ -19,7 +20,8 @@ def test_mobile_alignment():
 
     assert "padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;" in nav_css
     assert "padding: 10px 12px 14px;" in nav_css
-    print("  ✓ [TEST 1b] Masthead and Views Viewport share identical 12px mobile gutters")
+    assert ".views-viewport { padding: 16px 14px 24px; }" in upgrade_css
+    print("  ✓ [TEST 1b] Visual layer aligns masthead and page content with 14px mobile gutters")
 
     assert ".basis-grid" in bento_css and ".basis-box" in bento_css and "min-height: 76px" in bento_css
     print("  ✓ [TEST 2] .basis-grid and .basis-box enforce equal card heights and baselines")
@@ -43,8 +45,8 @@ def test_mobile_alignment():
     assert ".port-metric" in bento_css and "min-height: 64px" in bento_css
     print("  ✓ [TEST 8] Meter metric items and portfolio metrics enforce structured card geometry")
 
-    assert "transform: none;" in bento_css
-    print("  ✓ [TEST 9] Chart tooltip transform fixed to prevent off-canvas displacement")
+    assert ".chart-tooltip" not in bento_css
+    print("  ✓ [TEST 9] Floating chart price popup styles are removed")
 
     # Cascade order verification
     base_viewport_idx = nav_css.find(".views-viewport {\n  width: 100%;")
@@ -67,18 +69,21 @@ def test_mobile_alignment():
     assert "min-height: 32px" in bento_css and ".hero-eyebrow" in bento_css
     print("  ✓ [TEST 13] .hero-eyebrow enforces 32px vertical center alignment with action button")
 
-    # Inactive chart tooltip hidden rule
-    assert ".chart-tooltip[hidden]" in bento_css and "display: none !important" in bento_css
-    print("  ✓ [TEST 14] .chart-tooltip[hidden] enforces complete dismissal when inactive")
-
-    # Analytics exits, gesture cancellation, and complete removal of the floating price pill
+    # Analytics exits, gesture cancellation, and complete removal of floating prices
     app_js = (BASE_DIR / "js/app.js").read_text()
     assert 'id="dynamicIsland"' not in index_html
     assert "dynamicIsland" not in app_js and "syncDynamicIsland" not in app_js
     assert ".dynamic-island" not in nav_css and ".island-rate" not in nav_css
-    assert "dismissChartTooltip();" in app_js and 'addEventListener("pointercancel", endScrub)' in app_js
+    assert 'id="chartTooltip"' not in index_html and "chartTipRate" not in app_js
+    assert "endChartScrub();" in app_js and 'addEventListener("pointercancel", endScrub)' in app_js
     assert 'addEventListener("touchcancel", endScrub)' in app_js
-    print("  ✓ [TEST 14b] Floating price pill is removed; chart tooltip clears on tab/gesture exit")
+    assert "Price Pill" not in (BASE_DIR / "js/quant-risk.js").read_text()
+    print("  ✓ [TEST 14] All floating and chart price pop-up pills are removed; scrub cleanup remains")
+
+    assert "grid-template-columns: repeat(3, minmax(0, 1fr));" in upgrade_css
+    assert ".daily-snapshot > div { display: flex;" in upgrade_css
+    assert 'html[data-theme="oled"] .tab-btn.active' in upgrade_css
+    print("  ✓ [TEST 14b] Range metrics remain aligned and OLED navigation preserves contrast")
 
     # Single-line masthead alignment
     assert "flex-wrap: nowrap;" in nav_css and ".masthead-actions" in nav_css
@@ -86,9 +91,9 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v17"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v19"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v17 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v19 and network-first navigation policy")
 
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")

@@ -36,10 +36,13 @@
 | Table Selection | Native table markup | `index.html` table regions | Read-only rows; no row selection | Keyboard and screen-reader scan |
 | Select/Listbox | Native `<select>` | Browser/OS popup | Native geometry and option rendering accepted | Keyboard, popup, narrow viewport |
 | Date | Native `input[type=date]` | Browser/OS picker; ISO date value in app state | Native locale/geometry accepted | Keyboard date entry; Asia/Kolkata storage check |
+| Native ownership decision | Native `<select>` and `input[type=date]` | Browser/OS owns popup rendering, option/date navigation, and picker geometry; app owns labels, values, validation, and persistence | No authored replacement popup | Keyboard, VoiceOver, narrow viewport, date storage |
 | Form | Existing calculator and local-ledger handlers | `js/app.js` | Calculator, audit, portfolio, alarm | Existing tests and manual valid/invalid flows |
-| Scrollbar | Global CSS baseline | `css/design-system.css` | Horizontal carousel may hide its bar while preserving touch/keyboard scroll | Mouse, touch, forced-colors, computed styles |
+| Scrollbar | Global CSS baseline | `css/design-system.css` | Horizontal carousel retains visible, tokenized scrollbar | Mouse, touch, forced-colors, computed styles |
 | Toast | `showToast` in `js/app.js` | App-owned transient status | Success, info, warning, error | Live-region and timeout check |
 | CRUD | `js/app.js` + `js/local-tools.js` | Browser localStorage | Add/remove/import holdings; import is additive | Add, remove, export, deduplicated import, invalid backup |
+
+Native ownership manifest: `premium-ui.json` records `Select/Listbox` and `Date` as `native`. Their browser/OS picker surfaces remain platform-owned; application code owns labels, values, validation, and persistence.
 
 ## Component behavior
 
@@ -92,7 +95,7 @@
 - **Toast placement/duration/deduplication:** App-owned top-center status, brief duration, success/warning/error text.
 - **Alert/banner scope and persistence:** Feed freshness remains in the masthead; last known rate remains visible after a failed request.
 - **Tooltip delay/dismissal:** Native title only for compact action explanations.
-- **Chart scrub tooltip:** Visible only during a chart gesture; dismissed on release, cancellation, scroll, tab/range/mode change, window blur, or document hide.
+- **Chart price popups:** None. Scrubbing updates the chart’s selected value in the stable chart header and crosshair only; no floating tooltip, high/low badge, or y-axis price pill is rendered.
 - **Unsaved-changes behavior:** Calculator input is transient unless the user saves a named setup; local lots persist immediately.
 - **Layer/z-index contract:** Alarm backdrop/sheet above app content; toast above both.
 

@@ -286,52 +286,9 @@
       ctx.lineJoin = "round";
       ctx.stroke();
 
-      // High & Low Callout Badges
-      if (data.length >= 3) {
-        let maxIdx = 0, minIdx = 0;
-        for (let i = 1; i < values.length; i++) {
-          if (values[i] > values[maxIdx]) maxIdx = i;
-          if (values[i] < values[minIdx]) minIdx = i;
-        }
-
-        const drawCallout = (pt, label, isPeak) => {
-          const pillW = 60, pillH = 18;
-          const bx = Math.max(L + 2, Math.min(width - R - pillW - 2, pt.x - pillW / 2));
-          const by = isPeak ? Math.max(T - 18, pt.y - pillH - 6) : Math.min(height - B - pillH - 2, pt.y + 6);
-
-          ctx.fillStyle = isNight ? "rgba(18, 16, 14, 0.88)" : "rgba(255, 255, 255, 0.92)";
-          ctx.strokeStyle = isPeak
-            ? (isNight ? "rgba(123, 211, 154, 0.45)" : "rgba(27, 122, 66, 0.4)")
-            : (isNight ? "rgba(255, 123, 114, 0.45)" : "rgba(198, 40, 40, 0.4)");
-          ctx.lineWidth = 1;
-
-          const cr = 4;
-          ctx.beginPath();
-          ctx.moveTo(bx + cr, by);
-          ctx.arcTo(bx + pillW, by, bx + pillW, by + pillH, cr);
-          ctx.arcTo(bx + pillW, by + pillH, bx, by + pillH, cr);
-          ctx.arcTo(bx, by + pillH, bx, by, cr);
-          ctx.arcTo(bx, by, bx + pillW, by, cr);
-          ctx.closePath();
-          ctx.fill();
-          ctx.stroke();
-
-          ctx.font = "700 8.5px -apple-system, BlinkMacSystemFont, sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillStyle = isPeak
-            ? (isNight ? "#7bd39a" : "#1b7a42")
-            : (isNight ? "#ff7b72" : "#c62828");
-          ctx.fillText(label, bx + pillW / 2, by + 12);
-        };
-
-        if (maxIdx !== minIdx) {
-          drawCallout(points[maxIdx], "▲ ₹" + max0.toLocaleString("en-IN"), true);
-          drawCallout(points[minIdx], "▼ ₹" + min0.toLocaleString("en-IN"), false);
-        }
-      }
     }
 
-    // 4. Interactive Scrub Crosshairs & Tooltip Indicators
+    // 4. Interactive scrub crosshair; selected value is shown in the chart header.
     const activeIdx = (scrubIndex >= 0 && scrubIndex < data.length) ? scrubIndex : data.length - 1;
     const activePt = points[activeIdx];
 
@@ -352,15 +309,6 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Y-axis Price Pill
-      const priceText = "₹ " + values[activeIdx].toLocaleString("en-IN");
-      ctx.font = "700 9.5px -apple-system, BlinkMacSystemFont, sans-serif";
-      const pW = ctx.measureText(priceText).width + 8;
-      ctx.fillStyle = colorGold;
-      ctx.fillRect(L - pW - 2, activePt.y - 7.5, pW, 15);
-      ctx.fillStyle = isNight ? "#000000" : "#ffffff";
-      ctx.textAlign = "center";
-      ctx.fillText(priceText, L - 2 - pW / 2, activePt.y + 3.5);
     }
 
     // Active point circle

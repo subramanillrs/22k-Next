@@ -3,15 +3,15 @@ version: alpha
 name: Chennai 22K Gold Terminal Next
 description: A calm, high-precision Chennai gold-market terminal for live fixes, risk analysis, jewellery estimates, and local holdings.
 colors:
-  primary: "#1c1712"
-  secondary: "#6b6255"
-  background: "#f8f4ea"
-  surface: "#ffffff"
-  accent: "#a97f34"
-  nightBackground: "#000000"
-  nightAccent: "#ffd700"
-  success: "#2d7a48"
-  danger: "#ad3d30"
+  primary: "#211d17"
+  secondary: "#5e584d"
+  background: "#f3f0e8"
+  surface: "#fffefa"
+  accent: "#946b24"
+  nightBackground: "#050505"
+  nightAccent: "#f0c95e"
+  success: "#28633c"
+  danger: "#a23c31"
 typography:
   display:
     fontFamily: "Fraunces, Iowan Old Style, Georgia, serif"
@@ -19,19 +19,25 @@ typography:
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif"
 rounded:
   xs: "4px"
-  sm: "8px"
-  md: "14px"
-  lg: "20px"
-  xl: "26px"
+  sm: "6px"
+  md: "10px"
+  lg: "14px"
+  xl: "18px"
   full: "9999px"
 spacing:
-  page-max: "920px"
-  mobile-gutter: "12px"
-  section-gap: "14px"
+  page-max: "1160px"
+  mobile-gutter: "14px"
+  section-gap: "16px"
 components:
-  masthead: "Sticky translucent header; brand, feed age, language, refresh, alert, and theme actions."
-  price-card: "Primary sovereign price, per-gram rate, change, and market timestamp."
-  navigation: "Persistent four-destination dock: Market, Analytics, Calculator, Schemes."
+  masthead:
+    owner: "css/upgrade.css"
+    treatment: "Steady ink-dark ledger header; brand, feed age, language, refresh, alert, and theme actions."
+  price-card:
+    owner: "css/upgrade.css"
+    treatment: "Ink-dark sovereign quote, per-gram rate, change, and market timestamp."
+  navigation:
+    owner: "css/upgrade.css"
+    treatment: "Persistent four-destination dock: Market, Analytics, Calculator, Schemes."
   data-cards: "Bento surfaces for fixes, purity, Chennai basis, and regional comparisons."
   controls: "Shared gold-accent fields, segmented modes, and quick-value chips."
   feedback: "App-owned short toast; feed age and stale-price states remain visible in the masthead."
@@ -59,7 +65,7 @@ An Indian bullion desk translated into a compact mobile instrument: quiet ivory 
 
 ## Colors
 
-Day mode uses warm ivory `--bg-canvas: #f8f4ea`, white/transparent raised surfaces, espresso `--ink-primary: #1c1712`, and muted brown text. `--gold-primary: #a97f34` is reserved for the benchmark and active controls. Up/down states use green `#2d7a48` and brick `#ad3d30`; direction is also expressed with text or symbols. OLED mode stays true black with `#ffd700` gold, white foreground, and brighter green/red statuses. Focus uses a visible gold ring; selection uses the active gold token. Charts remain labeled and expose period/high/low values outside the canvas.
+Day mode uses warm paper `--bg-canvas: #f3f0e8`, raised `#fffefa` surfaces, espresso `--ink-primary: #211d17`, and legible muted brown text. The dark ledger masthead and hero use `#211d17` with off-white text. `--gold-primary: #946b24` is reserved for the benchmark and active controls. Up/down states use green `#28633c` and brick `#a23c31`; direction is also expressed with text or symbols. OLED mode stays near-black with `#f0c95e` gold and warm white foreground. Focus uses a visible gold ring; selection uses the active gold token. Charts expose period/high/low values in stable text summaries; no floating price tooltip or callout is used.
 
 ## Typography
 
@@ -67,15 +73,15 @@ Fraunces is used for the hero price and selected editorial accents; Inter/system
 
 ## Layout
 
-The experience is mobile-first, with 12px mobile gutters and a 920px maximum content width on larger screens. A sticky masthead anchors feed status and actions; the four-item dock remains reachable at the bottom with safe-area padding. Market content leads with the sovereign hero and recorded daily range, followed by fix, purity, and local-basis cards. Analytics retains a large chart and a bounded history table. Calculator and scheme content scroll naturally; no shared shell traps long forms in a fixed-height viewport.
+The experience is mobile-first, with 14px mobile gutters and a 1160px maximum content width on larger screens. A steady masthead anchors feed status and actions; the four-item dock remains reachable at the bottom with safe-area padding. Market content leads with the sovereign hero and recorded daily range, followed by fix, purity, and local-basis cards in a calm two-column ledger grid. Analytics retains a large chart and a bounded history table. Calculator and scheme content scroll naturally; no shared shell traps long forms in a fixed-height viewport.
 
 ## Elevation & Depth
 
-Hierarchy comes from warm/cool surface contrast, thin gold-tinted borders, and restrained shadows. Blur is reserved for the masthead and dock. OLED cards use subtle separation from black without large glows. Avoid elevation on every nested statistic; use dividers and spacing for grouping.
+Hierarchy comes from paper/ink contrast, quiet borders, and minimal shadows. Surfaces stay opaque and calm; there is no glass blur. OLED cards use subtle separation from black without large glows. Avoid elevation on every nested statistic; use dividers and spacing for grouping.
 
 ## Shapes
 
-Controls use 8–14px radii, content cards 20–26px, and chips/status pills use full rounding. Tables remain square-edged inside rounded scroll containers. Focus rings sit outside the component border and must not be clipped.
+Controls use 6px radii, content cards 10–18px, and status treatments use restrained rounding. Tables remain square-edged inside rounded scroll containers. Focus rings sit outside the component border and must not be clipped. The bottom navigation is the only persistent floating surface; market prices never appear in a floating pill.
 
 ## Components
 
@@ -89,7 +95,7 @@ Gold emphasis is reserved for a primary save/calculation action. Refresh, theme,
 
 ### Navigation and data display
 
-The persistent dock has exactly four destinations and a clear selected state. The daily range panel reports only recorded fixes for the current Asia/Kolkata date. Historical performance belongs to Analytics and is not presented as an intraday quote. Tables scroll inside their own viewport; charts pair canvas output with text metrics.
+The persistent dock has exactly four destinations and a clear selected state. The daily range panel reports only recorded fixes for the current Asia/Kolkata date. Historical performance belongs to Analytics and is not presented as an intraday quote. Tables scroll inside their own viewport; charts pair canvas output with text metrics. Scrubbing updates the chart’s stable summary/header, never an overlay popup.
 
 ### Forms and overlays
 
