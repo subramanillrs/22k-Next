@@ -4,7 +4,7 @@
    ========================================================================== */
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --font-display: "Fraunces", "Iowan Old Style", "Georgia", serif;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
@@ -78,6 +78,7 @@
    OLED NIGHT THEME (True Pitch Black & Radiant 24K Gold)
    ========================================================================== */
 html[data-theme="oled"] {
+  color-scheme: dark;
   --bg-canvas: #000000;
   --surface-ground: #040404;
   --surface-raised: #0a0a0a;
@@ -140,7 +141,8 @@ body {
   padding-bottom: 96px; /* Room for floating bottom nav */
 }
 
-/* Scrollbar refinement */
-::-webkit-scrollbar { width: 4px; height: 4px; }
+/* Global scrollbar refinement (standards properties + WebKit fallback). */
+* { scrollbar-color: var(--ink-faint) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: var(--r-full); }

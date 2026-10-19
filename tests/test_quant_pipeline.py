@@ -54,6 +54,18 @@ def test_pipeline_quant_and_bootstrap():
     assert ibja_rates["22k_pm_10g"] == 135550
     print("  ✓ [TEST 2b] IBJA gold rows are isolated from platinum rows")
 
+    # Reject internally inverted purity quotes instead of publishing them as
+    # current spot data or using them as a comparison benchmark.
+    invalid_ibja_fixture = BeautifulSoup("""
+        <table id="TodayRatesTableDataYes">
+          <tr><td>Gold 999</td><td>147646</td><td>147055</td></tr>
+          <tr><td>Gold 916</td><td>148473</td><td>147879</td></tr>
+        </table>
+    """, "html.parser")
+    assert update_gold.extract_ibja_rates_from_soup(invalid_ibja_fixture) is None
+    assert not update_gold.valid_ibja_rate_pair(14847, 14765)
+    print("  ✓ [TEST 2c] Inverted IBJA 22K/24K quotes are rejected")
+
     # 3. Probabilistic KDE Fix Timing
     kde_res = update_gold.predict_session_times()
     assert kde_res["AM"] is not None
@@ -72,8 +84,13 @@ def test_pipeline_quant_and_bootstrap():
     assert 'data-tab="analytics"' in html_content, "Analytics tab button missing"
     assert 'data-tab="calc"' in html_content, "Calculator tab button missing"
     assert 'data-tab="schemes"' in html_content, "Schemes tab button missing"
-    assert 'id="dynamicIsland"' in html_content, "Dynamic Island micro-bar missing"
-    print("  ✓ [TEST 5] 4-Tab docked architecture and dynamic island verified in index.html")
+    assert 'id="dynamicIsland"' not in html_content, "Removed floating price pill must stay absent"
+    print("  ✓ [TEST 5] 4-Tab docked architecture verified; floating price pill is absent")
+
+    # The closed alarm sheet must not appear in the accessibility tree or tab order.
+    assert 'id="alarmSheet" role="dialog" aria-modal="true"' in html_content
+    assert 'aria-hidden="true" inert' in html_content
+    print("  ✓ [TEST 5b] Alarm sheet is inert and hidden until explicitly opened")
 
     print("============================================================")
     print("ALL QUANTITATIVE PIPELINE TESTS PASSED 100%! ✓")

@@ -20,8 +20,10 @@
     chartMode: "spline",
     scrubIndex: -1,
     alerts: [],
-    portfolioLots: []
+    portfolioLots: [],
+    language: "en"
   };
+  const LIVE_DATA_POLL_INTERVAL_MS = 15_000;
 
   const $ = id => document.getElementById(id);
   const $$ = sel => document.querySelectorAll(sel);
@@ -57,11 +59,31 @@
     return tStr;
   }
 
+  function todayISTDateStr() {
+    try {
+      const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit"
+      }).formatToParts(new Date());
+      const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+      return `${values.year}-${values.month}-${values.day}`;
+    } catch (_) {
+      return new Date().toISOString().slice(0, 10);
+    }
+  }
+
+  function escapeHTML(value) {
+    if (typeof GoldLocalTools !== "undefined") return GoldLocalTools.escapeHtml(value);
+    return String(value == null ? "" : value).replace(/[&<>\"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[ch]);
+  }
+
   function showToast(msg) {
     let t = $("globalToast");
     if (!t) {
       t = document.createElement("div");
       t.id = "globalToast";
+      t.setAttribute("role", "status");
+      t.setAttribute("aria-live", "polite");
+      t.setAttribute("aria-atomic", "true");
       t.style.cssText = "position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--surface-raised);color:var(--ink-primary);border:1px solid var(--border-strong);padding:8px 18px;border-radius:var(--r-full);box-shadow:var(--shadow-lg);font-size:var(--fs-xs);font-weight:700;z-index:9999;transition:all 0.3s;opacity:0;pointer-events:none;";
       document.body.appendChild(t);
     }
@@ -124,9 +146,15 @@
         const target = btn.getAttribute("data-tab");
         if (!target || target === state.activeTab) return;
 
+        dismissChartTooltip();
+
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(8);
 
         tabs.forEach(t => t.classList.toggle("active", t === btn));
+        tabs.forEach(t => {
+          if (t === btn) t.setAttribute("aria-current", "page");
+          else t.removeAttribute("aria-current");
+        });
         pages.forEach(p => {
           const isTarget = p.id === `view-${target}`;
           p.classList.toggle("active", isTarget);
@@ -153,22 +181,7 @@
   }
 
   // ==========================================================================
-  // 3. DYNAMIC ISLAND (Header micro-status on scroll)
-  // ==========================================================================
-  function initDynamicIsland() {
-    const island = $("dynamicIsland");
-    const heroCard = $("heroCard");
-    if (!island || !heroCard) return;
-
-    window.addEventListener("scroll", () => {
-      const rect = heroCard.getBoundingClientRect();
-      const isHeroHidden = rect.bottom < 50;
-      island.classList.toggle("visible", isHeroHidden);
-    }, { passive: true });
-  }
-
-  // ==========================================================================
-  // 4. DATA HYDRATION & REPOSITORIES
+  // 3. DATA HYDRATION & REPOSITORIES
   // ==========================================================================
   async function loadMarketData({ hydrateBootstrap = true } = {}) {
     // 1. Instant bootstrap pre-bake payload
@@ -192,7 +205,8 @@
       const resHist = await fetch(`data/history.json?_v=${Date.now()}`, { cache: "no-store" });
       if (resHist.ok) {
         const hist = await resHist.json();
-        state.history = hist;
+        state.history = Array.isArray(hist) ? hist : [];
+        if (state.live) updateDailySnapshot(state.live);
         renderAnalyticsView();
         renderInteractiveChart();
         renderHistoryTable();
@@ -207,13 +221,70 @@
   async function refreshLiveData({ showFeedback = false } = {}) {
     if (liveRefreshInFlight) return;
     liveRefreshInFlight = true;
+    const refreshBtn = showFeedback ? $("refreshPriceBtn") : null;
+    if (refreshBtn) {
+      refreshBtn.disabled = true;
+      refreshBtn.setAttribute("aria-busy", "true");
+      refreshBtn.classList.add("is-refreshing");
+    }
     try {
-      const res = await fetch(`data/live.json?_v=${Date.now()}`, {
-        cache: "no-store",
-        headers: { "Cache-Control": "no-cache" }
-      });
-      if (res.ok) {
-        const live = await res.json();
+      let live = state.live ? { ...state.live } : {};
+      let feedFetched = false;
+      try {
+        const res = await fetch(`data/live.json?_v=${Date.now()}`, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache" }
+        });
+        if (res.ok) {
+          live = { ...live, ...(await res.json()) };
+          feedFetched = true;
+        }
+      } catch (staticError) {
+        console.warn("Published live feed unavailable:", staticError);
+      }
+
+      const workerUrl = typeof window.GOLD_LIVE_WORKER_URL === "string"
+        ? window.GOLD_LIVE_WORKER_URL.trim()
+        : "";
+      if (workerUrl) {
+        const workerController = new AbortController();
+        const workerTimeout = window.setTimeout(() => workerController.abort(), 5000);
+        try {
+          const fastRes = await fetch(`${workerUrl.replace(/\/$/, "")}?_v=${Date.now()}`, {
+            cache: "no-store",
+            headers: { "Cache-Control": "no-cache" },
+            signal: workerController.signal
+          });
+          if (fastRes.ok) {
+            const fast = await fastRes.json();
+            const rate = Number(fast && fast.rate_22k);
+            if (["confirmed", "pending", "unavailable"].includes(fast.verification_status)) {
+              live.verification_status = fast.verification_status;
+              if (fast.last_checked_at) live.last_checked_at = fast.last_checked_at;
+              feedFetched = true;
+            }
+            if (Number.isInteger(rate) && rate >= 5000 && rate <= 50000) {
+              Object.assign(live, fast);
+              live.rate_22k = rate;
+              live.rate_8g = Number(fast.rate_8g) || rate * 8;
+              live.rate_24k = Number(fast.rate_24k) || Number(live.rate_24k) || Math.round(rate * 24 / 22);
+              live.last_checked_at = fast.last_checked_at || live.last_checked_at;
+              feedFetched = true;
+            }
+          } else {
+            live.verification_status = "unavailable";
+          }
+        } catch (workerError) {
+          console.warn("Minute price check unavailable; using published feed:", workerError);
+          live.verification_status = "unavailable";
+        } finally {
+          window.clearTimeout(workerTimeout);
+        }
+      }
+
+      const validLiveRate = Number.isInteger(Number(live.rate_22k)) && Number(live.rate_22k) >= 5000 && Number(live.rate_22k) <= 50000;
+      const shouldRender = feedFetched || (workerUrl && live.verification_status === "unavailable");
+      if (shouldRender && validLiveRate) {
         state.live = live;
         renderMarketView(live);
         checkTargetPrice(live);
@@ -226,6 +297,11 @@
       if (showFeedback) showToast("Offline; showing last available rate");
     } finally {
       liveRefreshInFlight = false;
+      if (refreshBtn) {
+        refreshBtn.disabled = false;
+        refreshBtn.removeAttribute("aria-busy");
+        refreshBtn.classList.remove("is-refreshing");
+      }
     }
   }
 
@@ -233,9 +309,12 @@
     const refreshBtn = $("refreshPriceBtn");
     if (refreshBtn) refreshBtn.onclick = () => refreshLiveData({ showFeedback: true });
 
+    updateFeedFreshness();
+    window.setInterval(updateFeedFreshness, 30_000);
+
     window.setInterval(() => {
       if (document.visibilityState === "visible") refreshLiveData();
-    }, 60_000);
+    }, LIVE_DATA_POLL_INTERVAL_MS);
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") refreshLiveData();
@@ -257,6 +336,7 @@
     if (payload.quant) {
       state.quant = payload.quant;
     }
+    if (state.live) updateDailySnapshot(state.live);
   }
 
   // ==========================================================================
@@ -270,16 +350,15 @@
     const chg = Number.isFinite(Number(live.change)) ? Number(live.change) : -125;
     const dateStr = live.date || "Today";
     const timeStr = live.time ? live.time.slice(0, 5) : "22:40";
+    const quoteTimeLabel = live.rate_changed_observed_at ? `Observed ${timeText(timeStr)}` : timeText(timeStr);
+
+    updateDailySnapshot(live);
+    updateFeedFreshness();
 
     // Hero rates
     if ($("hero8Price")) $("hero8Price").textContent = formatMoney(r8);
     if ($("hero1Rate")) $("hero1Rate").textContent = formatMoney(r22) + "/g";
-    if ($("marketDateVal")) $("marketDateVal").textContent = `${dateText(dateStr)} · ${timeText(timeStr)}`;
-
-    // Dynamic Island
-    if ($("islandRateVal")) {
-      $("islandRateVal").textContent = `Au 22K ${formatMoney(r22)}/g (${chg >= 0 ? "+" : ""}${chg})`;
-    }
+    if ($("marketDateVal")) $("marketDateVal").textContent = `${dateText(dateStr)} · ${quoteTimeLabel}`;
 
     // Hero change badge
     const badgeEl = $("heroChangeBadge");
@@ -302,10 +381,6 @@
     if ($("amFixRate")) $("amFixRate").textContent = formatMoney(prevClose);
     if ($("pmFixRate")) $("pmFixRate").textContent = formatMoney(r22);
     if ($("amFixTime")) $("amFixTime").textContent = "Previous close";
-    if ($("pmFixTime")) {
-      const updateTime = live.time ? timeText(live.time.slice(0, 5)) : "Latest update";
-      $("pmFixTime").textContent = `${updateTime} · ${session === "PM" ? "Confirmed" : "Live"}`;
-    }
     if ($("pmFixChip")) $("pmFixChip").classList.toggle("confirmed", session === "PM");
 
     // Sowcarpet wholesale vs Retail spread
@@ -332,25 +407,131 @@
     if ($("maduraiRate")) $("maduraiRate").textContent = formatMoney(madurai);
     if ($("trichyRate")) $("trichyRate").textContent = formatMoney(trichy);
 
-    // National Wholesale IBJA Spread
-    const ibja22k = (live.ibja && live.ibja.rate_22k) || 14004;
-    const ibja24k = (live.ibja && live.ibja.rate_24k) || 15277;
-    const premium = r22 - ibja22k;
-    const premPct = Number(((premium / ibja22k) * 100).toFixed(2));
+    // National wholesale IBJA spread. Never invent a fallback quote or compare
+    // against a benchmark whose 22K rate is at/above its 24K rate.
+    const ibja = live.ibja && typeof live.ibja === "object" ? live.ibja : null;
+    const ibja22k = ibja ? Number(ibja.rate_22k) : NaN;
+    const ibja24k = ibja ? Number(ibja.rate_24k) : NaN;
+    const validIbja = Number.isFinite(ibja22k) && Number.isFinite(ibja24k) &&
+      ibja22k > 0 && ibja22k < ibja24k && ibja.status !== "synthetic_anchor";
 
-    if ($("ibja24k")) $("ibja24k").textContent = formatMoney(ibja24k);
-    if ($("ibja22k")) $("ibja22k").textContent = formatMoney(ibja22k);
-    if ($("retailSpreadVal")) $("retailSpreadVal").textContent = `+₹ ${premium}/g`;
-    if ($("retailSpreadPct")) $("retailSpreadPct").textContent = `+${premPct}% Premium`;
+    if (validIbja) {
+      const spread = r22 - ibja22k;
+      const spreadPct = (spread / ibja22k) * 100;
+      const sign = spread > 0 ? "+" : (spread < 0 ? "−" : "");
+      const description = spread > 0 ? "Premium" : (spread < 0 ? "Discount" : "At parity");
+      if ($("ibja24k")) $("ibja24k").textContent = formatMoney(ibja24k);
+      if ($("ibja22k")) $("ibja22k").textContent = formatMoney(ibja22k);
+      if ($("retailSpreadVal")) {
+        $("retailSpreadVal").textContent = `${sign}₹ ${Math.abs(spread).toLocaleString("en-IN")}/g`;
+      }
+      if ($("retailSpreadPct")) {
+        $("retailSpreadPct").textContent = `${sign}${Math.abs(spreadPct).toFixed(2)}% ${description}`;
+      }
+    } else {
+      if ($("ibja24k")) $("ibja24k").textContent = "—";
+      if ($("ibja22k")) $("ibja22k").textContent = "—";
+      if ($("retailSpreadVal")) $("retailSpreadVal").textContent = "—";
+      if ($("retailSpreadPct")) $("retailSpreadPct").textContent = "IBJA data unavailable";
+    }
 
     // Recalculate quotation with live rate
     calculate();
     auditJewellerBill();
     calculateOldGoldMelt();
     calculateGoldSchemeVsSip();
+    renderPortfolio();
   }
 
   // ==========================================================================
+  function updateDailySnapshot(live) {
+    const lowEl = $("dailyLow"), highEl = $("dailyHigh"), changeEl = $("dailyChange"), noteEl = $("dailyRangeNote");
+    if (!lowEl || !highEl || !changeEl || !noteEl) return;
+    const today = todayISTDateStr();
+    const date = live && String(live.date || "");
+    if (date !== today) {
+      lowEl.textContent = "—";
+      highEl.textContent = "—";
+      changeEl.textContent = "—";
+      changeEl.className = "daily-change-value";
+      noteEl.textContent = date ? `No fixes recorded today · latest benchmark ${dateText(date)}` : "Waiting for today’s published fixes";
+      return;
+    }
+
+    const rows = Array.isArray(state.history) ? state.history.filter(row => row && row.date === today && Number.isFinite(Number(row.rate_22k)) && Number(row.rate_22k) > 0) : [];
+    const rates = rows.map(row => Number(row.rate_22k));
+    const liveRate = Number(live.rate_22k);
+    const liveAlreadyInHistory = rows.some(row => row.time === live.time && Number(row.rate_22k) === liveRate);
+    if (Number.isFinite(liveRate) && liveRate > 0 && !liveAlreadyInHistory) rates.push(liveRate);
+    const low = rates.length ? Math.min(...rates) : null;
+    const high = rates.length ? Math.max(...rates) : null;
+    lowEl.textContent = low == null ? "—" : `${formatMoney(low)}/g`;
+    highEl.textContent = high == null ? "—" : `${formatMoney(high)}/g`;
+
+    const close = Number(live.previous_close_22k);
+    const delta = low != null && Number.isFinite(close) && close > 0 && Number.isFinite(liveRate) ? liveRate - close : null;
+    changeEl.textContent = delta == null ? "—" : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${formatMoney(Math.abs(delta))}/g`;
+    changeEl.className = `daily-change-value ${delta > 0 ? "up" : delta < 0 ? "down" : "same"}`;
+    const fixCount = rows.length + (liveAlreadyInHistory || !Number.isFinite(liveRate) || liveRate <= 0 ? 0 : 1);
+    noteEl.textContent = fixCount > 1 ? `${fixCount} recorded fixes · not an intraday live quote` : "Range expands as today’s fixes are published";
+  }
+
+  function updateFeedFreshness() {
+    const label = $("mastheadStatusText");
+    const dot = document.querySelector(".status-indicator .pulse-dot");
+    if (!label) return;
+    const live = state.live;
+    if (!live) {
+      label.textContent = "Connecting";
+      if (dot) dot.className = "pulse-dot is-delayed";
+      return;
+    }
+
+    if (live.verification_status === "pending") {
+      label.textContent = "Verifying source prices";
+      if (dot) dot.className = "pulse-dot is-delayed";
+      const timelineStatus = $("timingStatusBadgeText");
+      if (timelineStatus) timelineStatus.textContent = "Checking source agreement";
+      return;
+    }
+    if (live.verification_status === "unavailable") {
+      label.textContent = "Source check unavailable";
+      if (dot) dot.className = "pulse-dot is-delayed";
+      const timelineStatus = $("timingStatusBadgeText");
+      if (timelineStatus) timelineStatus.textContent = "Showing last confirmed rate";
+      return;
+    }
+
+    const timestamp = live.last_checked_at || live.last_checked || live.verified_at || live.timestamp || live.updated_at;
+    const checkedAt = timestamp ? Date.parse(timestamp) : NaN;
+    const ageMs = Number.isFinite(checkedAt) ? Math.max(0, Date.now() - checkedAt) : Infinity;
+    const oldMarketDate = String(live.date || "") !== todayISTDateStr();
+    const minutes = Number.isFinite(ageMs) ? Math.floor(ageMs / 60000) : null;
+    const isDelayed = oldMarketDate || ageMs > 5 * 60_000;
+    const feedStatus = oldMarketDate ? "Previous close" : minutes === null ? "Age unknown" : isDelayed ? "Feed delayed" : "Checked recently";
+    if (oldMarketDate) {
+      label.textContent = "Previous close";
+    } else if (minutes === null) {
+      label.textContent = "Feed age unknown";
+    } else if (minutes < 1) {
+      label.textContent = "Checked just now";
+    } else if (minutes < 60) {
+      label.textContent = `${isDelayed ? "Delayed · " : "Checked · "}${minutes}m`;
+    } else {
+      label.textContent = `Delayed · ${Math.floor(minutes / 60)}h`;
+    }
+    if (dot) dot.className = `pulse-dot${isDelayed ? " is-delayed" : ""}`;
+    const timelineStatus = $("timingStatusBadgeText");
+    if (timelineStatus) timelineStatus.textContent = feedStatus;
+    const fixTime = $("pmFixTime");
+    if (fixTime) {
+      const updateTime = live.time ? timeText(String(live.time).slice(0, 5)) : "Latest update";
+      fixTime.textContent = `${updateTime} · ${feedStatus}`;
+    }
+    const indicator = label.closest(".status-indicator");
+    if (indicator) indicator.title = "Price data is checked by this app; source publication times may vary.";
+  }
+
   // 6. TAB 2: ANALYTICS & INTERACTIVE CHART
   // ==========================================================================
   function getDailyBenchmarks(hist) {
@@ -411,6 +592,15 @@
     }
   }
 
+  function dismissChartTooltip() {
+    const tooltip = $("chartTooltip");
+    if (tooltip) tooltip.hidden = true;
+    if (state.scrubIndex !== -1) {
+      state.scrubIndex = -1;
+      renderInteractiveChart();
+    }
+  }
+
   function initChartScrub() {
     const canvas = $("chart");
     const tooltip = $("chartTooltip");
@@ -446,28 +636,28 @@
       }
     };
 
-    const endScrub = () => {
-      if (state.scrubIndex !== -1) {
-        state.scrubIndex = -1;
-        renderInteractiveChart();
-      }
-      if (tooltip) tooltip.hidden = true;
-    };
+    const endScrub = dismissChartTooltip;
 
     canvas.addEventListener("touchstart", handleScrub, { passive: true });
     canvas.addEventListener("touchmove", handleScrub, { passive: true });
     canvas.addEventListener("touchend", endScrub);
+    canvas.addEventListener("touchcancel", endScrub);
     canvas.addEventListener("mousemove", e => { if (e.buttons === 1) handleScrub(e); });
     canvas.addEventListener("mouseup", endScrub);
     canvas.addEventListener("mouseleave", endScrub);
+    document.addEventListener("pointerup", endScrub);
+    document.addEventListener("pointercancel", endScrub);
+    document.addEventListener("visibilitychange", () => { if (document.hidden) endScrub(); });
+    window.addEventListener("blur", endScrub);
+    window.addEventListener("scroll", endScrub, { passive: true });
 
     // Range Buttons
     $$("#ranges button").forEach(btn => {
       btn.onclick = () => {
+        endScrub();
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(8);
         $$("#ranges button").forEach(b => b.classList.toggle("active", b === btn));
         state.activeRange = btn.getAttribute("data-range") || "30";
-        state.scrubIndex = -1;
         renderInteractiveChart();
       };
     });
@@ -477,17 +667,17 @@
     const spreadBtn = $("modeSpreadBtn");
     if (splineBtn && spreadBtn) {
       splineBtn.onclick = () => {
+        endScrub();
         splineBtn.classList.add("active");
         spreadBtn.classList.remove("active");
         state.chartMode = "spline";
-        state.scrubIndex = -1;
         renderInteractiveChart();
       };
       spreadBtn.onclick = () => {
+        endScrub();
         spreadBtn.classList.add("active");
         splineBtn.classList.remove("active");
         state.chartMode = "spread";
-        state.scrubIndex = -1;
         renderInteractiveChart();
       };
     }
@@ -928,6 +1118,118 @@
     }
   }
 
+  const UI_TRANSLATIONS = {
+    "nav.market": "சந்தை", "nav.analytics": "பகுப்பாய்வு", "nav.calculator": "கணிப்பான்", "nav.schemes": "திட்டங்கள்",
+    "daily.low": "இன்றைய குறைந்த விலை", "daily.high": "இன்றைய அதிக விலை", "daily.close": "முந்தைய நிறைவு விலையுடன்",
+    "calc.title": "நகை வாங்கும் கணிப்பான்", "calc.saved": "சேமித்த அமைப்பு", "calc.choose": "அமைப்பைத் தேர்ந்தெடு…",
+    "calc.name": "அமைப்பிற்கு பெயர்", "calc.save": "அமைப்பைச் சேமி", "calc.weightMode": "எடையின்படி", "calc.budgetMode": "பட்ஜெட்டின்படி",
+    "calc.weightPresets": "தங்க எடை விருப்பங்கள்", "calc.vaPresets": "செய்கூலி (VA) விருப்பங்கள்", "calc.weight": "எடை (கிராம்)",
+    "calc.budget": "பட்ஜெட் (₹)", "calc.making": "செய்கூலி (%)", "calc.gst": "GST (%)", "calc.fee": "ஹால்மார்க் கட்டணம் (₹)",
+    "calc.oldGold": "பழைய தங்க கழிவு (விருப்பம்)", "calc.scrapWeight": "பழைய தங்க எடை (கிராம்)", "calc.purity": "தூய்மை",
+    "calc.copy": "விலைப்பட்டியல் நகலெடு", "calc.share": "ரசீதைப் பகிர்", "portfolio.title": "தங்க சேமிப்பு & வருமானப் பதிவு",
+    "portfolio.local": "உங்கள் சேமிப்புகள் இந்தச் சாதனத்தில் இருக்கும். இறக்குமதி புதிய பதிவுகளைச் சேர்க்கும்; பழையவற்றை மாற்றாது.",
+    "portfolio.export": "காப்புப்பிரதியை ஏற்றுமதி", "portfolio.import": "காப்புப்பிரதியை இறக்குமதி"
+  };
+
+  function translated(key, english) {
+    return state.language === "ta" ? (UI_TRANSLATIONS[key] || english) : english;
+  }
+
+  function initLanguage() {
+    const button = $("languageToggle");
+    try { state.language = localStorage.getItem("gold_ui_language_next") === "ta" ? "ta" : "en"; } catch (_) {}
+    const apply = language => {
+      state.language = language === "ta" ? "ta" : "en";
+      document.documentElement.lang = state.language;
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        if (!el.dataset.enText) el.dataset.enText = el.textContent.trim();
+        el.textContent = translated(el.dataset.i18n, el.dataset.enText);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+        if (!el.dataset.enPlaceholder) el.dataset.enPlaceholder = el.getAttribute("placeholder") || "";
+        el.setAttribute("placeholder", translated(el.dataset.i18nPlaceholder, el.dataset.enPlaceholder));
+      });
+      if (button) {
+        button.textContent = state.language === "ta" ? "English" : "தமிழ்";
+        button.setAttribute("aria-label", state.language === "ta" ? "Switch to English" : "தமிழுக்கு மாற்று");
+        button.title = button.getAttribute("aria-label");
+      }
+      try { localStorage.setItem("gold_ui_language_next", state.language); } catch (_) {}
+      if ($("calcPreset") && typeof window.renderCalculatorPresets === "function") window.renderCalculatorPresets();
+    };
+    if (button) button.onclick = () => apply(state.language === "ta" ? "en" : "ta");
+    apply(state.language);
+  }
+
+  function initCalculatorPresets() {
+    const select = $("calcPreset"), nameInput = $("calcPresetName"), saveButton = $("saveCalcPreset");
+    if (!select || !saveButton || typeof GoldLocalTools === "undefined") return;
+    const storageKey = "gold_calc_presets_next_v1";
+    const readPresets = () => {
+      try { return GoldLocalTools.normalizeCalculatorPresets(JSON.parse(localStorage.getItem(storageKey) || "[]")); }
+      catch (_) { return []; }
+    };
+    const render = () => {
+      const chosen = select.value;
+      select.replaceChildren();
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = translated("calc.choose", "Choose a setup…");
+      select.appendChild(placeholder);
+      readPresets().forEach((preset, index) => {
+        const option = document.createElement("option");
+        option.value = String(index);
+        option.textContent = preset.name;
+        select.appendChild(option);
+      });
+      if (chosen && Number(chosen) < select.options.length - 1) select.value = chosen;
+    };
+    window.renderCalculatorPresets = render;
+    render();
+
+    saveButton.onclick = () => {
+      const name = String(nameInput ? nameInput.value : "").trim().slice(0, 32);
+      if (!name) {
+        showToast("Enter a name for this calculator setup");
+        if (nameInput) nameInput.focus();
+        return;
+      }
+      const presets = readPresets();
+      const values = {};
+      GoldLocalTools.CALC_FIELDS.forEach(id => { const field = $(id); values[id] = field ? field.value : ""; });
+      const existing = presets.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+      if (existing < 0 && presets.length >= 30) {
+        showToast("Maximum of 30 saved setups reached");
+        return;
+      }
+      if (existing >= 0) presets[existing] = { name, values };
+      else presets.push({ name, values });
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(presets));
+        render();
+        select.value = String(existing >= 0 ? existing : presets.length - 1);
+        showToast(`Saved “${name}” on this device`);
+      } catch (_) {
+        showToast("Could not save this setup on this device");
+      }
+    };
+
+    select.addEventListener("change", () => {
+      const preset = readPresets()[Number(select.value)];
+      if (!preset) return;
+      Object.entries(preset.values).forEach(([id, value]) => { if ($(id)) $(id).value = value; });
+      const mode = $("calcMode") ? $("calcMode").value : "value";
+      $$(".calc-mode-btn").forEach(button => button.classList.toggle("active", button.dataset.mode === mode));
+      ["weightChips", "makingChips"].forEach((groupId, index) => {
+        const fieldId = index === 0 ? "weight" : "making";
+        const value = $(fieldId) && $(fieldId).value;
+        $$(`#${groupId} .chip`).forEach(chip => chip.classList.toggle("active", String(chip.dataset.val) === String(value)));
+      });
+      calculate();
+      showToast(`Applied “${preset.name}”`);
+    });
+  }
+
   // Jeweller Bill Auditor & Bargaining Meter
   function auditJewellerBill() {
     const rate = (state.live && Number(state.live.rate_22k)) || 14145;
@@ -1114,7 +1416,8 @@
   // Personal Gold Portfolio Ledger
   function initPortfolio() {
     try {
-      state.portfolioLots = JSON.parse(localStorage.getItem("gold_portfolio_lots") || "[]");
+      const storedLots = JSON.parse(localStorage.getItem("gold_portfolio_lots") || "[]");
+      state.portfolioLots = Array.isArray(storedLots) ? storedLots.filter(lot => lot && typeof lot === "object") : [];
     } catch (_) {
       state.portfolioLots = [];
     }
@@ -1127,7 +1430,7 @@
     const tableBody = $("portBody");
 
     if (dateInput) {
-      const todayStr = (state.live && state.live.date) || new Date().toISOString().slice(0, 10);
+      const todayStr = (state.live && state.live.date) || todayISTDateStr();
       dateInput.value = todayStr;
       autoFillRate(todayStr);
       dateInput.addEventListener("change", () => autoFillRate(dateInput.value));
@@ -1161,7 +1464,7 @@
       addBtn.onclick = () => {
         const w = parseFloat(weightInput ? weightInput.value : 0);
         const r = parseFloat(rateInput ? rateInput.value : 0);
-        const d = (dateInput && dateInput.value) || new Date().toISOString().slice(0, 10);
+        const d = (dateInput && dateInput.value) || todayISTDateStr();
         const n = ((noteInput && noteInput.value) || "Holding lot").trim();
 
         if (!w || w <= 0) { showToast("Enter a valid gold weight"); return; }
@@ -1170,18 +1473,23 @@
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(15);
         if (typeof GoldAudio !== "undefined" && GoldAudio.playCoinChime) GoldAudio.playCoinChime(0.9);
 
-        state.portfolioLots.push({
+        const newLot = {
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           date: d,
           weight: w,
           rate: r,
           note: n,
           createdAt: new Date().toISOString()
-        });
+        };
+        state.portfolioLots.push(newLot);
 
         try {
           localStorage.setItem("gold_portfolio_lots", JSON.stringify(state.portfolioLots));
-        } catch (_) {}
+        } catch (_) {
+          state.portfolioLots.pop();
+          showToast("Could not save this purchase on the device");
+          return;
+        }
 
         if (noteInput) noteInput.value = "";
         renderPortfolio();
@@ -1195,10 +1503,14 @@
         if (!delBtn) return;
         const idx = parseInt(delBtn.dataset.idx, 10);
         if (Number.isInteger(idx) && idx >= 0 && idx < state.portfolioLots.length) {
-          state.portfolioLots.splice(idx, 1);
+          const [removedLot] = state.portfolioLots.splice(idx, 1);
           try {
             localStorage.setItem("gold_portfolio_lots", JSON.stringify(state.portfolioLots));
-          } catch (_) {}
+          } catch (_) {
+            state.portfolioLots.splice(idx, 0, removedLot);
+            showToast("Could not update the portfolio on this device");
+            return;
+          }
           renderPortfolio();
           showToast("Lot deleted from portfolio");
         }
@@ -1206,6 +1518,52 @@
     }
 
     renderPortfolio();
+  }
+
+  function initPortfolioBackup() {
+    const exportButton = $("exportPortfolio");
+    const importInput = $("importPortfolioFile");
+    if (typeof GoldLocalTools === "undefined") return;
+
+    if (exportButton) exportButton.onclick = () => {
+      const payload = {
+        format: "22k-next-portfolio",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        lots: state.portfolioLots.map(GoldLocalTools.cleanLot).filter(Boolean)
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `22k-next-portfolio-${todayISTDateStr()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast("Portfolio backup downloaded");
+    };
+
+    if (importInput) importInput.addEventListener("change", async () => {
+      const file = importInput.files && importInput.files[0];
+      importInput.value = "";
+      if (!file) return;
+      try {
+        const parsed = GoldLocalTools.parsePortfolioBackup(await file.text(), file.size);
+        const merged = GoldLocalTools.mergePortfolioLots(state.portfolioLots, parsed.lots);
+        if (!merged.addedCount) {
+          showToast("All backup lots already exist; nothing changed");
+          return;
+        }
+        localStorage.setItem("gold_portfolio_lots", JSON.stringify(merged.lots));
+        state.portfolioLots = merged.lots;
+        renderPortfolio();
+        const skipped = parsed.skippedCount ? ` · ${parsed.skippedCount} invalid skipped` : "";
+        showToast(`Added ${merged.addedCount} lot${merged.addedCount === 1 ? "" : "s"}; existing holdings kept${skipped}`);
+      } catch (error) {
+        showToast(error && error.message ? error.message : "Could not read portfolio backup");
+      }
+    });
   }
 
   function renderPortfolio() {
@@ -1258,14 +1616,16 @@
       const days = Math.max(1, Math.round((nowMs - pDate.getTime()) / (1000 * 60 * 60 * 24)));
       weightedDays += days * cost;
 
+      const safeDate = escapeHTML(dateText(String(lot.date || "")));
+      const safeNote = escapeHTML(lot.note || "Holding lot");
       return `
         <tr>
-          <td><strong>${dateText(lot.date)}</strong><br><small style="color:var(--ink-muted);">${lot.note || "Holding lot"}</small></td>
+          <td><strong>${safeDate}</strong><br><small style="color:var(--ink-muted);">${safeNote}</small></td>
           <td><b>${w.toFixed(2)}g</b><br><small style="color:var(--ink-secondary);">${(w / 8).toFixed(2)} Sov</small></td>
           <td>${formatMoney(r)}<br><small style="color:var(--ink-muted);">${formatMoney(cost)}</small></td>
           <td><b>${formatMoney(cur)}</b></td>
           <td style="color:${isUp ? "var(--good)" : "var(--bad)"}; font-weight:700;">${isUp ? "+" : ""}${formatMoney(pnl)}<br><small>${isUp ? "+" : ""}${pnlPct.toFixed(1)}%</small></td>
-          <td><button class="port-del-btn" data-idx="${idx}" type="button" title="Delete purchase lot" style="border:none;background:transparent;cursor:pointer;color:var(--ink-muted);font-size:14px;">✕</button></td>
+          <td><button class="port-del-btn" data-idx="${idx}" type="button" title="Delete purchase lot" aria-label="Delete purchase lot" style="border:none;background:transparent;cursor:pointer;color:var(--ink-muted);font-size:14px;">✕</button></td>
         </tr>
       `;
     }).join("");
@@ -1303,21 +1663,101 @@
     const sheet = $("alarmSheet");
     const openBtn = $("openAlarmBtn");
     const closeBtn = $("closeAlarmBtn");
+    if (!sheet || !backdrop) return;
 
-    const openSheet = () => {
+    const background = [
+      document.querySelector(".masthead"),
+      $("views-viewport"),
+      document.querySelector(".bottom-dock")
+    ].filter(Boolean);
+    let isOpen = false;
+    let returnFocusTo = null;
+    let previousBodyOverflow = "";
+    let previousScrollY = 0;
+    let previousBackgroundState = [];
+
+    const setBackgroundInert = inert => {
+      if (inert) {
+        previousBackgroundState = background.map(el => ({
+          el,
+          inert: el.inert,
+          ariaHidden: el.getAttribute("aria-hidden")
+        }));
+        background.forEach(el => {
+          el.inert = true;
+          el.setAttribute("aria-hidden", "true");
+        });
+      } else {
+        previousBackgroundState.forEach(({ el, inert: wasInert, ariaHidden }) => {
+          el.inert = wasInert;
+          if (ariaHidden === null) el.removeAttribute("aria-hidden");
+          else el.setAttribute("aria-hidden", ariaHidden);
+        });
+        previousBackgroundState = [];
+      }
+    };
+
+    const openSheet = event => {
+      if (isOpen) return;
+      isOpen = true;
+      returnFocusTo = event && event.currentTarget ? event.currentTarget : document.activeElement;
+      previousBodyOverflow = document.body.style.overflow;
+      previousScrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.style.overflow = "hidden";
+      setBackgroundInert(true);
+      sheet.inert = false;
+      sheet.setAttribute("aria-hidden", "false");
+      backdrop.setAttribute("aria-hidden", "true");
       if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(10);
       if (backdrop) backdrop.classList.add("active");
-      if (sheet) sheet.classList.add("active");
+      sheet.classList.add("active");
+      if (closeBtn) closeBtn.focus();
     };
 
     const closeSheet = () => {
+      if (!isOpen) return;
+      isOpen = false;
       if (backdrop) backdrop.classList.remove("active");
-      if (sheet) sheet.classList.remove("active");
+      sheet.classList.remove("active");
+      sheet.inert = true;
+      sheet.setAttribute("aria-hidden", "true");
+      setBackgroundInert(false);
+      document.body.style.overflow = previousBodyOverflow;
+      window.scrollTo(0, previousScrollY);
+      if (returnFocusTo && returnFocusTo.isConnected && typeof returnFocusTo.focus === "function") {
+        returnFocusTo.focus();
+      }
+      returnFocusTo = null;
     };
 
     if (openBtn) openBtn.onclick = openSheet;
     if (closeBtn) closeBtn.onclick = closeSheet;
     if (backdrop) backdrop.onclick = closeSheet;
+
+    sheet.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSheet();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = Array.from(sheet.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter(el => el.getClientRects().length > 0);
+      if (!focusable.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !sheet.contains(document.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !sheet.contains(document.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
 
     const setAlarm = inputId => {
       const el = $(inputId);
@@ -1442,15 +1882,17 @@
   // ==========================================================================
   window.addEventListener("DOMContentLoaded", () => {
     initTheme();
+    initLanguage();
     initNavigation();
-    initDynamicIsland();
     initChartScrub();
     initCompareDates();
     initCalculator();
+    initCalculatorPresets();
     initBillAuditor();
     initOldGoldMelt();
     initSchemes();
     initPortfolio();
+    initPortfolioBackup();
     initTargetWatchdog();
     initShareButtons();
     initLiveRefresh();

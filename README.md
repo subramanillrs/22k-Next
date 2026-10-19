@@ -21,11 +21,15 @@ An ultra-modern, institutional-grade bullion tracking terminal and quantitative 
 - **Gaussian Kernel Density Estimation (KDE)**: Non-parametric probability modeling for AM and PM fix arrival times.
 
 ### 3. Cutting-Edge UX & Mobile Hardware Features
-- **Dynamic Island Micro-Bar**: Smoothly emerges at top when scrolling past the hero card.
+- **Daily Fix Snapshot**: Shows today’s recorded low/high and change vs previous close, and stays blank when the latest market date is not today.
+- **Feed Freshness**: Shows when the price payload was checked; source disagreement keeps the last confirmed rate visible.
+- **Saved Calculator Setups**: Keep up to 30 named calculator configurations on this device.
+- **Portfolio Backup**: Export/import JSON backups; imports validate, deduplicate, and merge without replacing existing holdings. 22k-Pro backup files are accepted.
+- **English/Tamil Controls**: Toggle common navigation, calculator, and portfolio labels; market/quant detail remains English where not translated.
 - **2-Mode Luxury Design System**: Strict Day (`#faf6ed`/`#1c1712`) and Night (`#000000`/`#ffd700`) modes.
 - **Physical Acoustic 22K Coin Chime**: Pure Web Audio API harmonic physical resonance synthesis (5420Hz harmonic coin drop) with haptic feedback.
 - **Dynamic High-DPI Share Cards**: Snapshot and itemized quotation receipt generators that dynamically adhere to the active Day or Night theme.
-- **Service Worker v8 & Instant Pre-Baking**: Instant bootstrap hydration under 50ms with zero layout shifts.
+- **Service Worker v17 & Instant Pre-Baking**: Instant bootstrap hydration; live-data cache keys are normalized so polling does not accumulate duplicate cache entries.
 
 ---
 
@@ -33,28 +37,34 @@ An ultra-modern, institutional-grade bullion tracking terminal and quantitative 
 
 ```text
 Chennai-22k-gold-next/
-├── .github/workflows/main.yml    # GitHub Actions automated 5-minute monitoring
+├── .github/workflows/main.yml    # GitHub Actions 5-minute fallback monitoring
 ├── css/
 │   ├── design-system.css         # Luxury 2-mode Day/Night design tokens
-│   ├── navigation.css            # Masthead, dynamic island, liquid glass dock
-│   └── bento-grid.css            # Bento grid, chips, carousel, quote card
+│   ├── navigation.css            # Masthead and liquid glass dock
+│   ├── bento-grid.css            # Bento grid, chips, carousel, quote card
+│   └── upgrade.css               # Responsive/accessibility polish and new UI components
 ├── js/
 │   ├── ml-engine.js              # Kalman, GARCH, ARIMA, Monte Carlo risk, Bayesian consensus
 │   ├── scheme-optimizer.js       # Newton-Raphson XIRR & scheme comparator
 │   ├── audio-chimes.js           # Web Audio API 22K acoustic resonance synthesizer
 │   ├── share-cards.js            # High-DPI Day/Night dynamic canvas share cards
 │   ├── quant-risk.js             # Canvas spline charts, EMA(9/21), RSI(14)
-│   └── app.js                    # Tab router, dynamic island, quote calculator, shop auditor
-├── data/                         # Real-time JSON data payloads
+│   ├── local-tools.js            # Safe presets and additive portfolio backup helpers
+│   ├── live-price-config.js       # Optional deployed Worker endpoint
+│   └── app.js                    # Tab router, quote calculator, shop auditor
+├── data/                         # Published JSON market-data payloads
 ├── tests/
 │   ├── test_ml_engine.js         # ML & risk verification test suite
 │   ├── test_schemes.js           # XIRR & scheme mathematical test suite
 │   ├── test_ui_navigation.js     # 4-tab docked routing & theme test suite
+│   ├── test_local_tools.js       # Preset/backup validation and merge tests
+│   ├── test_live_price_worker.mjs # Minute-check parsing and confirmation tests
 │   └── test_quant_pipeline.py    # Python pipeline & bootstrap regression suite
 ├── index.html                    # 4-tab docked application shell
-├── sw.js                         # Offline Service Worker v8
+├── sw.js                         # Offline Service Worker v17
 ├── manifest.webmanifest          # PWA manifest
-└── update_gold.py                # Automated multi-source ingestion & quant pipeline
+├── update_gold.py                # Automated multi-source ingestion & quant pipeline
+└── workers/live-prices/          # Optional Cloudflare one-minute source checker + KV feed
 ```
 
 ---
@@ -75,4 +85,24 @@ python3 tests/test_quant_pipeline.py
 
 # Navigation & Theme Fidelity Tests
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc tests/test_ui_navigation.js
+
+# Local calculator presets & portfolio backup tests
+/System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc tests/test_local_tools.js
+
+# Cloudflare minute-check parser and source-agreement tests
+node tests/test_live_price_worker.mjs
 ```
+
+The browser checks its feed every 15 seconds while visible. The optional Cloudflare Worker checks LiveChennai and GoodReturns once per minute during Chennai update windows, confirms source agreement, and serves the last confirmed price from KV. GitHub Actions remains the five-minute fallback and continues updating history and analytics. All schedules are best effort; no scheduler can make a third-party site publish sooner or guarantee a price within five minutes.
+
+### Enable the one-minute source checker
+
+This scrapes the public source pages; it does not use a gold-price provider API. Deployment requires a Cloudflare account and is not active until configured:
+
+1. Create a KV namespace: `cd workers/live-prices && npx wrangler kv namespace create LIVE_PRICE_KV`.
+2. Replace `REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID` in `wrangler.jsonc` with the returned namespace ID.
+3. Deploy: `npx wrangler deploy`.
+4. Copy the Worker `/live` URL into `window.GOLD_LIVE_WORKER_URL` in `js/live-price-config.js`.
+5. Publish the updated app. If the Worker is unavailable or source prices disagree, the app keeps showing the last confirmed rate.
+
+The Worker checks once per minute during 07:30–12:29 and 15:30–22:29 India time, with an hourly check outside those windows. It only publishes a changed price when both retail sources return valid, agreeing rates.

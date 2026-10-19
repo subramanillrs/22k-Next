@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NAVIGATION & MOBILE SHELL: DOCKED TAB BAR & DYNAMIC ISLAND
+   NAVIGATION & MOBILE SHELL: DOCKED TAB BAR
    ========================================================================== */
 
 /* Top Masthead */
@@ -134,43 +134,6 @@ html[data-theme="oled"] .brand-badge {
 html[data-theme="oled"] .theme-toggle .icon-sun { display: block; }
 html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
 
-/* Sticky Dynamic Island Micro-Bar */
-.dynamic-island {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-70px);
-  z-index: 150;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 14px;
-  background: var(--surface-glass-strong);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-full);
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  pointer-events: none;
-  transition: all var(--transition-spring);
-}
-.dynamic-island.visible {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-.island-rate {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--fs-base);
-  color: var(--gold-primary);
-}
-.island-sub {
-  font-size: var(--fs-xs);
-  color: var(--ink-secondary);
-}
-
 /* Floating Bottom Navigation Dock */
 .bottom-dock {
   position: fixed;
@@ -301,12 +264,6 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
   .views-viewport {
     padding: 10px 12px 14px;
   }
-  .dynamic-island {
-    top: max(8px, env(safe-area-inset-top, 0px));
-    max-width: calc(100vw - 24px);
-    padding: 5px 12px;
-    gap: 8px;
-  }
   .bottom-dock {
     bottom: 0;
     left: 0;
@@ -376,10 +333,13 @@ html[data-theme="oled"] .theme-toggle .icon-moon { display: none; }
   box-shadow: var(--shadow-lg);
   padding: 16px 20px 32px;
   overflow-y: auto;
-  transition: transform var(--transition-spring);
+  visibility: hidden;
+  transition: transform var(--transition-spring), visibility 0s linear 0.45s;
 }
 .modal-sheet.active {
   transform: translateX(-50%) translateY(0);
+  visibility: visible;
+  transition: transform var(--transition-spring), visibility 0s;
 }
 
 .sheet-handle {

@@ -1,6 +1,6 @@
 {
   "name": "Chennai 22K Gold Terminal Next",
-  "short_name": "Gold 22K Pro",
+  "short_name": "Gold 22K Next",
   "description": "Institutional 22K & 24K Gold Rate Terminal for Chennai with Real-Time ML Price Forecasting & Jewellery Analytics",
   "start_url": "./index.html",
   "scope": "./",

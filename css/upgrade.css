@@ -1,0 +1,135 @@
+/* 22K Next visual refresh: preserve the ivory/OLED-gold identity, improve clarity and touch use. */
+html, body {
+  background-image:
+    radial-gradient(ellipse at 50% -18%, rgba(169, 127, 52, 0.12), transparent 48%),
+    linear-gradient(180deg, var(--bg-canvas), var(--surface-ground));
+  background-attachment: fixed;
+}
+
+html[data-theme="oled"], html[data-theme="oled"] body {
+  background-image:
+    radial-gradient(ellipse at 50% -15%, rgba(255, 215, 0, 0.09), transparent 42%),
+    linear-gradient(180deg, #000, #050505 58%, #000);
+}
+
+::selection { background: var(--gold-primary); color: var(--bg-canvas); }
+
+:where(button, input, select, summary, a, [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--gold-primary) 72%, white);
+  outline-offset: 3px;
+}
+
+.masthead {
+  background: color-mix(in srgb, var(--surface-glass-strong) 86%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--gold-primary) 22%, var(--border-subtle));
+}
+
+.masthead-inner, .views-viewport { max-width: 920px; }
+.views-viewport { padding-top: 16px; }
+.brand-badge { border-radius: 11px; }
+.brand-title { letter-spacing: -0.015em; }
+
+.hero-card {
+  background:
+    radial-gradient(ellipse at 92% 5%, color-mix(in srgb, var(--gold-primary) 16%, transparent), transparent 42%),
+    linear-gradient(140deg, var(--surface-glass-strong), var(--surface-glass));
+  border-color: color-mix(in srgb, var(--gold-primary) 32%, var(--glass-border));
+  box-shadow: var(--shadow-md), inset 0 1px 0 var(--glass-highlight);
+}
+
+.hero-price { font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.035em; }
+.stat-val, .purity-rate, .basis-rate, .national-val, .fc-rate { font-variant-numeric: tabular-nums; }
+
+.daily-snapshot {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: -2px 0 14px;
+  padding: 14px 14px 30px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--gold-tint), transparent 65%), var(--surface-glass);
+  box-shadow: var(--shadow-sm);
+}
+
+.daily-snapshot > div { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+.daily-snapshot span { color: var(--ink-muted); font-size: var(--fs-2xs); line-height: 1.25; }
+.daily-snapshot strong { color: var(--ink-primary); font-size: clamp(12px, 3.4vw, 15px); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.daily-snapshot small { position: absolute; bottom: 9px; left: 14px; right: 14px; color: var(--ink-muted); font-size: var(--fs-3xs); }
+.daily-change-value.up { color: var(--good); }
+.daily-change-value.down { color: var(--bad); }
+
+.status-indicator { font-variant-numeric: tabular-nums; }
+.pulse-dot.is-delayed { background: #d89127; box-shadow: 0 0 7px rgba(216, 145, 39, 0.5); animation: none; }
+#refreshPriceBtn.is-refreshing svg { animation: refresh-rotate 0.8s linear infinite; }
+@keyframes refresh-rotate { to { transform: rotate(360deg); } }
+.lang-toggle { width: auto; min-width: 35px; padding: 0 9px; border-radius: var(--r-full); font-size: 10px; font-weight: 700; }
+
+.preset-tools, .portfolio-backup-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 11px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--surface-sunken) 74%, transparent);
+}
+.preset-tools { margin-bottom: 2px; }
+.preset-tools label { flex: 0 0 100%; color: var(--ink-secondary); font-size: var(--fs-xs); font-weight: 700; }
+.preset-tools select, .preset-tools input { flex: 1 1 130px; min-width: 0; height: 38px; }
+.preset-tools .chip { min-height: 38px; }
+.portfolio-backup-tools { margin: 12px 0; }
+.portfolio-backup-tools > span { flex: 1 1 100%; color: var(--ink-muted); font-size: var(--fs-2xs); line-height: 1.45; }
+.portfolio-backup-tools .chip { min-height: 36px; }
+.portfolio-backup-tools label { cursor: pointer; }
+
+.calc-input { transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast); }
+.calc-input:focus-visible { border-color: var(--gold-primary); box-shadow: 0 0 0 3px var(--gold-tint); }
+.chip, .btn-gold, .quote-btn, .share-link-inline, .tab-btn, .icon-btn { touch-action: manipulation; }
+.collapsible, .chart-panel, .calc-card, .target-card, .bento-card { scroll-margin-top: 76px; }
+.table-wrap, .port-table-wrap { scrollbar-color: var(--ink-faint) var(--surface-sunken); scrollbar-width: thin; }
+
+@media (hover: hover) and (pointer: fine) {
+  .bento-card, .collapsible, .calc-card, .target-card { transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast); }
+  .bento-card:hover, .collapsible:hover, .calc-card:hover, .target-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+  .tab-btn:not(.active):hover, .icon-btn:hover { color: var(--gold-primary); border-color: var(--border-strong); }
+}
+
+@media (min-width: 900px) {
+  .masthead-inner { padding-top: 12px; padding-bottom: 12px; }
+  .views-viewport { padding: 20px 22px 28px; }
+  .hero-card { padding: 28px 28px; }
+  .hero-price { font-size: clamp(52px, 6vw, 72px); }
+  .bento-grid { gap: 14px; }
+  .bento-card { padding: 18px; }
+  .bottom-dock { bottom: max(18px, env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 640px) {
+  .masthead-actions { gap: 5px; }
+  .lang-toggle { min-width: 33px; padding-inline: 7px; font-size: 9px; }
+  .daily-snapshot { gap: 6px; padding: 12px 10px 30px; }
+  .daily-snapshot span { font-size: 9px; }
+  .daily-snapshot small { left: 10px; right: 10px; }
+  .preset-tools { gap: 7px; }
+  .preset-tools select, .preset-tools input { flex-basis: calc(50% - 4px); }
+  .preset-tools .chip { flex: 1 1 100%; }
+  input, select, textarea { font-size: 16px; }
+}
+
+@media (max-width: 360px) {
+  .brand-sub { display: none; }
+  .status-indicator { max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+  .masthead-actions { gap: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+@media (forced-colors: active) {
+  .daily-snapshot, .preset-tools, .portfolio-backup-tools, .hero-card { border: 1px solid CanvasText; }
+  .pulse-dot { forced-color-adjust: none; background: Highlight; }
+}

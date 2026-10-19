@@ -1,24 +1,27 @@
 /**
  * ============================================================================
- * CHENNAI 22K GOLD NEXT: SERVICE WORKER (VERSION 8)
- * Offline resilient, sub-20ms instant hydration, background streaming
+ * CHENNAI 22K GOLD NEXT: SERVICE WORKER (VERSION 17)
+ * Offline resilient app shell and network-first market data
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v12";
+const CACHE_NAME = "gold-terminal-v17";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./css/design-system.css?v=12",
-  "./css/navigation.css?v=12",
-  "./css/bento-grid.css?v=12",
-  "./js/app.js?v=12",
-  "./js/ml-engine.js?v=12",
-  "./js/quant-risk.js?v=12",
-  "./js/scheme-optimizer.js?v=12",
-  "./js/share-cards.js?v=12",
-  "./js/audio-chimes.js?v=12"
+  "./css/design-system.css?v=17",
+  "./css/navigation.css?v=17",
+  "./css/bento-grid.css?v=17",
+  "./css/upgrade.css?v=17",
+  "./js/app.js?v=17",
+  "./js/live-price-config.js?v=17",
+  "./js/local-tools.js?v=17",
+  "./js/ml-engine.js?v=17",
+  "./js/quant-risk.js?v=17",
+  "./js/scheme-optimizer.js?v=17",
+  "./js/share-cards.js?v=17",
+  "./js/audio-chimes.js?v=17"
 ];
 
 self.addEventListener("install", event => {
@@ -49,11 +52,10 @@ self.addEventListener("fetch", event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          }
-          return response;
+          if (!response || response.status !== 200) return response;
+          return caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, response.clone()))
+            .then(() => response, () => response);
         })
         .catch(() => caches.match(event.request, { ignoreSearch: true }))
     );
@@ -61,17 +63,19 @@ self.addEventListener("fetch", event => {
   }
 
   // Data requests: Network-first with cache fallback
-  if (url.pathname.includes("/data/")) {
+  if (url.pathname.includes("/data/") || url.pathname.endsWith("/live")) {
+    // Pollers add a fresh query string on every check. Keep one current entry
+    // per data path instead of accumulating a cache key every minute.
+    const cacheKey = new Request(url.origin + url.pathname, { method: "GET" });
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          }
-          return response;
+          if (!response || response.status !== 200) return response;
+          return caches.open(CACHE_NAME)
+            .then(cache => cache.put(cacheKey, response.clone()))
+            .then(() => response, () => response);
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(cacheKey))
     );
     return;
   }
@@ -81,11 +85,10 @@ self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(cached => {
       const networkFetch = fetch(event.request).then(response => {
-        if (response && response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        }
-        return response;
+        if (!response || response.status !== 200) return response;
+        return caches.open(CACHE_NAME)
+          .then(cache => cache.put(event.request, response.clone()))
+          .then(() => response, () => response);
       }).catch(() => cached);
 
       return cached || networkFetch;

@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#f8f4ea" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="description" content="Chennai 22K Gold Terminal Next — Institutional MJDMA benchmark, ML multi-horizon price forecasting, real-time jewellery cost estimator & quant risk analytics.">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Gold 22K Pro">
+<meta name="apple-mobile-web-app-title" content="Gold 22K Next">
 
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
@@ -21,9 +21,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Modular Style Architecture -->
-<link rel="stylesheet" href="css/design-system.css?v=12">
-<link rel="stylesheet" href="css/navigation.css?v=12">
-<link rel="stylesheet" href="css/bento-grid.css?v=12">
+<link rel="stylesheet" href="css/design-system.css?v=16">
+<link rel="stylesheet" href="css/navigation.css?v=16">
+<link rel="stylesheet" href="css/bento-grid.css?v=16">
+<link rel="stylesheet" href="css/upgrade.css?v=16">
 
 <title>Chennai 22K Gold Terminal Next | Institutional MJDMA Benchmark & ML Forecast</title>
 <script id="gold-bootstrap" type="application/json">
@@ -47,7 +48,7 @@
       <div class="masthead-actions">
         <div class="status-indicator">
           <span class="pulse-dot"></span>
-          <span id="mastheadStatusText">Live Consensus</span>
+          <span id="mastheadStatusText">Connecting</span>
         </div>
 
         <button class="icon-btn" id="openAlarmBtn" type="button" aria-label="Target Price Alarm">
@@ -58,6 +59,8 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9a7 7 0 0 1 11.55-2.6L20 12M4 12l2.85 5.6A7 7 0 0 0 18.4 15"/></svg>
         </button>
 
+        <button class="icon-btn lang-toggle" id="languageToggle" type="button" aria-label="Change interface language" title="Change interface language">தமிழ்</button>
+
         <button class="icon-btn theme-toggle" id="themeToggleBtn" type="button" aria-label="Toggle Day and Night mode">
           <svg class="icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
@@ -65,12 +68,6 @@
       </div>
     </div>
   </header>
-
-  <!-- Sticky Dynamic Island (Micro-Header on Scroll) -->
-  <div class="dynamic-island" id="dynamicIsland">
-    <span class="island-rate" id="islandRateVal">Au 22K ₹ 14,145/g (-125)</span>
-    <span class="island-sub">MJDMA Fix</span>
-  </div>
 
   <!-- Main Views Viewport -->
   <main class="views-viewport">
@@ -106,6 +103,13 @@
         </div>
       </div>
 
+      <section class="daily-snapshot" aria-label="Today's recorded price range">
+        <div><span data-i18n="daily.low">Today’s low</span><strong id="dailyLow">—</strong></div>
+        <div><span data-i18n="daily.high">Today’s high</span><strong id="dailyHigh">—</strong></div>
+        <div><span data-i18n="daily.close">vs previous close</span><strong id="dailyChange">—</strong></div>
+        <small id="dailyRangeNote" aria-live="polite">Updates when today’s fixes are published</small>
+      </section>
+
       <!-- Bento Grid Layout -->
       <div class="bento-grid">
         
@@ -113,7 +117,7 @@
         <div class="bento-card full-width">
           <div class="card-label-row">
             <span class="card-label">Today's Market Fix Timeline</span>
-            <span class="status-indicator" id="timingStatusBadgeText" style="padding: 2px 7px; font-size: 8.5px;">Live MJDMA Verified</span>
+            <span class="status-indicator" id="timingStatusBadgeText" style="padding: 2px 7px; font-size: 8.5px;">Checking feed…</span>
           </div>
           <div class="fix-chips-wrap">
             <div class="fix-chip" id="amFixChip">
@@ -162,7 +166,7 @@
         <div class="bento-card full-width">
           <div class="card-label-row">
             <span class="card-label">Chennai Sub-Market Basis & Wholesale Engine</span>
-            <span class="status-indicator" style="font-size: 8.5px; color: var(--gold-primary);">Live Basis</span>
+            <span class="status-indicator" style="font-size: 8.5px; color: var(--gold-primary);">Derived basis</span>
           </div>
           <div class="basis-grid">
             <div class="basis-box">
@@ -530,14 +534,23 @@
     <section class="view-page" id="view-calc">
       <div class="calc-card">
         <div class="card-label-row">
-          <span class="card-label">Jewellery Purchase Calculator</span>
+          <span class="card-label" data-i18n="calc.title">Jewellery Purchase Calculator</span>
           <span style="font-size: var(--fs-3xs); color: var(--gold-primary);">Official 3% GST Included</span>
+        </div>
+
+        <div class="preset-tools" aria-label="Saved calculator setups">
+          <label for="calcPreset" data-i18n="calc.saved">Saved setup</label>
+          <select id="calcPreset" class="calc-input" aria-label="Load a saved calculator setup">
+            <option value="" data-i18n="calc.choose">Choose a setup…</option>
+          </select>
+          <input id="calcPresetName" class="calc-input" type="text" maxlength="32" placeholder="Name this setup" aria-label="Name this setup">
+          <button id="saveCalcPreset" type="button" class="chip" data-i18n="calc.save">Save setup</button>
         </div>
 
         <!-- Segmented Mode (By Weight vs By Budget) -->
         <div class="calc-segmented-mode">
-          <button class="calc-mode-btn active" type="button" data-mode="value">By Weight</button>
-          <button class="calc-mode-btn" type="button" data-mode="grams">By Budget</button>
+          <button class="calc-mode-btn active" type="button" data-mode="value" data-i18n="calc.weightMode">By Weight</button>
+          <button class="calc-mode-btn" type="button" data-mode="grams" data-i18n="calc.budgetMode">By Budget</button>
           <select id="calcMode" hidden>
             <option value="value" selected>Calculate Price for Weight</option>
             <option value="grams">Calculate Weight for Budget</option>
@@ -546,7 +559,7 @@
 
         <!-- Weight Presets -->
         <div class="calc-input-group" id="weightChipsGroup">
-          <span class="calc-group-label">Gold weight presets</span>
+          <span class="calc-group-label" data-i18n="calc.weightPresets">Gold weight presets</span>
           <div class="chip-container" id="weightChips">
             <button class="chip" data-val="1" type="button">1g</button>
             <button class="chip" data-val="4" type="button">4g</button>
@@ -557,7 +570,7 @@
 
         <!-- Making Charge Presets -->
         <div class="calc-input-group">
-          <span class="calc-group-label">Making charge (VA presets)</span>
+          <span class="calc-group-label" data-i18n="calc.vaPresets">Making charge (VA presets)</span>
           <div class="chip-container" id="makingChips">
             <button class="chip" data-val="3.0" type="button">Coin · 3%</button>
             <button class="chip active" data-val="8.0" type="button">Plain · 8%</button>
@@ -569,37 +582,37 @@
         <!-- Input Grid Form -->
         <div class="calc-grid-form">
           <div class="calc-field" id="weightField">
-            <label for="weight">Weight (g)</label>
+            <label for="weight" data-i18n="calc.weight">Weight (g)</label>
             <input class="calc-input" id="weight" type="number" inputmode="decimal" value="8" step="0.01">
           </div>
           <div class="calc-field" id="budgetField" style="display: none;">
-            <label for="budget">Budget (₹)</label>
+            <label for="budget" data-i18n="calc.budget">Budget (₹)</label>
             <input class="calc-input" id="budget" type="number" inputmode="decimal" value="100000" step="100">
           </div>
           <div class="calc-field">
-            <label for="making">Making charge (%)</label>
+            <label for="making" data-i18n="calc.making">Making charge (%)</label>
             <input class="calc-input" id="making" type="number" inputmode="decimal" value="8.0" step="0.1">
           </div>
           <div class="calc-field">
-            <label for="gstRate">GST (%)</label>
+            <label for="gstRate" data-i18n="calc.gst">GST (%)</label>
             <input class="calc-input" id="gstRate" type="number" inputmode="decimal" value="3.0" step="0.1">
           </div>
           <div class="calc-field">
-            <label for="flatFee">Hallmarking fee (₹)</label>
+            <label for="flatFee" data-i18n="calc.fee">Hallmarking fee (₹)</label>
             <input class="calc-input" id="flatFee" type="number" inputmode="decimal" value="45" step="1">
           </div>
         </div>
 
         <!-- Old Gold Exchange Drawer -->
         <div class="exchange-drawer">
-          <span class="exchange-header">Old gold exchange deduction (optional)</span>
+          <span class="exchange-header" data-i18n="calc.oldGold">Old gold exchange deduction (optional)</span>
           <div class="calc-grid-form">
             <div class="calc-field">
-              <label for="oldWeight">Scrap weight (g)</label>
+              <label for="oldWeight" data-i18n="calc.scrapWeight">Scrap weight (g)</label>
               <input class="calc-input" id="oldWeight" type="number" inputmode="decimal" value="0" step="0.01">
             </div>
             <div class="calc-field">
-              <label for="oldPurity">Scrap purity</label>
+              <label for="oldPurity" data-i18n="calc.purity">Scrap purity</label>
               <select class="calc-input" id="oldPurity">
                 <option value="22" selected>22K · 91.6%</option>
                 <option value="18">18K · 75.0%</option>
@@ -623,13 +636,13 @@
             <span class="label" id="receiptTotalLabel">Net Payable Amount</span>
             <span class="final-val" id="calcResult">₹ 1,25,926</span>
           </div>
-          <div class="calc-sub" id="calcSub">Based on live 22K MJDMA rate.</div>
+          <div class="calc-sub" id="calcSub">Based on the latest available 22K benchmark.</div>
 
           <div class="receipt-actions-grid">
-            <button class="quote-btn" id="copyQuoteBtn" type="button">Copy Quotation</button>
+            <button class="quote-btn" id="copyQuoteBtn" type="button" data-i18n="calc.copy">Copy Quotation</button>
             <button class="share-link-inline" id="shareReceiptBtn" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              Share Receipt
+              <span data-i18n="calc.share">Share Receipt</span>
             </button>
           </div>
         </div>
@@ -850,7 +863,7 @@
       <details class="collapsible" id="portfolioBlock" open>
         <summary>
           <div class="summary-title">
-            <h3>Gold Portfolio & ROI Ledger</h3>
+            <h3 data-i18n="portfolio.title">Gold Portfolio & ROI Ledger</h3>
             <span id="portfolioHeaderSummary">0.0g tracked</span>
           </div>
           <span class="chevron">▼</span>
@@ -871,7 +884,7 @@
               <div class="port-metric">
                 <span>Current Value</span>
                 <strong id="portTotalCurrent">₹ 0</strong>
-                <small>At live benchmark</small>
+                <small>At latest benchmark</small>
               </div>
               <div class="port-metric">
                 <span>Net Return</span>
@@ -914,6 +927,13 @@
             </div>
           </div>
 
+      <div class="portfolio-backup-tools" aria-label="Portfolio backup tools">
+        <span data-i18n="portfolio.local">Holdings stay on this device. Import adds new lots; it never replaces existing ones.</span>
+        <button type="button" class="chip" id="exportPortfolio" data-i18n="portfolio.export">Export backup</button>
+        <label class="chip" for="importPortfolioFile" data-i18n="portfolio.import">Import backup</label>
+        <input id="importPortfolioFile" type="file" accept="application/json,.json" hidden>
+      </div>
+
           <!-- Portfolio Table -->
           <div class="port-table-wrap">
             <table class="port-table">
@@ -942,7 +962,7 @@
           <span class="status-indicator" style="font-size: 8.5px;">Acoustic Chime Alert</span>
         </div>
         <p style="font-size: var(--fs-xs); color: var(--ink-secondary); margin-bottom: 10px;">
-          Set a dip-buying or profit-booking target price. The terminal checks live fix feeds and fires physical acoustic coin chimes and haptic vibrations when triggered.
+      Set a dip-buying or profit-booking target price. The terminal checks the latest available fix and fires physical acoustic coin chimes and haptic vibrations when triggered.
         </p>
         <div class="target-input-row">
           <input class="calc-input" type="number" id="targetRateInput" placeholder="Target rate e.g. 14000" step="50" inputmode="numeric">
@@ -956,15 +976,15 @@
   </main>
 
   <!-- Modal Bottom Sheet: Target Price Alarm Watchdog -->
-  <div class="sheet-backdrop" id="sheetBackdrop"></div>
-  <div class="modal-sheet" id="alarmSheet">
+  <div class="sheet-backdrop" id="sheetBackdrop" aria-hidden="true"></div>
+  <div class="modal-sheet" id="alarmSheet" role="dialog" aria-modal="true" aria-labelledby="alarmSheetTitle" aria-describedby="alarmSheetDescription" aria-hidden="true" inert>
     <div class="sheet-handle"></div>
     <div class="sheet-header">
-      <h3 class="sheet-title">Target Price Alarm Watchdog</h3>
+      <h3 class="sheet-title" id="alarmSheetTitle">Target Price Alarm Watchdog</h3>
       <button class="sheet-close-btn" id="closeAlarmBtn" type="button" aria-label="Close">✕</button>
     </div>
-    <p style="font-size: var(--fs-xs); color: var(--ink-secondary); margin-bottom: 14px;">
-      Set an intraday price alert. The terminal will monitor live MJDMA fix publications and ring an acoustic chime when your target is achieved.
+    <p id="alarmSheetDescription" style="font-size: var(--fs-xs); color: var(--ink-secondary); margin-bottom: 14px;">
+      Set an intraday price alert. The terminal will monitor the latest available MJDMA fixes and ring an acoustic chime when your target is achieved.
     </p>
 
     <div class="calc-input-group">
@@ -977,31 +997,33 @@
 
   <!-- Floating Liquid Glass Bottom Navigation Dock -->
   <nav class="bottom-dock" aria-label="Main Navigation">
-    <button class="tab-btn active" data-tab="market" type="button">
+    <button class="tab-btn active" data-tab="market" type="button" aria-controls="view-market" aria-current="page">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span>Market</span>
+      <span data-i18n="nav.market">Market</span>
     </button>
-    <button class="tab-btn" data-tab="analytics" type="button">
+    <button class="tab-btn" data-tab="analytics" type="button" aria-controls="view-analytics">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      <span>Analytics</span>
+      <span data-i18n="nav.analytics">Analytics</span>
     </button>
-    <button class="tab-btn" data-tab="calc" type="button">
+    <button class="tab-btn" data-tab="calc" type="button" aria-controls="view-calc">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-      <span>Calculator</span>
+      <span data-i18n="nav.calculator">Calculator</span>
     </button>
-    <button class="tab-btn" data-tab="schemes" type="button">
+    <button class="tab-btn" data-tab="schemes" type="button" aria-controls="view-schemes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><line x1="12" y1="6" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="18"/></svg>
-      <span>Schemes</span>
+      <span data-i18n="nav.schemes">Schemes</span>
     </button>
   </nav>
 
   <!-- Modular Scripts -->
-  <script src="js/audio-chimes.js?v=12"></script>
-  <script src="js/ml-engine.js?v=12"></script>
-  <script src="js/quant-risk.js?v=12"></script>
-  <script src="js/scheme-optimizer.js?v=12"></script>
-  <script src="js/share-cards.js?v=12"></script>
-  <script src="js/app.js?v=12"></script>
+  <script src="js/audio-chimes.js?v=16"></script>
+  <script src="js/ml-engine.js?v=16"></script>
+  <script src="js/quant-risk.js?v=16"></script>
+  <script src="js/scheme-optimizer.js?v=16"></script>
+  <script src="js/share-cards.js?v=16"></script>
+  <script src="js/local-tools.js?v=17"></script>
+  <script src="js/live-price-config.js?v=17"></script>
+  <script src="js/app.js?v=17"></script>
 
   <!-- Service Worker Registration -->
   <script>

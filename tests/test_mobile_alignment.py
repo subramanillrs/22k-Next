@@ -71,15 +71,24 @@ def test_mobile_alignment():
     assert ".chart-tooltip[hidden]" in bento_css and "display: none !important" in bento_css
     print("  ✓ [TEST 14] .chart-tooltip[hidden] enforces complete dismissal when inactive")
 
+    # Analytics exits, gesture cancellation, and complete removal of the floating price pill
+    app_js = (BASE_DIR / "js/app.js").read_text()
+    assert 'id="dynamicIsland"' not in index_html
+    assert "dynamicIsland" not in app_js and "syncDynamicIsland" not in app_js
+    assert ".dynamic-island" not in nav_css and ".island-rate" not in nav_css
+    assert "dismissChartTooltip();" in app_js and 'addEventListener("pointercancel", endScrub)' in app_js
+    assert 'addEventListener("touchcancel", endScrub)' in app_js
+    print("  ✓ [TEST 14b] Floating price pill is removed; chart tooltip clears on tab/gesture exit")
+
     # Single-line masthead alignment
     assert "flex-wrap: nowrap;" in nav_css and ".masthead-actions" in nav_css
     print("  ✓ [TEST 15] .masthead-inner enforces flex-wrap: nowrap preventing mobile multi-row splitting")
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v12"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v17"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v12 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v17 and network-first navigation policy")
 
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")

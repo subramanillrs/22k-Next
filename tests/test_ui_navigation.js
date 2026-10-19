@@ -111,24 +111,7 @@ validTabs.forEach(t => {
   }
 });
 
-// [TEST 3] Dynamic Island Scroll Trigger
-function checkIslandVisibility(heroBottom) {
-  return heroBottom < 50;
-}
-
-if (!checkIslandVisibility(300)) {
-  print("  ✓ [TEST 3a] Dynamic Island stays hidden when hero card is fully in viewport (bottom: 300px)");
-} else {
-  throw new Error("[TEST 3a FAIL]");
-}
-
-if (checkIslandVisibility(20)) {
-  print("  ✓ [TEST 3b] Dynamic Island appears as hero card scrolls out of view (bottom: 20px)");
-} else {
-  throw new Error("[TEST 3b FAIL]");
-}
-
-// [TEST 4] Share Cards Generation with Mock Canvas
+// [TEST 3] Share Cards Generation with Mock Canvas
 let ShareCards;
 if (typeof require !== "undefined") {
   try {
@@ -156,9 +139,9 @@ if (ShareCards) {
   });
 
   if (snapshotCanvas && snapshotCanvas.toDataURL) {
-    print("  ✓ [TEST 4a] generateSnapshotCard rendered high-DPI canvas successfully");
+    print("  ✓ [TEST 3a] generateSnapshotCard rendered high-DPI canvas successfully");
   } else {
-    throw new Error("[TEST 4a FAIL] Failed to render snapshot canvas");
+      throw new Error("[TEST 3a FAIL] Failed to render snapshot canvas");
   }
 
   const receiptCanvas = ShareCards.generateReceiptCard({
@@ -172,9 +155,9 @@ if (ShareCards) {
   });
 
   if (receiptCanvas && receiptCanvas.toDataURL) {
-    print("  ✓ [TEST 4b] generateReceiptCard rendered itemized receipt canvas successfully");
+    print("  ✓ [TEST 3b] generateReceiptCard rendered itemized receipt canvas successfully");
   } else {
-    throw new Error("[TEST 4b FAIL] Failed to render receipt canvas");
+      throw new Error("[TEST 3b FAIL] Failed to render receipt canvas");
   }
 }
 

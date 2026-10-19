@@ -147,6 +147,16 @@ def valid_gold_rate(value):
         return False
 
 
+def valid_ibja_rate_pair(rate_22k, rate_24k):
+    """Return whether a 22K IBJA quote is positive and below its 24K quote."""
+    try:
+        rate_22k = float(rate_22k)
+        rate_24k = float(rate_24k)
+        return 0 < rate_22k < rate_24k
+    except (TypeError, ValueError):
+        return False
+
+
 def clean_number(text, min_val=5000, max_val=50000):
     if text is None:
         return None
@@ -1057,7 +1067,15 @@ def extract_ibja_rates_from_soup(soup):
             rates["22k_pm_10g"] = nums[1] if len(nums) > 1 else nums[0]
 
     if "22k_am_10g" in rates or "22k_pm_10g" in rates:
-        return rates
+        has_comparable_pair = False
+        for session in ("am", "pm"):
+            rate_22k = rates.get(f"22k_{session}_10g")
+            rate_24k = rates.get(f"24k_{session}_10g")
+            if rate_22k is not None and rate_24k is not None:
+                has_comparable_pair = True
+                if not valid_ibja_rate_pair(rate_22k, rate_24k):
+                    return None
+        return rates if has_comparable_pair else None
     return None
 
 
@@ -1077,19 +1095,21 @@ def extract_ibja_from_mirror(soup):
                         num_22 = clean_number(cells[2], min_val=5000, max_val=200000)
                         if num_22 and num_24:
                             if first == "10":
-                                return {
+                                rates = {
                                     "22k_am_10g": float(num_22),
                                     "22k_pm_10g": float(num_22),
                                     "24k_am_10g": float(num_24),
                                     "24k_pm_10g": float(num_24),
                                 }
+                                return rates if valid_ibja_rate_pair(num_22, num_24) else None
                             else:
-                                return {
+                                rates = {
                                     "22k_am_10g": float(num_22) * 10,
                                     "22k_pm_10g": float(num_22) * 10,
                                     "24k_am_10g": float(num_24) * 10,
                                     "24k_pm_10g": float(num_24) * 10,
                                 }
+                                return rates if valid_ibja_rate_pair(num_22, num_24) else None
     return None
 
 
@@ -1190,7 +1210,12 @@ def fetch_ibja():
 
     # 3. Tertiary: Cached file fallback anchor
     cached = load_json(IBJA_FILE, None)
-    if isinstance(cached, dict) and valid_gold_rate(cached.get("rate_22k")):
+    if (
+        isinstance(cached, dict)
+        and valid_gold_rate(cached.get("rate_22k"))
+        and valid_gold_rate(cached.get("rate_24k"))
+        and valid_ibja_rate_pair(cached.get("rate_22k"), cached.get("rate_24k"))
+    ):
         cached["is_fallback"] = True
         cached["status"] = "cached_anchor"
         return cached

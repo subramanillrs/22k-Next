@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "22k-next-live-prices",
+  "main": "src/index.mjs",
+  "account_id": "baa1b1a62a7618bb27af5b8f0b7058de",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "kv_namespaces": [
+    {
+      "binding": "LIVE_PRICE_KV",
+      "id": "74619d8b0c3e49d79fa4daf271de4712"
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "* 2-6 * * *",
+      "* 10-16 * * *",
+      "0 0,1,7-9,17-23 * * *"
+    ]
+  }
+}
