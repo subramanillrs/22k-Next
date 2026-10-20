@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-20T20:08:10.872610+05:30",
+  "generated_at": "2026-10-21T00:13:33.194951+05:30",
   "all_time_high": {
     "rate_22k": 16800,
     "date": "2026-01-29"
@@ -10,35 +10,35 @@
   },
   "current_month": {
     "month": "2026-10",
-    "average_22k": 13670,
+    "average_22k": 13667,
     "high": 13880,
     "low": 13490
   },
   "current_year": {
     "year": "2026",
-    "average_22k": 14031,
+    "average_22k": 14030,
     "high": 16800,
     "low": 12440
   },
   "last_30_records": {
-    "average_22k": 13764,
-    "high": 14270,
+    "average_22k": 13738,
+    "high": 14185,
     "low": 13490
   },
-  "total_records": 1307,
+  "total_records": 1308,
   "quant": {
-    "calculated_at": "2026-10-20T20:08:10.860898+05:30",
+    "calculated_at": "2026-10-21T00:13:33.184306+05:30",
     "rate_22k": 13490,
     "rate_8g": 107920,
-    "volatility_30d_annualized": 0.0984,
-    "volatility_30d_pct": 9.84,
-    "volatility_daily_pct": 0.62,
-    "var_95_1d_amount": 137.52,
+    "volatility_30d_annualized": 0.0985,
+    "volatility_30d_pct": 9.85,
+    "volatility_daily_pct": 0.621,
+    "var_95_1d_amount": 137.7,
     "var_95_1d_pct": 1.02,
-    "var_95_1d_8g_amount": 1100.16,
+    "var_95_1d_8g_amount": 1101.58,
     "var_95_1d_lower_bound": 13352,
     "var_95_1d_upper_bound": 13628,
-    "max_drawdown_30d_pct": 5.57,
+    "max_drawdown_30d_pct": 5.47,
     "chennai_premium_amount": 234,
     "chennai_premium_pct": 1.77,
     "sowcarpet_wholesale_22k": 13445,
@@ -47,7 +47,7 @@
     "retail_showroom_rate_22k": 13670,
     "retail_showroom_markup_pct": 1.33,
     "submarket_spreads": {
-      "calculated_at": "2026-10-20T20:08:10.861593+05:30",
+      "calculated_at": "2026-10-21T00:13:33.184939+05:30",
       "reference_mjdma_22k": 13490,
       "reference_mjdma_24k": 14716,
       "sowcarpet": {
@@ -167,8 +167,8 @@
         "upper": 13859
       },
       "horizon_30d": {
-        "lower": 12757,
-        "upper": 14265
+        "lower": 12756,
+        "upper": 14266
       },
       "prob_test_upper_pct": 0.1,
       "prob_test_lower_pct": 5.0
