@@ -13,7 +13,7 @@
   "purity_24k": "999",
   "source": "IBJA Benchmark Mirror (GoodReturns National)",
   "url": "https://www.goodreturns.in/gold-rates/",
-  "fetched_at": "2026-10-21T00:13:31.692192+05:30",
+  "fetched_at": "2026-10-21T01:42:28.321091+05:30",
   "status": "degraded_mirror",
   "is_fallback": true
 }
