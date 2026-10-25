@@ -87,7 +87,10 @@ Native ownership manifest: `premium-ui.json` records `Select/Listbox` and `Date`
 - **Responsive table strategy:** Tables scroll in their own bounded wrappers; headings remain visible.
 - **Truncation/full-value access:** Long source and note labels can wrap or be read in table cells; numeric values use tabular figures.
 - **Focus restoration and sticky-obstruction policy:** Visible focus ring; controls scroll below sticky header; keep zoom enabled.
-- **Small-phone app bar:** All four app-bar actions remain available. At <=480px, the market feed status becomes a compact live dot while its changing text remains in a polite live region for assistive technology; brand/content gutters scale together from 12px to 16px.
+- **Small-phone app bar:** All four app-bar actions remain available in 44px touch targets. At <=480px, only the noninteractive market feed label becomes a compact live dot while its changing text remains in a polite live region; masthead and content share one `clamp(12px, 4vw, 16px)` gutter.
+- **OnePlus 13R-class portrait layout:** Phone layout is the base: one content column, nested metric grids only where comparisons are meaningful, full-width bottom navigation above the Android safe area, and natural page scrolling. Validate at 393px and 412px CSS widths without depending on a device-specific fixed width.
+- **Regional parity on phones:** Show Tamil Nadu hubs as a two-column, two-row grid at phone widths instead of a clipped horizontal carousel; retain the wider-screen swipe/scroll presentation only where it fits.
+- **Sentiment visualization:** The sentiment score is a stroked, non-filled SVG ring with a textual score and label; it must never fall back to the browser's default black SVG fill.
 - **Generated market snapshot:** `js/share-cards.js` owns the snapshot renderer and must follow the Material indigo/day palette (while preserving the optional OLED variant); any renderer change increments the page/service-worker asset version together.
 
 ## Overlays and feedback

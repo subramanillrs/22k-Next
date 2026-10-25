@@ -93,9 +93,9 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v29"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v30"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v29 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v30 and network-first navigation policy")
 
     assert "padding-inline: var(--mobile-gutter);" in upgrade_css
     assert ".masthead .icon-btn { width: 44px; height: 44px; }" in upgrade_css
@@ -103,8 +103,11 @@ def test_mobile_alignment():
     assert "grid-template-columns: minmax(0, 1fr); gap: 12px;" in upgrade_css
     assert "padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));" in upgrade_css
     assert "--page-max: 960px;" in (BASE_DIR / "css/design-system.css").read_text()
-    assert 'src="js/share-cards.js?v=29"' in index_html
+    assert 'src="js/share-cards.js?v=30"' in index_html
     assert "fix-timeline-head .status-indicator" in upgrade_css
+    assert "grid-template-columns: repeat(2, minmax(0, 1fr));" in upgrade_css
+    assert ".sentiment-dial circle {\n  fill: none;" in upgrade_css
+    assert ".dial-fill {\n  stroke: var(--brand-primary);" in upgrade_css
     share_cards = (BASE_DIR / "js/share-cards.js").read_text().split("Generates Itemized Quotation Receipt Card")[0]
     assert "#e1e7ff" in share_cards and "#4058a5" in share_cards
     assert "#faf6ed" not in share_cards and "#a97f34" not in share_cards

@@ -1,27 +1,27 @@
 /**
  * ============================================================================
- * CHENNAI 22K GOLD NEXT: SERVICE WORKER (VERSION 27)
+ * CHENNAI 22K GOLD NEXT: SERVICE WORKER (VERSION 30)
  * Offline resilient app shell and network-first market data
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v28";
+const CACHE_NAME = "gold-terminal-v30";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./css/design-system.css?v=28",
-  "./css/navigation.css?v=28",
-  "./css/bento-grid.css?v=28",
-  "./css/upgrade.css?v=28",
-  "./js/app.js?v=28",
-  "./js/live-price-config.js?v=28",
-  "./js/local-tools.js?v=28",
-  "./js/ml-engine.js?v=28",
-  "./js/quant-risk.js?v=28",
-  "./js/scheme-optimizer.js?v=28",
-  "./js/share-cards.js?v=28",
-  "./js/audio-chimes.js?v=28"
+  "./css/design-system.css?v=30",
+  "./css/navigation.css?v=30",
+  "./css/bento-grid.css?v=30",
+  "./css/upgrade.css?v=30",
+  "./js/app.js?v=30",
+  "./js/live-price-config.js?v=30",
+  "./js/local-tools.js?v=30",
+  "./js/ml-engine.js?v=30",
+  "./js/quant-risk.js?v=30",
+  "./js/scheme-optimizer.js?v=30",
+  "./js/share-cards.js?v=30",
+  "./js/audio-chimes.js?v=30"
 ];
 
 self.addEventListener("install", event => {

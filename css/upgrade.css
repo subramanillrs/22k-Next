@@ -240,6 +240,43 @@ html[data-theme="oled"] .brand-badge {
 .city-rate { font-size: var(--fs-md); color: var(--ink-primary); }
 .city-basis { font-size: 11px; }
 
+/* Keep the sentiment score legible: bare SVG circles otherwise render filled black. */
+.sentiment-dial-wrap {
+  position: relative;
+  display: grid;
+  width: 70px;
+  height: 70px;
+  place-items: center;
+}
+.sentiment-dial {
+  display: block;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+.sentiment-dial circle {
+  fill: none;
+  stroke-width: 10;
+}
+.dial-bg { stroke: var(--border-strong); }
+.dial-fill {
+  stroke: var(--brand-primary);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-normal), stroke var(--transition-normal);
+}
+.dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-primary);
+  line-height: 1;
+  pointer-events: none;
+}
+.dial-num { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.dial-center small { margin-top: 3px; color: var(--ink-muted); font-size: 9px; }
+
 /* Analytics uses labels and stable summary rows instead of floating callouts. */
 .chart-panel, .ml-forecast-card, .collapsible, .calc-card, .target-card,
 .bento-card.full-width, .auditor-card, .meter-container, .port-summary-card,
@@ -433,6 +470,14 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
   .hero-price { font-size: clamp(38px, 11vw, 54px); }
   .chart-panel, .ml-forecast-card, .calc-card { padding: 16px; }
   .chartwrap { height: clamp(210px, 58vw, 250px); }
+  .carousel-track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+  .carousel-item { min-width: 0; }
   .bottom-dock {
     bottom: 0;
     left: 0;
