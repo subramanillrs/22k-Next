@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 20877)
-Total output lines: 1912
-
 /**
  * ============================================================================
  * CHENNAI 22K GOLD NEXT: MAIN APPLICATION CONTROLLER
@@ -960,7 +957,63 @@ Total output lines: 1912
     const budget = Math.max(0, parseFloat($("budget") ? $("budget").value : 100000) || 0);
     const makingPct = Math.max(0, parseFloat($("making") ? $("making").value : 8) || 0);
     const gstPct = Math.max(0, parseFloat($("gstRate") ? $("gstRate").value : 3) || 0);
-    const flatFee = Math.max(0, parseFloat($("flatFee") ? $("…877 tokens truncated…$(".calc-mode-btn").forEach(btn => {
+    const flatFee = Math.max(0, parseFloat($("flatFee") ? $("flatFee").value : 45) || 0);
+
+    const oldWeight = Math.max(0, parseFloat($("oldWeight") ? $("oldWeight").value : 0) || 0);
+    const oldPurity = Number($("oldPurity") ? $("oldPurity").value : 22) || 22;
+    const purityFractions = { 18: 0.750, 20: 0.840, 22: 0.916, 24: 0.999 };
+    const pFrac = purityFractions[oldPurity] || 0.916;
+    const oldGoldCredit = oldWeight > 0 ? Math.round(oldWeight * rate * (pFrac / 0.916)) : 0;
+
+    if (mode === "value") {
+      if ($("weightField")) $("weightField").style.display = "flex";
+      if ($("budgetField")) $("budgetField").style.display = "none";
+      if ($("weightChipsGroup")) $("weightChipsGroup").style.display = "flex";
+
+      const goldVal = Math.round(rate * weight);
+      const makeAmt = Math.round(goldVal * (makingPct / 100));
+      const sub = goldVal + makeAmt + (weight > 0 ? flatFee : 0);
+      const gstAmt = Math.round(sub * (gstPct / 100));
+      const grandTotal = Math.max(0, sub + gstAmt - oldGoldCredit);
+
+      if ($("receiptBase")) $("receiptBase").textContent = formatMoney(goldVal);
+      if ($("receiptMaking")) $("receiptMaking").textContent = formatMoney(makeAmt);
+      if ($("receiptGst")) $("receiptGst").textContent = formatMoney(gstAmt);
+      if ($("receiptFee")) $("receiptFee").textContent = formatMoney(weight > 0 ? flatFee : 0);
+      if ($("receiptTotalLabel")) $("receiptTotalLabel").textContent = "Net Payable Amount";
+      if ($("calcResult")) $("calcResult").textContent = formatMoney(grandTotal);
+      if ($("calcSub")) $("calcSub").textContent = `For ${weight.toLocaleString("en-IN")}g gold at ${formatMoney(rate)}/g benchmark`;
+    } else {
+      if ($("weightField")) $("weightField").style.display = "none";
+      if ($("budgetField")) $("budgetField").style.display = "flex";
+      if ($("weightChipsGroup")) $("weightChipsGroup").style.display = "none";
+
+      const totalFunds = budget + oldGoldCredit;
+      const applicableFee = totalFunds > flatFee ? flatFee : 0;
+      const effB = totalFunds > applicableFee ? (totalFunds - applicableFee) / (1 + gstPct / 100) : 0;
+      const goldBase = effB > 0 ? effB / (1 + makingPct / 100) : 0;
+      const grams = rate > 0 ? goldBase / rate : 0;
+      const makeAmt = Math.round(goldBase * (makingPct / 100));
+      const gstAmt = Math.round((goldBase + makeAmt + (grams > 0 ? applicableFee : 0)) * (gstPct / 100));
+
+      if ($("receiptBase")) $("receiptBase").textContent = formatMoney(goldBase);
+      if ($("receiptMaking")) $("receiptMaking").textContent = formatMoney(makeAmt);
+      if ($("receiptGst")) $("receiptGst").textContent = formatMoney(gstAmt);
+      if ($("receiptFee")) $("receiptFee").textContent = formatMoney(grams > 0 ? applicableFee : 0);
+      if ($("receiptTotalLabel")) $("receiptTotalLabel").textContent = "Purchasable Gold Weight";
+      if ($("calcResult")) $("calcResult").textContent = grams.toFixed(3) + " g";
+      if ($("calcSub")) $("calcSub").textContent = `Fits budget ${formatMoney(budget)} after taxes & deductions`;
+    }
+
+    if ($("receiptMakingLabel")) $("receiptMakingLabel").textContent = `Making Charges (${makingPct}%):`;
+    if ($("receiptGstLabel")) $("receiptGstLabel").textContent = `GST (${gstPct}%):`;
+    if ($("receiptOldGoldLine")) $("receiptOldGoldLine").style.display = oldGoldCredit > 0 ? "flex" : "none";
+    if ($("receiptOldGold")) $("receiptOldGold").textContent = "- " + formatMoney(oldGoldCredit);
+  }
+
+  function initCalculator() {
+    // Segmented Mode Toggle (By Weight vs By Budget)
+    $$(".calc-mode-btn").forEach(btn => {
       btn.onclick = () => {
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(10);
         $$(".calc-mode-btn").forEach(b => b.classList.remove("active"));
@@ -1825,21 +1878,30 @@ Total output lines: 1912
   // INITIALIZATION
   // ==========================================================================
   window.addEventListener("DOMContentLoaded", () => {
-    initTheme();
-    initLanguage();
-    initNavigation();
-    initChartScrub();
-    initCompareDates();
-    initCalculator();
-    initCalculatorPresets();
-    initBillAuditor();
-    initOldGoldMelt();
-    initSchemes();
-    initPortfolio();
-    initPortfolioBackup();
-    initTargetWatchdog();
-    initShareButtons();
-    initLiveRefresh();
+    // Bind the primary navigation first, then isolate optional feature boot
+    // failures so a calculator/chart issue cannot disable every tab and feed.
+    const boot = (name, initializer) => {
+      try { initializer(); return true; }
+      catch (error) {
+        console.error(`Gold app ${name} initialization failed:`, error);
+        return false;
+      }
+    };
+    if (boot("navigation", initNavigation)) document.documentElement.dataset.appReady = "true";
+    boot("theme", initTheme);
+    boot("language", initLanguage);
+    boot("chart", initChartScrub);
+    boot("date comparison", initCompareDates);
+    boot("calculator", initCalculator);
+    boot("calculator presets", initCalculatorPresets);
+    boot("bill auditor", initBillAuditor);
+    boot("old gold", initOldGoldMelt);
+    boot("schemes", initSchemes);
+    boot("portfolio", initPortfolio);
+    boot("portfolio backup", initPortfolioBackup);
+    boot("price watchdog", initTargetWatchdog);
+    boot("sharing", initShareButtons);
+    boot("live refresh", initLiveRefresh);
 
     // Au Coin chime on brand badge tap
     const brandBadge = $("brandBadge");
@@ -1853,7 +1915,7 @@ Total output lines: 1912
       };
     }
 
-    loadMarketData();
+    boot("market data", () => { void loadMarketData(); });
   });
 
 })();

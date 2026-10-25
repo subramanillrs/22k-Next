@@ -26,9 +26,9 @@ rounded:
   xl: "30px"
   full: "9999px"
 spacing:
-  page-max: "1160px"
-  mobile-gutter: "14px"
-  section-gap: "16px"
+  page-max: "960px"
+  mobile-gutter: "clamp(12px, 4vw, 16px)"
+  section-gap: "12px"
 components:
   masthead:
     owner: "css/upgrade.css"
@@ -80,15 +80,15 @@ Roboto/system sans handles controls and dense information; Fraunces remains a di
 
 ## Layout
 
-The experience is mobile-first, with fluid 12–16px phone gutters and a 1160px maximum content width on larger screens. The masthead keeps all actions available while compressing the feed-status label to a live dot on very narrow screens; its text remains announced to assistive technology. The four-item dock remains reachable at the bottom with safe-area padding. Market content leads with the sovereign quote and recorded daily range, followed by fix, purity, and local-basis cards in a quiet two-column grid. Analytics retains its chart and bounded history table. Calculator and scheme content scroll naturally; no shared shell traps long forms in a fixed-height viewport.
+The base layout targets a 393–440 CSS-pixel portrait phone (including the OnePlus 13R class) with one shared 12–16px gutter, 44px app-bar actions, and a full-width four-destination bar above the Android safe area. Market content leads with the eight-gram quote, recorded daily range, and timestamped fix timeline; related readings remain grouped within consistent cards. Phone pages use one column while comparisons retain intentional two- and three-column inner grids. Wider screens expand the card grid and cap the reading width at 960px. Analytics keeps its chart and bounded history table. Calculator and scheme content scroll naturally; numeric forms use two columns only when they fit.
 
 ## Elevation & Depth
 
-Hierarchy comes from white surfaces, quiet blue-gray borders, and restrained shadows. There is no glass blur or dark default hero. OLED mode keeps its existing high-contrast surface hierarchy as an optional theme.
+Hierarchy comes from a muted blue-gray canvas, raised white cards, and a single indigo primary-container quote. Nested readings use a neutral surface; green/red are reserved for semantic movement and status. Borders are quiet, shadows appear only on top-level cards, and there is no glass blur or dark default hero. OLED mode remaps the same semantic roles while retaining its optional high-contrast surface hierarchy.
 
 ## Shapes
 
-Controls use 6px radii, content cards 10–18px, and status treatments use restrained rounding. Tables remain square-edged inside rounded scroll containers. Focus rings sit outside the component border and must not be clipped. The bottom navigation is the only persistent floating surface; market prices never appear in a floating pill.
+Controls use 12px radii, nested readings 16px, and top-level cards 24–30px. Tables remain square-edged inside rounded scroll containers. Focus rings sit outside the component border and must not be clipped. The bottom navigation is the only persistent fixed surface; market prices never appear in a floating pill.
 
 ## Components
 

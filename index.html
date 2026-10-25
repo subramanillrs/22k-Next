@@ -21,10 +21,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Modular Style Architecture -->
-<link rel="stylesheet" href="css/design-system.css?v=31">
-<link rel="stylesheet" href="css/navigation.css?v=31">
-<link rel="stylesheet" href="css/bento-grid.css?v=31">
-<link rel="stylesheet" href="css/upgrade.css?v=31">
+<link rel="stylesheet" href="css/design-system.css?v=32">
+<link rel="stylesheet" href="css/navigation.css?v=32">
+<link rel="stylesheet" href="css/bento-grid.css?v=32">
+<link rel="stylesheet" href="css/upgrade.css?v=32">
 
 <title>Chennai 22K Gold Terminal Next | Institutional MJDMA Benchmark & ML Forecast</title>
 <script id="gold-bootstrap" type="application/json">
@@ -99,8 +99,8 @@
           <div class="stat-col text-right">
             <span class="stat-label">Official Market Date</span>
             <span class="stat-val market-date-value" id="marketDateVal">
-              <time id="marketDate" datetime="2026-09-09">Sep 9, 2026</time>
-              <span class="market-quote-time" id="marketQuoteTime">22:40</span>
+              <time id="marketDate">Loading latest market data…</time>
+              <span class="market-quote-time" id="marketQuoteTime"></span>
             </span>
           </div>
         </div>
@@ -1013,15 +1013,35 @@
     </button>
   </nav>
 
+  <!-- Keep tab navigation usable if an optional app bundle fails to load. -->
+  <script>
+    document.querySelector(".bottom-dock")?.addEventListener("click", event => {
+      if (document.documentElement.dataset.appReady === "true") return;
+      const button = event.target.closest(".tab-btn[data-tab]");
+      if (!button) return;
+      const target = button.dataset.tab;
+      document.querySelectorAll(".tab-btn").forEach(tab => {
+        const active = tab === button;
+        tab.classList.toggle("active", active);
+        if (active) tab.setAttribute("aria-current", "page");
+        else tab.removeAttribute("aria-current");
+      });
+      document.querySelectorAll(".view-page").forEach(page => {
+        page.classList.toggle("active", page.id === `view-${target}`);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, true);
+  </script>
+
   <!-- Modular Scripts -->
-  <script src="js/audio-chimes.js?v=31"></script>
-  <script src="js/ml-engine.js?v=31"></script>
-  <script src="js/quant-risk.js?v=31"></script>
-  <script src="js/scheme-optimizer.js?v=31"></script>
-  <script src="js/share-cards.js?v=31"></script>
-  <script src="js/local-tools.js?v=31"></script>
-  <script src="js/live-price-config.js?v=31"></script>
-  <script src="js/app.js?v=31"></script>
+  <script src="js/audio-chimes.js?v=32"></script>
+  <script src="js/ml-engine.js?v=32"></script>
+  <script src="js/quant-risk.js?v=32"></script>
+  <script src="js/scheme-optimizer.js?v=32"></script>
+  <script src="js/share-cards.js?v=32"></script>
+  <script src="js/local-tools.js?v=32"></script>
+  <script src="js/live-price-config.js?v=32"></script>
+  <script src="js/app.js?v=32"></script>
 
   <!-- Service Worker Registration -->
   <script>

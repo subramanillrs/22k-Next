@@ -5,6 +5,8 @@
 
 :root {
   color-scheme: light;
+  --page-max: 960px;
+  --mobile-gutter: clamp(12px, 4vw, 16px);
   --font-display: "Fraunces", "Iowan Old Style", "Georgia", serif;
   --font-sans: "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -176,15 +178,17 @@ html, body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   padding-bottom: 96px; /* Room for floating bottom nav */
 }
 
-/* Global scrollbar refinement (standards properties + WebKit fallback). */
-* { scrollbar-color: var(--ink-faint) transparent; scrollbar-width: thin; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: var(--r-full); }
+/* One visible, tokenized scrollbar treatment for app-owned scroll regions. */
+* { scrollbar-color: var(--ink-faint) var(--surface-sunken); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--surface-sunken); }
+::-webkit-scrollbar-thumb { background: var(--ink-faint); border: 2px solid var(--surface-sunken); border-radius: var(--r-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--ink-secondary); }
+::-webkit-scrollbar-thumb:active { background: var(--brand-primary); }
