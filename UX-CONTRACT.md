@@ -26,7 +26,7 @@
 - **Runtime design-system/token source:** `css/design-system.css`; component refinements in `css/upgrade.css`.
 - **Mapping/export/adapters:** CSS custom properties; no generated token pipeline.
 - **Token drift gate:** Review DESIGN.md when editing canonical root/theme values; verify Day and OLED in browser.
-- **Supported themes:** Ivory Day and OLED Night.
+- **Supported themes:** Material 3 Expressive light (default) and OLED Night (optional). This design-system release resets the earlier saved theme once; subsequent explicit theme choices persist.
 - **Design-context owner/review policy:** This repository’s UI and CSS are the source of truth; preserve the four-tab information architecture.
 
 ## Canonical UI Map
@@ -87,6 +87,8 @@ Native ownership manifest: `premium-ui.json` records `Select/Listbox` and `Date`
 - **Responsive table strategy:** Tables scroll in their own bounded wrappers; headings remain visible.
 - **Truncation/full-value access:** Long source and note labels can wrap or be read in table cells; numeric values use tabular figures.
 - **Focus restoration and sticky-obstruction policy:** Visible focus ring; controls scroll below sticky header; keep zoom enabled.
+- **Small-phone app bar:** All four app-bar actions remain available. At <=480px, the market feed status becomes a compact live dot while its changing text remains in a polite live region for assistive technology; brand/content gutters scale together from 12px to 16px.
+- **Generated market snapshot:** `js/share-cards.js` owns the snapshot renderer and must follow the Material indigo/day palette (while preserving the optional OLED variant); any renderer change increments the page/service-worker asset version together.
 
 ## Overlays and feedback
 

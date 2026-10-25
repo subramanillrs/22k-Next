@@ -14,6 +14,15 @@
 })(typeof self !== "undefined" ? self : this, function() {
   "use strict";
 
+  function themeToken(name, fallback) {
+    try {
+      if (typeof document === "undefined" || !document.documentElement) return fallback;
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+    } catch (_) {
+      return fallback;
+    }
+  }
+
   /**
    * Computes Exponential Moving Average (EMA)
    */
@@ -139,8 +148,13 @@
     const mode = options.mode || "spline";
     const scrubIndex = Number.isInteger(options.scrubIndex) ? options.scrubIndex : -1;
 
-    const colorGold = isNight ? "#ffd700" : "#a97f34";
-    const colorTextTertiary = isNight ? "#786d5c" : "#8c8273";
+    const colorPrimary = themeToken("--chart-line", isNight ? "#f0c95e" : "#4058a5");
+    const colorLineGlow = themeToken("--chart-line-glow", isNight ? "rgba(240, 201, 94, 0.22)" : "rgba(64, 88, 165, 0.20)");
+    const colorFillStrong = themeToken("--chart-fill-strong", isNight ? "rgba(240, 201, 94, 0.20)" : "rgba(64, 88, 165, 0.16)");
+    const colorFillSoft = themeToken("--chart-fill-soft", isNight ? "rgba(240, 201, 94, 0.04)" : "rgba(64, 88, 165, 0.05)");
+    const colorGrid = themeToken("--chart-grid", isNight ? "rgba(255, 255, 255, 0.10)" : "rgba(57, 65, 89, 0.11)");
+    const colorReference = themeToken("--chart-reference", isNight ? "rgba(240, 201, 94, 0.28)" : "rgba(64, 88, 165, 0.28)");
+    const colorTextTertiary = themeToken("--chart-label", isNight ? "#bdb6a9" : "#626575");
 
     const values = data.map(i => Number(i.rate_22k));
     const min0 = Math.min(...values);
@@ -167,7 +181,7 @@
 
     for (let i = 0; i <= 4; i++) {
       const gy = T + (plotH * i / 4);
-      ctx.strokeStyle = isNight ? "rgba(255, 255, 255, 0.06)" : "rgba(28, 23, 18, 0.07)";
+      ctx.strokeStyle = colorGrid;
       ctx.setLineDash([]);
       ctx.beginPath();
       ctx.moveTo(L, gy);
@@ -181,7 +195,7 @@
 
     // 2. Period Open Baseline (dashed reference)
     const openY = points[0].y;
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.22)" : "rgba(169, 127, 52, 0.20)";
+    ctx.strokeStyle = colorReference;
     ctx.lineWidth = 1;
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
@@ -258,21 +272,15 @@
       ctx.closePath();
 
       const fillGrad = ctx.createLinearGradient(0, T, 0, height - B);
-      if (isNight) {
-        fillGrad.addColorStop(0, "rgba(255, 215, 0, 0.26)");
-        fillGrad.addColorStop(0.45, "rgba(255, 215, 0, 0.09)");
-        fillGrad.addColorStop(1, "rgba(255, 215, 0, 0.0)");
-      } else {
-        fillGrad.addColorStop(0, "rgba(169, 127, 52, 0.22)");
-        fillGrad.addColorStop(0.45, "rgba(169, 127, 52, 0.07)");
-        fillGrad.addColorStop(1, "rgba(169, 127, 52, 0.0)");
-      }
+      fillGrad.addColorStop(0, colorFillStrong);
+      fillGrad.addColorStop(0.45, colorFillSoft);
+      fillGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = fillGrad;
       ctx.fill();
 
       // Ambient glow line
       drawSpline(ctx, points);
-      ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.22)" : "rgba(169, 127, 52, 0.18)";
+      ctx.strokeStyle = colorLineGlow;
       ctx.lineWidth = 4.5;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -280,7 +288,7 @@
 
       // Crisp line
       drawSpline(ctx, points);
-      ctx.strokeStyle = colorGold;
+      ctx.strokeStyle = colorPrimary;
       ctx.lineWidth = 2.2;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -294,7 +302,7 @@
 
     if (scrubIndex >= 0) {
       // Vertical crosshair
-      ctx.strokeStyle = colorGold;
+      ctx.strokeStyle = colorPrimary;
       ctx.lineWidth = 1.2;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
@@ -312,7 +320,7 @@
     }
 
     // Active point circle
-    ctx.fillStyle = colorGold;
+    ctx.fillStyle = colorPrimary;
     ctx.beginPath();
     ctx.arc(activePt.x, activePt.y, scrubIndex >= 0 ? 5.5 : 4, 0, Math.PI * 2);
     ctx.fill();

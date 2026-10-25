@@ -97,7 +97,7 @@
   }
 
   // ==========================================================================
-  // 1. THEME TOGGLE (Strict 2-Mode: Day 'light' <-> Night 'oled')
+  // 1. THEME TOGGLE (Daylight Grid 'light' <-> Night 'oled')
   // ==========================================================================
   function initTheme() {
     const root = document.documentElement;
@@ -110,7 +110,7 @@
       state.theme = active;
       try { localStorage.setItem("gold_theme_next", active); } catch (_) {}
 
-      const color = active === "oled" ? "#000000" : "#faf7f0";
+      const color = active === "oled" ? "#000000" : "#f7f7ff";
       if (metaLight) metaLight.setAttribute("content", color);
       if (metaDark) metaDark.setAttribute("content", color);
 
@@ -119,7 +119,13 @@
     }
 
     let saved = "light";
-    try { saved = localStorage.getItem("gold_theme_next") || "light"; } catch (_) {}
+    try {
+      const visualVersion = localStorage.getItem("gold_theme_next_visual");
+      saved = visualVersion === "daylight-grid-v1"
+        ? (localStorage.getItem("gold_theme_next") || "light")
+        : "light";
+      localStorage.setItem("gold_theme_next_visual", "daylight-grid-v1");
+    } catch (_) {}
     applyTheme(saved);
 
     const btn = $("themeToggleBtn");
@@ -129,7 +135,7 @@
         const current = root.getAttribute("data-theme") || "light";
         const next = (current === "oled" || current === "dark") ? "light" : "oled";
         applyTheme(next);
-        showToast(next === "light" ? "Day Theme (Ivory)" : "Night Theme (OLED Gold)");
+        showToast(next === "light" ? "Daylight Grid theme" : "Night Theme (OLED)");
       };
     }
   }

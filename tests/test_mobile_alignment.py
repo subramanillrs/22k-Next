@@ -20,8 +20,9 @@ def test_mobile_alignment():
 
     assert "padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;" in nav_css
     assert "padding: 10px 12px 14px;" in nav_css
-    assert ".views-viewport { padding: 16px 14px 24px; }" in upgrade_css
-    print("  ✓ [TEST 1b] Visual layer aligns masthead and page content with 14px mobile gutters")
+    assert ".views-viewport { padding-top: 16px; padding-bottom: 32px; }" in upgrade_css
+    assert "padding-inline: max(12px, min(16px, 4vw));" in upgrade_css
+    print("  ✓ [TEST 1b] Visual layer aligns masthead and page content to responsive mobile gutters")
 
     assert ".basis-grid" in bento_css and ".basis-box" in bento_css and "min-height: 76px" in bento_css
     print("  ✓ [TEST 2] .basis-grid and .basis-box enforce equal card heights and baselines")
@@ -82,8 +83,8 @@ def test_mobile_alignment():
 
     assert "grid-template-columns: repeat(3, minmax(0, 1fr));" in upgrade_css
     assert ".daily-snapshot > div { display: flex;" in upgrade_css
-    assert 'html[data-theme="oled"] .tab-btn.active' in upgrade_css
-    print("  ✓ [TEST 14b] Range metrics remain aligned and OLED navigation preserves contrast")
+    assert ".tab-btn.active::before" in upgrade_css
+    print("  ✓ [TEST 14b] Range metrics remain aligned and selected navigation uses its shared indicator")
 
     # Single-line masthead alignment
     assert "flex-wrap: nowrap;" in nav_css and ".masthead-actions" in nav_css
@@ -91,9 +92,17 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v19"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v28"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v19 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v28 and network-first navigation policy")
+
+    assert "padding-inline: max(12px, min(16px, 4vw));" in upgrade_css
+    assert 'src="js/share-cards.js?v=28"' in index_html
+    assert "fix-timeline-head .status-indicator" in upgrade_css
+    share_cards = (BASE_DIR / "js/share-cards.js").read_text().split("Generates Itemized Quotation Receipt Card")[0]
+    assert "#e1e7ff" in share_cards and "#4058a5" in share_cards
+    assert "#faf6ed" not in share_cards and "#a97f34" not in share_cards
+    print("  ✓ [TEST 17] Responsive gutters align and generated snapshots use the current indigo visual system")
 
     print("============================================================")
     print("ALL MOBILE ALIGNMENT TESTS PASSED 100%! ✓")

@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * CHENNAI 22K GOLD NEXT: HIGH-DPI DYNAMIC SHARE CARDS
- * Strict 2-Mode Fidelity: Day (Ivory/Espresso) & Night (OLED/#ffd700)
+ * Material 3 Expressive share cards: daylight indigo & OLED night.
  * ============================================================================
  */
 
@@ -59,14 +59,14 @@
       bgGrad.addColorStop(1, "#000000");
     } else {
       bgGrad.addColorStop(0, "#ffffff");
-      bgGrad.addColorStop(0.55, "#faf6ed");
-      bgGrad.addColorStop(1, "#eee5d3");
+      bgGrad.addColorStop(0.58, "#f7f7ff");
+      bgGrad.addColorStop(1, "#eef0fa");
     }
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
     // 2. Outer Border
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.40)" : "rgba(169, 127, 52, 0.35)";
+    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.40)" : "rgba(64, 88, 165, 0.22)";
     ctx.lineWidth = 1.5;
     roundRect(ctx, 16, 16, W - 32, H - 32, 20);
     ctx.stroke();
@@ -85,27 +85,27 @@
       badgeGrad.addColorStop(0.5, "#ffd700");
       badgeGrad.addColorStop(1, "#b39200");
     } else {
-      badgeGrad.addColorStop(0, "#f4dca0");
-      badgeGrad.addColorStop(0.55, "#a97f34");
-      badgeGrad.addColorStop(1, "#6b5223");
+      badgeGrad.addColorStop(0, "#dce3ff");
+      badgeGrad.addColorStop(0.55, "#4058a5");
+      badgeGrad.addColorStop(1, "#263d7b");
     }
     ctx.fillStyle = badgeGrad;
     roundRect(ctx, 36, 36, 38, 38, 9);
     ctx.fill();
 
     ctx.fillStyle = isNight ? "#000000" : "#ffffff";
-    ctx.font = "bold 19px 'Fraunces', Georgia, serif";
+    ctx.font = "bold 19px 'Roboto', Arial, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("Au", 55, 55);
 
     // Title & Benchmark Info
     ctx.textAlign = "left";
-    ctx.fillStyle = isNight ? "#ffffff" : "#1c1712";
-    ctx.font = "italic 600 23px 'Fraunces', Georgia, serif";
+    ctx.fillStyle = isNight ? "#ffffff" : "#1b1b22";
+    ctx.font = "600 23px 'Roboto', Arial, sans-serif";
     ctx.fillText("Chennai 22K Gold Terminal", 86, 49);
 
-    ctx.fillStyle = isNight ? "#d4ab63" : "#6b6255";
+    ctx.fillStyle = isNight ? "#d4ab63" : "#454650";
     ctx.font = "500 12px 'Inter', -apple-system, sans-serif";
     ctx.fillText("Live MJDMA Official Benchmark · Institutional Feed", 86, 68);
 
@@ -118,36 +118,41 @@
     const pillW = ctx.measureText(pillText).width + 24;
     const pillX = W - 36 - pillW;
 
-    ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.10)" : "rgba(169, 127, 52, 0.08)";
+    ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.10)" : "#e1e7ff";
     roundRect(ctx, pillX, 39, pillW, 30, 15);
     ctx.fill();
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.35)" : "rgba(169, 127, 52, 0.25)";
+    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.35)" : "rgba(64, 88, 165, 0.24)";
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.fillStyle = isNight ? "#ffd700" : "#8a6627";
+    ctx.fillStyle = isNight ? "#ffd700" : "#263d7b";
     ctx.textAlign = "center";
     ctx.fillText(pillText, pillX + pillW / 2, 55);
 
     // Header divider
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.25)" : "rgba(169, 127, 52, 0.20)";
+    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.25)" : "rgba(64, 88, 165, 0.16)";
     ctx.beginPath();
     ctx.moveTo(36, 90);
     ctx.lineTo(W - 36, 90);
     ctx.stroke();
 
     // 4. Hero Sovereign Rate
+    if (!isNight) {
+      ctx.fillStyle = "#e1e7ff";
+      roundRect(ctx, 36, 104, W - 72, 116, 22);
+      ctx.fill();
+    }
     ctx.textAlign = "left";
-    ctx.fillStyle = isNight ? "#ffd700" : "#a97f34";
-    ctx.font = "italic 600 14px 'Fraunces', Georgia, serif";
+    ctx.fillStyle = isNight ? "#ffd700" : "#4058a5";
+    ctx.font = "600 14px 'Roboto', Arial, sans-serif";
     ctx.fillText("One sovereign, eight grams", 36, 122);
 
     const r8 = marketData.rate_8g || 113160;
     const r22 = marketData.rate_22k || 14145;
     const chg = marketData.change || -125;
 
-    ctx.fillStyle = isNight ? "#ffffff" : "#1c1712";
-    ctx.font = "bold 52px 'Fraunces', Georgia, serif";
+    ctx.fillStyle = isNight ? "#ffffff" : "#1b1b22";
+    ctx.font = "700 52px 'Roboto', Arial, sans-serif";
     ctx.fillText(formatMoney(r8), 36, 175);
 
     // Change badge
@@ -168,7 +173,7 @@
       ctx.strokeStyle = isNight ? "#ff5252" : "#ad3d30";
     } else {
       ctx.fillStyle = isNight ? "rgba(255, 255, 255, 0.08)" : "#f0eadb";
-      ctx.strokeStyle = isNight ? "rgba(255, 255, 255, 0.20)" : "#cdbe9d";
+      ctx.strokeStyle = isNight ? "rgba(255, 255, 255, 0.20)" : "#c5c8d4";
     }
     roundRect(ctx, chgX, chgY, chgW, 28, 14);
     ctx.fill();
@@ -181,23 +186,23 @@
     // Sub-bar
     ctx.textAlign = "left";
     ctx.font = "500 13px 'Inter', sans-serif";
-    ctx.fillStyle = isNight ? "#a89d88" : "#6b6255";
+    ctx.fillStyle = isNight ? "#a89d88" : "#454650";
     ctx.fillText("Rate per gram: ", 36, 206);
-    ctx.fillStyle = isNight ? "#ffffff" : "#1c1712";
+    ctx.fillStyle = isNight ? "#ffffff" : "#1b1b22";
     ctx.font = "700 13px 'Inter', sans-serif";
     ctx.fillText(formatMoney(r22) + "/g", 134, 206);
 
     ctx.textAlign = "right";
     ctx.font = "500 12.5px 'Inter', sans-serif";
-    ctx.fillStyle = isNight ? "#d4ab63" : "#8a6627";
+    ctx.fillStyle = isNight ? "#d4ab63" : "#4058a5";
     ctx.fillText("Official MJDMA Fix · Chennai Market", W - 36, 206);
 
     // 5. Purity Cards Grid
     const boxY = 224;
     const boxH = 155;
     const boxW = W - 72;
-    ctx.fillStyle = isNight ? "rgba(14, 14, 14, 0.9)" : "rgba(255, 255, 255, 0.85)";
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.20)" : "rgba(169, 127, 52, 0.22)";
+    ctx.fillStyle = isNight ? "rgba(14, 14, 14, 0.9)" : "#ffffff";
+    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.20)" : "#dfe1ea";
     roundRect(ctx, 36, boxY, boxW, boxH, 16);
     ctx.fill();
     ctx.stroke();
@@ -215,10 +220,10 @@
     purities.forEach((p, idx) => {
       const cx = 36 + idx * colW;
       if (p.highlight) {
-        ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.12)" : "rgba(169, 127, 52, 0.09)";
+        ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.12)" : "#e1e7ff";
         roundRect(ctx, cx + 5, boxY + 5, colW - 10, boxH - 10, 12);
         ctx.fill();
-        ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.35)" : "rgba(169, 127, 52, 0.28)";
+        ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.35)" : "rgba(64, 88, 165, 0.30)";
         ctx.lineWidth = 1;
         ctx.stroke();
       }
@@ -232,19 +237,19 @@
       }
 
       ctx.textAlign = "center";
-      ctx.fillStyle = p.highlight ? (isNight ? "#ffd700" : "#a97f34") : (isNight ? "#a89d88" : "#8a8174");
+      ctx.fillStyle = p.highlight ? (isNight ? "#ffd700" : "#263d7b") : (isNight ? "#a89d88" : "#626575");
       ctx.font = "bold 11px 'Inter', sans-serif";
       ctx.fillText(p.title, cx + colW / 2, boxY + 34);
 
-      ctx.fillStyle = isNight ? "#777777" : "#a89d88";
+      ctx.fillStyle = isNight ? "#777777" : "#626575";
       ctx.font = "500 10.5px 'Inter', sans-serif";
       ctx.fillText(p.sub, cx + colW / 2, boxY + 52);
 
-      ctx.fillStyle = isNight ? "#ffffff" : "#1c1712";
+      ctx.fillStyle = isNight ? "#ffffff" : "#1b1b22";
       ctx.font = "bold 26px 'Fraunces', Georgia, serif";
       ctx.fillText(p.val, cx + colW / 2, boxY + 92);
 
-      ctx.fillStyle = p.highlight ? (isNight ? "#ffd700" : "#6b5223") : (isNight ? "#a89d88" : "#8a8174");
+      ctx.fillStyle = p.highlight ? (isNight ? "#ffd700" : "#4058a5") : (isNight ? "#a89d88" : "#626575");
       ctx.font = (p.highlight ? "600" : "500") + " 10.5px 'Inter', sans-serif";
       ctx.fillText(p.desc, cx + colW / 2, boxY + 124);
     });
@@ -255,20 +260,20 @@
     const madRate = formatMoney(r22 + 15);
 
     const stripY = 394;
-    ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.08)" : "rgba(169, 127, 52, 0.06)";
-    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.22)" : "rgba(169, 127, 52, 0.18)";
+    ctx.fillStyle = isNight ? "rgba(255, 215, 0, 0.08)" : "#f1f2fa";
+    ctx.strokeStyle = isNight ? "rgba(255, 215, 0, 0.22)" : "#dfe1ea";
     roundRect(ctx, 36, stripY, boxW, 42, 10);
     ctx.fill();
     ctx.stroke();
 
     ctx.textAlign = "center";
     ctx.font = "600 12px 'Inter', sans-serif";
-    ctx.fillStyle = isNight ? "#ffd700" : "#6b5223";
+    ctx.fillStyle = isNight ? "#ffd700" : "#4058a5";
     ctx.fillText(`Regional Parity: Salem ${salemRate} (-₹10)  ·  Coimbatore ${cbeRate} (-₹15)  ·  Madurai ${madRate} (+₹15)`, W / 2, stripY + 24);
 
     // 7. Footer
     ctx.textAlign = "left";
-    ctx.fillStyle = isNight ? "#666666" : "#a89d88";
+    ctx.fillStyle = isNight ? "#666666" : "#626575";
     ctx.font = "500 11px 'Inter', sans-serif";
     ctx.fillText("Official MJDMA Terminal · Madras Jewellers & Diamond Merchants Association", 36, 480);
 

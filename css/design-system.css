@@ -1,12 +1,12 @@
 /* ============================================================================
-   CHENNAI 22K GOLD NEXT — MARKET LEDGER SYSTEM
-   Canonical runtime tokens: warm stock, ink, and one restrained brass accent.
+   CHENNAI 22K GOLD NEXT — DAYLIGHT GRID SYSTEM
+   Canonical runtime tokens: airy blue-gray surfaces, slate, cobalt, and coral.
    ============================================================================ */
 
 :root {
   color-scheme: light;
   --font-display: "Fraunces", "Iowan Old Style", "Georgia", serif;
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Roboto", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   /* Typographic scale */
   --fs-3xs: 10px;
@@ -22,42 +22,59 @@
   --fs-hero: clamp(42px, 8vw, 68px);
 
   /* Radius tokens */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 10px;
-  --r-lg: 14px;
-  --r-xl: 18px;
+  --r-xs: 6px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 30px;
   --r-full: 9999px;
 
   /* Day Theme (Default / Light) */
-  --bg-canvas: #f3f0e8;
-  --surface-ground: #f8f6f0;
-  --surface-raised: #fffefa;
-  --surface-sunken: #ece8df;
-  --surface-glass: rgba(255, 254, 250, 0.96);
-  --surface-glass-strong: rgba(255, 254, 250, 0.98);
-  --glass-border: rgba(28, 23, 18, 0.14);
-  --glass-highlight: rgba(255, 255, 255, 0.68);
+  --bg-canvas: #f7f7ff;
+  --surface-ground: #f1f2fa;
+  --surface-raised: #ffffff;
+  --surface-sunken: #e9eaf3;
+  --surface-glass: rgba(255, 255, 255, 0.96);
+  --surface-glass-strong: rgba(255, 255, 255, 0.98);
+  --glass-border: rgba(42, 63, 91, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.82);
   --glass-blur: 12px;
 
-  --border-subtle: rgba(28, 23, 18, 0.12);
-  --border-strong: rgba(28, 23, 18, 0.24);
+  --border-subtle: rgba(57, 65, 89, 0.12);
+  --border-strong: rgba(57, 65, 89, 0.24);
 
-  --ink-primary: #211d17;
-  --ink-secondary: #5e584d;
-  --ink-muted: #756e62;
-  --ink-faint: #918a7e;
+  --ink-primary: #1b1b22;
+  --ink-secondary: #454650;
+  --ink-muted: #60616d;
+  --ink-faint: #777985;
 
-  --masthead-bg: #211d17;
-  --masthead-ink: #f8f6ef;
-  --masthead-gold: #eac36b;
-  --surface-hero: #211d17;
-  --ink-on-hero: #f8f6ef;
+  --masthead-bg: #f7f7ff;
+  --masthead-ink: #1b1b22;
+  --masthead-gold: #4058a5;
+  --surface-hero: #e1e7ff;
+  --ink-on-hero: #18264e;
 
-  --gold-primary: #946b24;
-  --gold-deep: #72521c;
-  --gold-tint: rgba(148, 107, 36, 0.10);
-  --gold-glow: rgba(148, 107, 36, 0.18);
+  --brand-primary: #4058a5;
+  --brand-deep: #304582;
+  --brand-tint: #e1e7ff;
+  --brand-glow: rgba(64, 88, 165, 0.16);
+  --brand-on-container: #18264e;
+  --brand-outline: #7886bd;
+  /* Legacy variable names remain aliases so older components keep one accent. */
+  --gold-primary: var(--brand-primary);
+  --gold-deep: var(--brand-deep);
+  --gold-tint: var(--brand-tint);
+  --gold-glow: var(--brand-glow);
+  --coral: #80536d;
+
+  /* Canvas chart roles mirror the active theme; JS reads these semantic tokens. */
+  --chart-line: #4058a5;
+  --chart-line-glow: rgba(64, 88, 165, 0.20);
+  --chart-fill-strong: rgba(64, 88, 165, 0.16);
+  --chart-fill-soft: rgba(64, 88, 165, 0.05);
+  --chart-grid: rgba(57, 65, 89, 0.11);
+  --chart-label: #626575;
+  --chart-reference: rgba(64, 88, 165, 0.28);
 
   --good: #28633c;
   --good-bg: #e4eee4;
@@ -70,10 +87,10 @@
   --bad-glow: rgba(162, 60, 49, 0.18);
 
   /* Elevation */
-  --shadow-sm: 0 1px 2px rgba(28, 23, 18, 0.04);
-  --shadow-md: 0 8px 24px -12px rgba(28, 23, 18, 0.20);
-  --shadow-lg: 0 12px 30px -18px rgba(28, 23, 18, 0.24);
-  --shadow-glow: 0 0 16px rgba(148, 107, 36, 0.14);
+  --shadow-sm: 0 1px 2px rgba(28, 29, 42, 0.05);
+  --shadow-md: 0 8px 24px -12px rgba(28, 29, 42, 0.16);
+  --shadow-lg: 0 12px 30px -18px rgba(28, 29, 42, 0.18);
+  --shadow-glow: 0 0 16px rgba(64, 88, 165, 0.14);
 
   --transition-fast: 0.15s cubic-bezier(0.2, 0, 0, 1);
   --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -109,6 +126,19 @@ html[data-theme="oled"] {
   --surface-hero: #17160f;
   --ink-on-hero: #fffdf5;
 
+  --brand-primary: #f0c95e;
+  --brand-deep: #d4a93f;
+  --brand-tint: rgba(240, 201, 94, 0.12);
+  --brand-glow: rgba(240, 201, 94, 0.18);
+  --brand-on-container: #fff0c2;
+  --brand-outline: #d4a93f;
+  --chart-line: #f0c95e;
+  --chart-line-glow: rgba(240, 201, 94, 0.22);
+  --chart-fill-strong: rgba(240, 201, 94, 0.20);
+  --chart-fill-soft: rgba(240, 201, 94, 0.04);
+  --chart-grid: rgba(255, 255, 255, 0.10);
+  --chart-label: #bdb6a9;
+  --chart-reference: rgba(240, 201, 94, 0.28);
   --gold-primary: #f0c95e;
   --gold-deep: #d4a93f;
   --gold-tint: rgba(240, 201, 94, 0.12);
