@@ -21,10 +21,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- Modular Style Architecture -->
-<link rel="stylesheet" href="css/design-system.css?v=30">
-<link rel="stylesheet" href="css/navigation.css?v=30">
-<link rel="stylesheet" href="css/bento-grid.css?v=30">
-<link rel="stylesheet" href="css/upgrade.css?v=30">
+<link rel="stylesheet" href="css/design-system.css?v=31">
+<link rel="stylesheet" href="css/navigation.css?v=31">
+<link rel="stylesheet" href="css/bento-grid.css?v=31">
+<link rel="stylesheet" href="css/upgrade.css?v=31">
 
 <title>Chennai 22K Gold Terminal Next | Institutional MJDMA Benchmark & ML Forecast</title>
 <script id="gold-bootstrap" type="application/json">
@@ -98,7 +98,10 @@
           </div>
           <div class="stat-col text-right">
             <span class="stat-label">Official Market Date</span>
-            <span class="stat-val" id="marketDateVal">Sep 9, 2026 · 22:40</span>
+            <span class="stat-val market-date-value" id="marketDateVal">
+              <time id="marketDate" datetime="2026-09-09">Sep 9, 2026</time>
+              <span class="market-quote-time" id="marketQuoteTime">22:40</span>
+            </span>
           </div>
         </div>
       </div>
@@ -787,10 +790,10 @@
           <div class="calc-field">
             <label for="schemeJewellerProfile">Jeweller Chit Scheme Model</label>
             <select id="schemeJewellerProfile" class="calc-input">
-              <option value="grt">GRT Golden Eleven (Weight + 14% VA waiver)</option>
-              <option value="lalitha">Lalitha Jewellery 11-Mo (Weight + 14% VA)</option>
-              <option value="tanishq">Tanishq Golden Harvest (Cash + 1-Mo Bonus)</option>
-              <option value="kalyan">Kalyan Dhanvarsha (Cash + 1-Mo Bonus)</option>
+              <option value="grt">GRT Golden Eleven · Weight</option>
+              <option value="lalitha">Lalitha 11-Month · Weight</option>
+              <option value="tanishq">Tanishq Golden Harvest · Cash</option>
+              <option value="kalyan">Kalyan Dhanvarsha · Cash</option>
             </select>
           </div>
           <div class="calc-field">
@@ -1011,14 +1014,14 @@
   </nav>
 
   <!-- Modular Scripts -->
-  <script src="js/audio-chimes.js?v=30"></script>
-  <script src="js/ml-engine.js?v=30"></script>
-  <script src="js/quant-risk.js?v=30"></script>
-  <script src="js/scheme-optimizer.js?v=30"></script>
-  <script src="js/share-cards.js?v=30"></script>
-  <script src="js/local-tools.js?v=30"></script>
-  <script src="js/live-price-config.js?v=30"></script>
-  <script src="js/app.js?v=30"></script>
+  <script src="js/audio-chimes.js?v=31"></script>
+  <script src="js/ml-engine.js?v=31"></script>
+  <script src="js/quant-risk.js?v=31"></script>
+  <script src="js/scheme-optimizer.js?v=31"></script>
+  <script src="js/share-cards.js?v=31"></script>
+  <script src="js/local-tools.js?v=31"></script>
+  <script src="js/live-price-config.js?v=31"></script>
+  <script src="js/app.js?v=31"></script>
 
   <!-- Service Worker Registration -->
   <script>

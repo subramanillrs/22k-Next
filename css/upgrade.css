@@ -160,6 +160,16 @@ html[data-theme="oled"] .brand-badge {
 }
 .hero-card .stat-label { color: var(--ink-muted); font-size: 11px; letter-spacing: 0.06em; }
 .hero-card .stat-val { color: var(--ink-on-hero); font-size: var(--fs-md); }
+.hero-card .market-date-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: normal;
+}
+.market-date-value time,
+.market-quote-time { white-space: nowrap; }
+.market-quote-time { color: var(--ink-secondary); font-size: clamp(11px, 3.1vw, 14px); }
 
 .daily-snapshot {
   position: relative;
@@ -348,7 +358,15 @@ html[data-theme="oled"] .brand-badge {
 .calc-input:focus, .calc-input:focus-visible { border-color: var(--gold-primary); box-shadow: 0 0 0 3px var(--gold-tint); }
 .calc-grid-form { gap: 14px; }
 .calc-field { min-width: 0; }
-.calc-field label { display: block; margin-bottom: 6px; }
+.calc-field label {
+  display: block;
+  min-height: 2.7em;
+  margin-bottom: 6px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+}
 .preset-tools, .portfolio-backup-tools {
   border-color: var(--border-subtle);
   border-radius: var(--r-sm);
