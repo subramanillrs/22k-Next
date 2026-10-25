@@ -5,23 +5,23 @@
  * ============================================================================
  */
 
-const CACHE_NAME = "gold-terminal-v32";
+const CACHE_NAME = "gold-terminal-v33";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
-  "./css/design-system.css?v=32",
-  "./css/navigation.css?v=32",
-  "./css/bento-grid.css?v=32",
-  "./css/upgrade.css?v=32",
-  "./js/app.js?v=32",
-  "./js/live-price-config.js?v=32",
-  "./js/local-tools.js?v=32",
-  "./js/ml-engine.js?v=32",
-  "./js/quant-risk.js?v=32",
-  "./js/scheme-optimizer.js?v=32",
-  "./js/share-cards.js?v=32",
-  "./js/audio-chimes.js?v=32"
+  "./css/design-system.css?v=33",
+  "./css/navigation.css?v=33",
+  "./css/bento-grid.css?v=33",
+  "./css/upgrade.css?v=33",
+  "./js/app.js?v=33",
+  "./js/live-price-config.js?v=33",
+  "./js/local-tools.js?v=33",
+  "./js/ml-engine.js?v=33",
+  "./js/quant-risk.js?v=33",
+  "./js/scheme-optimizer.js?v=33",
+  "./js/share-cards.js?v=33",
+  "./js/audio-chimes.js?v=33"
 ];
 
 self.addEventListener("install", event => {

@@ -20,7 +20,9 @@ def test_mobile_alignment():
 
     assert "padding: max(10px, env(safe-area-inset-top, 0px)) var(--mobile-gutter) 10px;" in nav_css
     assert "padding: 10px var(--mobile-gutter) 14px;" in nav_css
-    assert ".views-viewport { padding-inline: var(--mobile-gutter); padding-top: 16px; padding-bottom: 28px; }" in upgrade_css
+    assert ".masthead-inner { padding-inline: var(--mobile-gutter); }" in upgrade_css
+    assert ".views-viewport {\n    padding-inline: var(--mobile-gutter);\n    padding-top: 16px;\n    padding-bottom: 28px;\n  }" in upgrade_css
+    assert ".masthead-inner,\n  .views-viewport" not in upgrade_css
     assert "--mobile-gutter: clamp(12px, 4vw, 16px);" in (BASE_DIR / "css/design-system.css").read_text()
     assert "padding-inline: var(--mobile-gutter);" in upgrade_css
     print("  ✓ [TEST 1b] Masthead and content share one 12–16px phone gutter token")
@@ -93,9 +95,9 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v32"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v33"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v32 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v33 and network-first navigation policy")
 
     assert "padding-inline: var(--mobile-gutter);" in upgrade_css
     assert ".masthead .icon-btn { width: 44px; height: 44px; }" in upgrade_css
@@ -103,7 +105,9 @@ def test_mobile_alignment():
     assert "grid-template-columns: minmax(0, 1fr); gap: 12px;" in upgrade_css
     assert "padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));" in upgrade_css
     assert "--page-max: 960px;" in (BASE_DIR / "css/design-system.css").read_text()
-    assert 'src="js/share-cards.js?v=32"' in index_html
+    assert 'src="js/share-cards.js?v=33"' in index_html
+    assert ".tab-btn span {\n    display: block;" in upgrade_css
+    assert ".meter-metric-item span,\n  .port-metric span" in upgrade_css
     assert "fix-timeline-head .status-indicator" in upgrade_css
     assert "grid-template-columns: repeat(2, minmax(0, 1fr));" in upgrade_css
     assert ".sentiment-dial circle {\n  fill: none;" in upgrade_css

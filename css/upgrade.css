@@ -479,8 +479,12 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
 }
 
 @media (max-width: 720px) {
-  .masthead-inner,
-  .views-viewport { padding-inline: var(--mobile-gutter); padding-top: 16px; padding-bottom: 28px; }
+  .masthead-inner { padding-inline: var(--mobile-gutter); }
+  .views-viewport {
+    padding-inline: var(--mobile-gutter);
+    padding-top: 16px;
+    padding-bottom: 28px;
+  }
   .bento-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .bento-card { gap: 12px; padding: 16px; }
   .bento-card.full-width { grid-column: 1; }
@@ -520,11 +524,65 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
   }
   .tab-btn::before { top: 4px; width: 52px; height: 30px; }
   .tab-btn svg { width: 20px; height: 20px; }
-  .tab-btn span { font-size: 11px; }
+  .tab-btn span {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .daily-snapshot { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 0 26px; }
   .daily-snapshot > div { padding: 10px 8px; }
   .daily-snapshot > div:first-child { padding-left: 8px; }
   .daily-snapshot small { left: 2px; right: 2px; }
+  .brand-sub { font-size: 10px; }
+  .dial-center small { font-size: 10px; }
+
+  /* Keep compact dashboard labels readable and let them wrap instead of clipping. */
+  .fix-chip-title,
+  .basis-title,
+  .national-label,
+  .purity-carat,
+  .meter-metric-item span,
+  .port-metric span,
+  .quant-risk-label,
+  .tech-meter-title,
+  .fc-horizon {
+    font-size: max(11px, var(--fs-xs));
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .fix-chip-title,
+  .basis-title { height: auto; min-height: 2.5em; overflow: visible; }
+  .fix-chip-time,
+  .basis-sub,
+  .national-sub,
+  .purity-fineness,
+  .port-metric small {
+    font-size: 10.5px;
+    line-height: 1.25;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .fix-chip-rate,
+  .basis-rate,
+  .national-val,
+  .purity-rate,
+  .meter-metric-item b,
+  .port-metric strong { max-width: 100%; }
+  #weightChips .chip,
+  #makingChips .chip,
+  .chip-grid-4 .chip,
+  #portWeightChips .chip {
+    min-height: 36px;
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 @media (max-width: 400px) {
@@ -532,7 +590,7 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
   .brand-group { gap: 6px; }
   .brand-badge { width: 32px; height: 32px; }
   .brand-title { font-size: 14px; }
-  .brand-sub { font-size: 9px; }
+  .brand-sub { font-size: 10px; }
   .masthead-actions { gap: 4px; }
   .status-indicator { max-width: 94px; padding-inline: 6px; }
   .status-indicator span:last-child { overflow: hidden; text-overflow: ellipsis; }
@@ -567,7 +625,7 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
     white-space: nowrap;
   }
   .masthead .icon-btn { width: 44px; height: 44px; }
-  .masthead .lang-toggle { min-width: 44px; min-height: 44px; padding-inline: 4px; font-size: 10px; }
+  .masthead .lang-toggle { min-width: 44px; min-height: 44px; padding-inline: 4px; font-size: 11px; }
   .fix-timeline-head { align-items: flex-start; flex-direction: column; gap: 4px; margin-bottom: 8px; }
   .fix-timeline-head .status-indicator { width: auto; min-width: 0; min-height: 24px; max-width: 100%; }
 }
