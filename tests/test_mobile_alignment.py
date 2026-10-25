@@ -18,11 +18,12 @@ def test_mobile_alignment():
     assert ".masthead-inner" in nav_css and "class=\"masthead-inner\"" in index_html
     print("  ✓ [TEST 1a] .masthead-inner wrapper present in navigation.css and index.html")
 
-    assert "padding: max(10px, env(safe-area-inset-top, 0px)) 12px 10px;" in nav_css
-    assert "padding: 10px 12px 14px;" in nav_css
-    assert ".views-viewport { padding-top: 16px; padding-bottom: 32px; }" in upgrade_css
-    assert "padding-inline: max(12px, min(16px, 4vw));" in upgrade_css
-    print("  ✓ [TEST 1b] Visual layer aligns masthead and page content to responsive mobile gutters")
+    assert "padding: max(10px, env(safe-area-inset-top, 0px)) var(--mobile-gutter) 10px;" in nav_css
+    assert "padding: 10px var(--mobile-gutter) 14px;" in nav_css
+    assert ".views-viewport { padding-inline: var(--mobile-gutter); padding-top: 16px; padding-bottom: 28px; }" in upgrade_css
+    assert "--mobile-gutter: clamp(12px, 4vw, 16px);" in (BASE_DIR / "css/design-system.css").read_text()
+    assert "padding-inline: var(--mobile-gutter);" in upgrade_css
+    print("  ✓ [TEST 1b] Masthead and content share one 12–16px phone gutter token")
 
     assert ".basis-grid" in bento_css and ".basis-box" in bento_css and "min-height: 76px" in bento_css
     print("  ✓ [TEST 2] .basis-grid and .basis-box enforce equal card heights and baselines")
@@ -51,7 +52,7 @@ def test_mobile_alignment():
 
     # Cascade order verification
     base_viewport_idx = nav_css.find(".views-viewport {\n  width: 100%;")
-    mobile_viewport_idx = nav_css.find(".views-viewport {\n    padding: 10px 12px 14px;")
+    mobile_viewport_idx = nav_css.find(".views-viewport {\n    padding: 10px var(--mobile-gutter) 14px;")
     assert base_viewport_idx != -1 and mobile_viewport_idx != -1
     assert base_viewport_idx < mobile_viewport_idx, "Base .views-viewport must precede mobile media query in cascade"
     print("  ✓ [TEST 10] .views-viewport base declaration correctly precedes @media (max-width: 640px)")
@@ -92,12 +93,17 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v28"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v29"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v28 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v29 and network-first navigation policy")
 
-    assert "padding-inline: max(12px, min(16px, 4vw));" in upgrade_css
-    assert 'src="js/share-cards.js?v=28"' in index_html
+    assert "padding-inline: var(--mobile-gutter);" in upgrade_css
+    assert ".masthead .icon-btn { width: 44px; height: 44px; }" in upgrade_css
+    assert ".masthead-inner { padding-inline: var(--mobile-gutter); gap: 6px; }" in upgrade_css
+    assert "grid-template-columns: minmax(0, 1fr); gap: 12px;" in upgrade_css
+    assert "padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));" in upgrade_css
+    assert "--page-max: 960px;" in (BASE_DIR / "css/design-system.css").read_text()
+    assert 'src="js/share-cards.js?v=29"' in index_html
     assert "fix-timeline-head .status-indicator" in upgrade_css
     share_cards = (BASE_DIR / "js/share-cards.js").read_text().split("Generates Itemized Quotation Receipt Card")[0]
     assert "#e1e7ff" in share_cards and "#4058a5" in share_cards
