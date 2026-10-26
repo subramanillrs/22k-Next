@@ -1,28 +1,28 @@
 {
   "timezone": "Asia/Kolkata",
-  "updated_at": "2026-10-26T12:38:42.521982+05:30",
+  "updated_at": "2026-10-26T19:13:04.331595+05:30",
   "windows": {
     "AM": {
-      "predicted_fix_time": "09:56",
+      "predicted_fix_time": "09:55",
       "arrival_window_90": [
-        "08:52",
-        "12:41"
+        "08:50",
+        "12:42"
       ],
       "polling_starts": "15 min before",
       "duration_minutes": 85,
-      "kde_bandwidth_minutes": 38.93
+      "kde_bandwidth_minutes": 39.91
     },
     "PM": {
-      "predicted_fix_time": "18:28",
+      "predicted_fix_time": "18:34",
       "arrival_window_90": [
-        "15:56",
+        "15:58",
         "20:20"
       ],
       "polling_starts": "15 min before",
       "duration_minutes": 85,
-      "kde_bandwidth_minutes": 42.28
+      "kde_bandwidth_minutes": 41.34
     }
   },
-  "active_window": null,
+  "active_window": "PM",
   "poll_seconds": 10
 }
