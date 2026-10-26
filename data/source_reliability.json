@@ -1,52 +1,12 @@
 {
   "policybazaar": {
-    "attempts": 316,
+    "attempts": 324,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 316,
+    "failure_streak": 324,
     "history": [
-      {
-        "ts": "2026-10-22T05:17:09.090010+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T12:13:02.086899+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T17:56:09.944760+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T18:06:53.048120+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T00:23:41.816088+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T01:50:56.456700+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T05:16:02.976547+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T12:08:01.142546+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-23T17:45:31.171814+05:30",
         "success": false,
@@ -106,57 +66,57 @@
         "ts": "2026-10-25T12:31:51.432650+05:30",
         "success": false,
         "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T19:34:28.670034+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T23:07:05.474246+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T00:52:33.671627+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T03:39:44.914976+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T06:20:56.590199+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T11:04:22.261975+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T12:38:43.618205+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T19:13:03.831291+05:30",
+        "success": false,
+        "confidence": 0.0
       }
     ]
   },
   "bankbazaar": {
-    "attempts": 316,
+    "attempts": 324,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 316,
+    "failure_streak": 324,
     "history": [
-      {
-        "ts": "2026-10-22T05:17:08.568717+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T12:13:01.308558+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T17:56:09.345611+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T18:06:52.576508+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T00:23:39.735881+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T01:50:56.004976+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T05:16:02.334744+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T12:08:00.508041+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-23T17:45:30.657640+05:30",
         "success": false,
@@ -216,57 +176,57 @@
         "ts": "2026-10-25T12:31:50.716532+05:30",
         "success": false,
         "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T19:34:47.545640+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T23:07:04.538799+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T00:52:32.575019+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T03:39:44.248226+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T06:21:15.822306+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T11:04:21.744500+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T12:38:42.980189+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T19:13:03.084949+05:30",
+        "success": false,
+        "confidence": 0.0
       }
     ]
   },
   "moneycontrol": {
-    "attempts": 316,
+    "attempts": 324,
     "successes": 0,
     "success_rate": 0.0,
     "avg_parse_confidence": 0.5,
     "last_success_at": null,
-    "failure_streak": 316,
+    "failure_streak": 324,
     "history": [
-      {
-        "ts": "2026-10-22T05:17:08.236063+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T12:13:02.004006+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T17:56:10.218280+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-22T18:06:52.979606+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T00:23:39.399577+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T01:50:55.676706+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T05:16:01.940590+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
-      {
-        "ts": "2026-10-23T12:08:00.718928+05:30",
-        "success": false,
-        "confidence": 0.0
-      },
       {
         "ts": "2026-10-23T17:45:30.606131+05:30",
         "success": false,
@@ -324,6 +284,46 @@
       },
       {
         "ts": "2026-10-25T12:31:50.929059+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T19:34:28.222790+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-25T23:07:04.799193+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T00:52:32.176996+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T03:39:43.888325+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T06:20:55.759397+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T11:04:21.918749+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T12:38:43.236594+05:30",
+        "success": false,
+        "confidence": 0.0
+      },
+      {
+        "ts": "2026-10-26T19:13:03.192361+05:30",
         "success": false,
         "confidence": 0.0
       }
