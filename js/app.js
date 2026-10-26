@@ -70,6 +70,18 @@
     return tStr;
   }
 
+  function checkedAtText(timestamp) {
+    const checkedAt = timestamp ? Date.parse(timestamp) : NaN;
+    if (!Number.isFinite(checkedAt)) return "";
+    return new Intl.DateTimeFormat("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "numeric",
+      month: "short",
+      hour: "numeric",
+      minute: "2-digit"
+    }).format(new Date(checkedAt));
+  }
+
   function todayISTDateStr() {
     try {
       const parts = new Intl.DateTimeFormat("en-CA", {
@@ -509,17 +521,28 @@
 
   function updateFeedFreshness() {
     const label = $("mastheadStatusText");
+    const note = $("priceFreshnessNote");
     const dot = document.querySelector(".status-indicator .pulse-dot");
     if (!label) return;
+    const setNote = (tone, message) => {
+      if (!note) return;
+      note.className = `price-freshness-note ${tone}`;
+      note.textContent = message;
+    };
     const live = state.live;
     if (!live) {
       label.textContent = "Connecting";
+      setNote("is-waiting", "Waiting for a verified market price.");
       if (dot) dot.className = "pulse-dot is-delayed";
       return;
     }
 
+    const timestamp = live.last_checked_at || live.last_checked || live.verified_at || live.timestamp || live.updated_at;
+    const checkedText = checkedAtText(timestamp);
+    const marketDate = live.date ? dateText(String(live.date)) : "date unavailable";
     if (live.verification_status === "pending") {
       label.textContent = "Verifying source prices";
+      setNote("is-waiting", `Checking both price sources. Showing the last confirmed rate dated ${marketDate} until they agree.`);
       if (dot) dot.className = "pulse-dot is-delayed";
       const timelineStatus = $("timingStatusBadgeText");
       if (timelineStatus) timelineStatus.textContent = "Checking source agreement";
@@ -527,13 +550,13 @@
     }
     if (live.verification_status === "unavailable") {
       label.textContent = "Source check unavailable";
+      setNote("is-delayed", `Source check unavailable · showing last confirmed rate dated ${marketDate}${checkedText ? ` · last checked ${checkedText} IST` : ""}.`);
       if (dot) dot.className = "pulse-dot is-delayed";
       const timelineStatus = $("timingStatusBadgeText");
       if (timelineStatus) timelineStatus.textContent = "Showing last confirmed rate";
       return;
     }
 
-    const timestamp = live.last_checked_at || live.last_checked || live.verified_at || live.timestamp || live.updated_at;
     const checkedAt = timestamp ? Date.parse(timestamp) : NaN;
     const ageMs = Number.isFinite(checkedAt) ? Math.max(0, Date.now() - checkedAt) : Infinity;
     const oldMarketDate = String(live.date || "") !== todayISTDateStr();
@@ -542,14 +565,19 @@
     const feedStatus = oldMarketDate ? "Previous close" : minutes === null ? "Age unknown" : isDelayed ? "Feed delayed" : "Checked recently";
     if (oldMarketDate) {
       label.textContent = "Previous close";
+      setNote("is-delayed", `Previous close · market rate dated ${marketDate}${checkedText ? ` · last checked ${checkedText} IST` : " · source check time unavailable"}.`);
     } else if (minutes === null) {
       label.textContent = "Feed age unknown";
+      setNote("is-delayed", `Market rate dated ${marketDate} · source check time unavailable. Verify before purchase.`);
     } else if (minutes < 1) {
       label.textContent = "Checked just now";
+      setNote("is-current", `Price data checked ${checkedText} IST · market rate date ${marketDate}.`);
     } else if (minutes < 60) {
       label.textContent = `${isDelayed ? "Delayed · " : "Checked · "}${minutes}m`;
+      setNote(isDelayed ? "is-delayed" : "is-current", `${isDelayed ? "Feed delayed" : "Price data checked"} ${checkedText} IST · market rate date ${marketDate}.`);
     } else {
       label.textContent = `Delayed · ${Math.floor(minutes / 60)}h`;
+      setNote("is-delayed", `Feed delayed · last checked ${checkedText} IST · market rate date ${marketDate}.`);
     }
     if (dot) dot.className = `pulse-dot${isDelayed ? " is-delayed" : ""}`;
     const timelineStatus = $("timingStatusBadgeText");

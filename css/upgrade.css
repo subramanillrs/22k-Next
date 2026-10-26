@@ -170,6 +170,31 @@ html[data-theme="oled"] .brand-badge {
 .market-date-value time,
 .market-quote-time { white-space: nowrap; }
 .market-quote-time { color: var(--ink-secondary); font-size: clamp(11px, 3.1vw, 14px); }
+.price-freshness-note {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 20px;
+  margin: 12px 0 0;
+  color: var(--ink-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.price-freshness-note::before {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+  content: "";
+}
+.price-freshness-note.is-current::before { background: var(--good); }
+.price-freshness-note.is-delayed::before { background: #9a6a16; }
+.price-freshness-note.is-waiting::before { background: var(--ink-muted); }
 
 .daily-snapshot {
   position: relative;
@@ -515,7 +540,10 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
   }
   .tab-btn {
     min-height: 64px;
-    flex: 1;
+    min-width: 0;
+    flex: 1 1 0;
+    position: relative;
+    z-index: 1;
     flex-direction: column;
     justify-content: center;
     gap: 4px;
@@ -523,6 +551,7 @@ html[data-theme="oled"] .btn-primary, html[data-theme="oled"] .btn-gold {
     border-radius: var(--r-md);
   }
   .tab-btn::before { top: 4px; width: 52px; height: 30px; }
+  .tab-btn::before { pointer-events: none; }
   .tab-btn svg { width: 20px; height: 20px; }
   .tab-btn span {
     display: block;

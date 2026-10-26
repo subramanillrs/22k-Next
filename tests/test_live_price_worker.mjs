@@ -22,6 +22,19 @@ const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf
 assert.ok(indexHtml.indexOf("live-price-config.js") < indexHtml.indexOf("js/app.js"), "Worker URL config loads before app logic");
 const appJs = await readFile(new URL("../js/app.js", import.meta.url), "utf8");
 assert.match(appJs, /LIVE_DATA_POLL_INTERVAL_MS = 60_000/);
+assert.match(appJs, /priceFreshnessNote/);
+assert.match(appJs, /Previous close · market rate dated/);
+assert.match(appJs, /Showing the last confirmed rate dated/);
+assert.match(indexHtml, /id="priceFreshnessNote" role="status" aria-live="polite"/);
+const upgradeCss = await readFile(new URL("../css/upgrade.css", import.meta.url), "utf8");
+assert.match(upgradeCss, /\.tab-btn\s*\{[^}]*min-width:\s*0;[^}]*flex:\s*1 1 0;/s, "mobile dock items must be allowed to shrink evenly");
+assert.match(upgradeCss, /\.tab-btn::before\s*\{\s*pointer-events:\s*none;/, "selection decoration must not intercept mobile taps");
+const navTargets = [...indexHtml.matchAll(/<button class="tab-btn[^\"]*" data-tab="([^"]+)"[^>]*aria-controls="([^"]+)"/g)];
+assert.equal(navTargets.length, 4, "all four primary tabs must remain available");
+for (const [, tab, panel] of navTargets) {
+  assert.equal(panel, `view-${tab}`, `the ${tab} tab must point to its corresponding panel`);
+  assert.match(indexHtml, new RegExp(`<section class="view-page(?: active)?" id="${panel}"`), `${tab} panel must exist`);
+}
 const workflow = await readFile(new URL("../.github/workflows/main.yml", import.meta.url), "utf8");
 assert.match(workflow, /cron: "\*\/5 2-6 \* \* \*"/, "GitHub's five-minute pipeline remains as fallback");
 

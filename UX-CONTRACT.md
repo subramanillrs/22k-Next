@@ -98,7 +98,7 @@ Native ownership manifest: `premium-ui.json` records `Select/Listbox` and `Date`
 - **Dialog primitive:** Existing app-owned alarm bottom sheet; no native blocking dialogs. Modal semantics are active only while opened; closed-state content is unavailable to keyboard and assistive technology.
 - **Destructive confirmation levels:** Per-lot deletion is immediate; the app does not offer whole-portfolio destructive import.
 - **Toast placement/duration/deduplication:** App-owned top-center status, brief duration, success/warning/error text.
-- **Alert/banner scope and persistence:** Feed freshness remains in the masthead; last known rate remains visible after a failed request.
+- **Alert/banner scope and persistence:** Compact feed freshness remains in the masthead, while the Market quote card persistently shows the market date and the last source-check time/status. On narrow phones, where masthead copy is visually reduced to a dot, the quote-card note remains visible. Last known rate remains visible after a failed request.
 - **Tooltip delay/dismissal:** Native title only for compact action explanations.
 - **Chart price popups:** None. Scrubbing updates the chart’s selected value in the stable chart header and crosshair only; no floating tooltip, high/low badge, or y-axis price pill is rendered.
 - **Unsaved-changes behavior:** Calculator input is transient unless the user saves a named setup; local lots persist immediately.
@@ -109,7 +109,7 @@ Native ownership manifest: `premium-ui.json` records `Select/Listbox` and `Date`
 - **Mutation default:** Local-only writes are committed to localStorage before showing success.
 - **Idempotency and duplicate-submit policy:** Refresh requests are single-flight; imports deduplicate by date, weight, rate, and note.
 - **Auto-save/draft recovery:** Holdings and theme/language persist locally; calculator presets are explicit saves.
-- **Offline/read-stale/write behavior:** Bootstrap provides immediate rendering. Failed network refresh preserves the last value and exposes its age. Portfolio and presets remain local.
+- **Offline/read-stale/write behavior:** Bootstrap provides immediate rendering. Failed network refresh preserves the last value and exposes its age and market date beside the quote; an old market date is explicitly labeled previous close even when a recent background check succeeds. Portfolio and presets remain local.
 - **Retry/backoff/timeout behavior:** Client checks its live feed every 60 seconds while visible and immediately on visibility return. When configured, Cloudflare checks source pages every three minutes during fix windows and replaces the displayed rate only after LiveChennai and GoodReturns agree within the existing pipeline tolerance. Disagreement/unavailability preserves the last confirmed rate and labels the check state. GitHub Actions remains the five-minute best-effort fallback and updates history/analytics; neither schedule guarantees source publication time.
 - **Version conflict and multi-tab behavior:** No remote writes; localStorage is shared by same-origin tabs, without conflict resolution.
 - **Stale-request cancellation/invalidation:** One live request at a time; freshness label ages every 30 seconds.

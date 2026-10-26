@@ -29,7 +29,7 @@ An installable, mobile-first market and jewellery tool for Chennai's 22K MJDMA b
 - **Two themes**: Material 3 Expressive daylight (`#f7f7ff` canvas, indigo benchmark card) and optional OLED night mode.
 - **Physical Acoustic 22K Coin Chime**: Pure Web Audio API harmonic physical resonance synthesis (5420Hz harmonic coin drop) with haptic feedback.
 - **Dynamic High-DPI Share Cards**: Snapshot and itemized quotation receipt generators that dynamically adhere to the active Day or Night theme.
-- **Offline-aware PWA (cache v35)**: Bootstrap data renders immediately, market data revalidates in the background, and repeated polls reuse one cache entry per feed.
+- **Offline-aware PWA (cache v36)**: Bootstrap data renders immediately, market data revalidates in the background, repeated polls reuse one cache entry per feed, and the Market quote states its market date and last check in the card.
 
 ---
 
