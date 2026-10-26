@@ -71,6 +71,13 @@ const window = {
   scrollTo: function() {}
 };
 
+// Node's CommonJS modules resolve browser globals from globalThis, whereas the
+// original JSC runner exposed these top-level mocks globally.
+if (typeof globalThis !== "undefined") {
+  globalThis.document = document;
+  globalThis.window = window;
+}
+
 print("============================================================");
 print("TESTING 4-TAB DOCKED NAVIGATION & THEME FIDELITY");
 print("============================================================");
@@ -129,6 +136,11 @@ if (typeof require !== "undefined") {
 }
 
 if (ShareCards) {
+  if (ShareCards.generateSnapshotCard({ rate_22k: 0 }) !== null) {
+    throw new Error("[TEST 3c FAIL] Snapshot cards must reject missing or invalid market rates");
+  }
+  print("  ✓ [TEST 3c] Snapshot cards reject missing or invalid market rates");
+
   const snapshotCanvas = ShareCards.generateSnapshotCard({
     rate_22k: 14145,
     rate_8g: 113160,

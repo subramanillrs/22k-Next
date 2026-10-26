@@ -4,17 +4,27 @@
  * ============================================================================
  */
 
+if (typeof print !== "function") var print = console.log;
+
 print("============================================================");
 print("TESTING FULL FEATURE PARITY & FORMULA ACCURACY");
 print("============================================================");
 
 // Load QuantRisk
 let QuantRisk;
-try {
-  load("js/quant-risk.js");
-  QuantRisk = this.QuantRisk;
-} catch (e) {
-  print("Failed loading quant-risk.js: " + e);
+if (typeof require !== "undefined") {
+  try {
+    QuantRisk = require("../js/quant-risk.js");
+  } catch (e) {
+    print("Failed loading quant-risk.js: " + e);
+  }
+} else if (typeof load !== "undefined") {
+  try {
+    load("js/quant-risk.js");
+    QuantRisk = this.QuantRisk;
+  } catch (e) {
+    print("Failed loading quant-risk.js: " + e);
+  }
 }
 
 if (QuantRisk) {

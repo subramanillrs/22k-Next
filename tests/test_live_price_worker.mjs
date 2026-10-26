@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { extractGoodReturns, extractLiveChennai, runCheck } from "../workers/live-prices/src/index.mjs";
+import worker, { extractGoodReturns, extractLiveChennai, runCheck } from "../workers/live-prices/src/index.mjs";
 
 const liveChennai = `
   <table><tr><th rowspan="2">Date</th><th colspan="2">Pure Gold (24 k)</th><th colspan="2">Standard Gold (22 K)</th></tr>
@@ -15,13 +15,13 @@ assert.equal(extractGoodReturns(goodReturns), 13880);
 assert.equal(extractGoodReturns(`<table><tr><th>Gram</th><th>22K</th></tr><tr><td>8</td><td>110000</td></tr></table>`), null);
 
 const workerConfig = await readFile(new URL("../workers/live-prices/wrangler.jsonc", import.meta.url), "utf8");
-assert.match(workerConfig, /"\* 2-6 \* \* \*"/);
-assert.match(workerConfig, /"\* 10-16 \* \* \*"/);
+assert.match(workerConfig, /"\*\/3 2-6 \* \* \*"/);
+assert.match(workerConfig, /"\*\/3 10-16 \* \* \*"/);
 assert.match(workerConfig, /"0 0,1,7-9,17-23 \* \* \*"/);
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(indexHtml.indexOf("live-price-config.js") < indexHtml.indexOf("js/app.js"), "Worker URL config loads before app logic");
 const appJs = await readFile(new URL("../js/app.js", import.meta.url), "utf8");
-assert.match(appJs, /LIVE_DATA_POLL_INTERVAL_MS = 15_000/);
+assert.match(appJs, /LIVE_DATA_POLL_INTERVAL_MS = 60_000/);
 const workflow = await readFile(new URL("../.github/workflows/main.yml", import.meta.url), "utf8");
 assert.match(workflow, /cron: "\*\/5 2-6 \* \* \*"/, "GitHub's five-minute pipeline remains as fallback");
 
@@ -64,8 +64,37 @@ try {
   const pending = await runCheck(env, new Date("2026-10-18T06:03:00.000Z"));
   assert.equal(pending.verification_status, "pending");
   assert.equal(pending.rate_22k, 14100, "unverified source changes must not replace the last confirmed rate");
+
+  globalThis.fetch = async () => ({ ok: false, status: 503, async text() { return "temporarily unavailable"; } });
+  const unavailable = await runCheck(env, new Date("2026-10-18T06:04:00.000Z"));
+  assert.equal(unavailable.verification_status, "unavailable");
+  assert.equal(unavailable.rate_22k, 14100, "source outages must retain the last confirmed rate");
 } finally {
   globalThis.fetch = originalFetch;
 }
+
+const request = new Request("https://worker.example/live");
+writes.set("latest", JSON.stringify({
+  rate_22k: 14100,
+  verification_status: "confirmed",
+  last_checked_at: new Date().toISOString(),
+}));
+const freshResponse = await worker.fetch(request, env);
+assert.equal(freshResponse.status, 200);
+assert.equal((await freshResponse.json()).verification_status, "confirmed");
+
+writes.set("latest", JSON.stringify({
+  rate_22k: 14100,
+  verification_status: "confirmed",
+  last_checked_at: new Date(Date.now() - 6 * 60_000).toISOString(),
+}));
+const staleResponse = await worker.fetch(request, env);
+const stalePayload = await staleResponse.json();
+assert.equal(staleResponse.status, 200);
+assert.equal(stalePayload.verification_status, "unavailable");
+assert.equal(stalePayload.rate_22k, 14100, "stale checks must preserve the last confirmed rate without claiming freshness");
+
+writes.set("latest", JSON.stringify({ rate_22k: 1, last_checked_at: new Date().toISOString() }));
+assert.equal((await worker.fetch(request, env)).status, 503, "invalid cached values must not be served as a market quote");
 
 console.log("Live price Worker parser and confirmation tests passed.");

@@ -2,6 +2,7 @@ const LIVECHENNAI_URL = "https://www.livechennai.com/gold_silverrate.asp";
 const GOODRETURNS_URL = "https://www.goodreturns.in/gold-rates/chennai.html";
 const MIN_RATE = 5000;
 const MAX_RATE = 50000;
+const MAX_CHECK_AGE_MS = 5 * 60 * 1000;
 
 function decodeHtml(value) {
   return String(value || "")
@@ -247,7 +248,21 @@ export default {
     });
     if (request.method !== "GET" || url.pathname !== "/live") return jsonResponse({ error: "Not found" }, 404);
     const latest = await env.LIVE_PRICE_KV.get("latest", "json");
-    return latest ? jsonResponse(latest) : jsonResponse({ verification_status: "unavailable", error: "No source check completed yet" }, 503);
+    if (!latest || !isValidRate(latest.rate_22k)) {
+      return jsonResponse({ verification_status: "unavailable", error: "No confirmed market rate is available" }, 503);
+    }
+
+    const checkedAt = Date.parse(latest.last_checked_at || latest.last_checked || "");
+    const ageMs = Date.now() - checkedAt;
+    if (!Number.isFinite(checkedAt) || ageMs > MAX_CHECK_AGE_MS || ageMs < -60_000) {
+      return jsonResponse({
+        ...latest,
+        verification_status: "unavailable",
+        warning: "The source check is stale; showing the last confirmed rate until a new check completes.",
+      });
+    }
+
+    return jsonResponse(latest);
   },
   async scheduled(_controller, env) {
     await runCheck(env);

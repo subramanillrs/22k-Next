@@ -23,10 +23,21 @@
     portfolioLots: [],
     language: "en"
   };
-  const LIVE_DATA_POLL_INTERVAL_MS = 15_000;
+  const LIVE_DATA_POLL_INTERVAL_MS = 60_000;
 
   const $ = id => document.getElementById(id);
   const $$ = sel => document.querySelectorAll(sel);
+
+  function isValidGoldRate(value) {
+    const rate = Number(value);
+    return Number.isInteger(rate) && rate >= 5000 && rate <= 50000;
+  }
+
+  function currentMarketRate() {
+    return state.live && isValidGoldRate(state.live.rate_22k)
+      ? Number(state.live.rate_22k)
+      : null;
+  }
 
   function formatMoney(n) {
     return "₹ " + Math.round(Number(n) || 0).toLocaleString("en-IN");
@@ -195,7 +206,7 @@
     if (bootEl && bootEl.textContent.trim()) {
       try {
         const boot = JSON.parse(bootEl.textContent);
-        if (boot && boot.live) {
+        if (boot && boot.live && isValidGoldRate(boot.live.rate_22k)) {
           hydrateWithData(boot);
         }
       } catch (e) {
@@ -242,8 +253,13 @@
           headers: { "Cache-Control": "no-cache" }
         });
         if (res.ok) {
-          live = { ...live, ...(await res.json()) };
-          feedFetched = true;
+          const published = await res.json();
+          if (published && isValidGoldRate(published.rate_22k)) {
+            live = { ...live, ...published };
+            feedFetched = true;
+          } else {
+            console.warn("Published live feed contains no valid 22K rate");
+          }
         }
       } catch (staticError) {
         console.warn("Published live feed unavailable:", staticError);
@@ -288,7 +304,7 @@
         }
       }
 
-      const validLiveRate = Number.isInteger(Number(live.rate_22k)) && Number(live.rate_22k) >= 5000 && Number(live.rate_22k) <= 50000;
+      const validLiveRate = isValidGoldRate(live.rate_22k);
       const shouldRender = feedFetched || (workerUrl && live.verification_status === "unavailable");
       if (shouldRender && validLiveRate) {
         state.live = live;
@@ -328,7 +344,7 @@
   }
 
   function hydrateWithData(payload) {
-    if (payload.live) {
+    if (payload.live && isValidGoldRate(payload.live.rate_22k)) {
       state.live = payload.live;
       renderMarketView(state.live);
       checkTargetPrice(state.live);
@@ -351,12 +367,15 @@
   function renderMarketView(live) {
     if (!live) return;
 
-    const r22 = Number(live.rate_22k) || 14145;
-    const r8 = Number(live.rate_8g) || (r22 * 8);
-    const chg = Number.isFinite(Number(live.change)) ? Number(live.change) : -125;
-    const dateStr = live.date || "Today";
-    const timeStr = live.time ? live.time.slice(0, 5) : "22:40";
-    const quoteTimeLabel = live.rate_changed_observed_at ? `Observed ${timeText(timeStr)}` : timeText(timeStr);
+    const r22 = Number(live.rate_22k);
+    if (!isValidGoldRate(r22)) return;
+    const rate8 = Number(live.rate_8g);
+    const r8 = Number.isInteger(rate8) && rate8 > 0 ? rate8 : r22 * 8;
+    const chg = Number.isFinite(Number(live.change)) ? Number(live.change) : 0;
+    const dateStr = typeof live.date === "string" ? live.date : "";
+    const timeStr = typeof live.time === "string" ? live.time.slice(0, 5) : "";
+    const formattedTime = timeStr ? timeText(timeStr) : "Time unavailable";
+    const quoteTimeLabel = live.rate_changed_observed_at && timeStr ? `Observed ${formattedTime}` : formattedTime;
 
     updateDailySnapshot(live);
     updateFeedFreshness();
@@ -366,8 +385,9 @@
     if ($("hero1Rate")) $("hero1Rate").textContent = formatMoney(r22) + "/g";
     const marketDate = $("marketDate");
     if (marketDate) {
-      marketDate.textContent = dateText(dateStr);
+      marketDate.textContent = dateStr ? dateText(dateStr) : "Date unavailable";
       if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) marketDate.setAttribute("datetime", dateStr);
+      else marketDate.removeAttribute("datetime");
     }
     if ($("marketQuoteTime")) $("marketQuoteTime").textContent = quoteTimeLabel;
 
@@ -388,8 +408,8 @@
 
     // Today's Market Fix Timeline
     const session = live.session || "PM";
-    const prevClose = Number(live.previous_close_22k) || 14270;
-    if ($("amFixRate")) $("amFixRate").textContent = formatMoney(prevClose);
+    const prevClose = Number(live.previous_close_22k);
+    if ($("amFixRate")) $("amFixRate").textContent = isValidGoldRate(prevClose) ? formatMoney(prevClose) : "—";
     if ($("pmFixRate")) $("pmFixRate").textContent = formatMoney(r22);
     if ($("amFixTime")) $("amFixTime").textContent = "Previous close";
     if ($("pmFixChip")) $("pmFixChip").classList.toggle("confirmed", session === "PM");
@@ -683,9 +703,11 @@
   function renderAnalyticsView() {
     if (!state.history.length) return;
 
-    const currentRate = (state.live && Number(state.live.rate_22k)) || 14145;
     const daily = getDailyBenchmarks(state.history);
     const historyPrices = daily.map(h => Number(h.rate_22k)).filter(Boolean);
+    const recordedClose = [...daily].reverse().map(row => Number(row.rate_22k)).find(isValidGoldRate);
+    const currentRate = currentMarketRate() || recordedClose;
+    if (!currentRate) return;
 
     // 1. Returns by Period
     const calcReturnByDays = days => {
@@ -951,13 +973,26 @@
   // 7. TAB 3: CALCULATOR & JEWELLER BILL AUDITOR
   // ==========================================================================
   function calculate() {
-    const rate = (state.live && Number(state.live.rate_22k)) || 14145;
+    const rate = currentMarketRate();
     const mode = ($("calcMode") && $("calcMode").value) || "value";
     const weight = Math.max(0, parseFloat($("weight") ? $("weight").value : 8) || 0);
     const budget = Math.max(0, parseFloat($("budget") ? $("budget").value : 100000) || 0);
     const makingPct = Math.max(0, parseFloat($("making") ? $("making").value : 8) || 0);
     const gstPct = Math.max(0, parseFloat($("gstRate") ? $("gstRate").value : 3) || 0);
     const flatFee = Math.max(0, parseFloat($("flatFee") ? $("flatFee").value : 45) || 0);
+
+    if (!rate) {
+      if ($("weightField")) $("weightField").style.display = mode === "value" ? "flex" : "none";
+      if ($("budgetField")) $("budgetField").style.display = mode === "budget" ? "flex" : "none";
+      if ($("weightChipsGroup")) $("weightChipsGroup").style.display = mode === "value" ? "flex" : "none";
+      ["receiptBase", "receiptMaking", "receiptGst", "receiptFee", "receiptOldGold", "calcResult"].forEach(id => {
+        if ($(id)) $(id).textContent = "—";
+      });
+      if ($("receiptTotalLabel")) $("receiptTotalLabel").textContent = mode === "value" ? "Net Payable Amount" : "Purchasable Gold Weight";
+      if ($("receiptOldGoldLine")) $("receiptOldGoldLine").style.display = "none";
+      if ($("calcSub")) $("calcSub").textContent = "Waiting for a verified Chennai 22K benchmark.";
+      return;
+    }
 
     const oldWeight = Math.max(0, parseFloat($("oldWeight") ? $("oldWeight").value : 0) || 0);
     const oldPurity = Number($("oldPurity") ? $("oldPurity").value : 22) || 22;
@@ -1064,7 +1099,8 @@
     if (copyBtn) {
       copyBtn.onclick = async () => {
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(15);
-        const rate = (state.live && Number(state.live.rate_22k)) || 14145;
+        const rate = currentMarketRate();
+        if (!rate) { showToast("A verified market rate is not available yet"); return; }
         const mode = ($("calcMode") && $("calcMode").value) || "value";
         const oldCredit = $("receiptOldGoldLine") && $("receiptOldGoldLine").style.display !== "none" ? $("receiptOldGold").textContent : "None";
 
@@ -1098,6 +1134,7 @@
     if (shareBtn) {
       shareBtn.onclick = async () => {
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(15);
+        if (!currentMarketRate()) { showToast("A verified market rate is not available yet"); return; }
         if (typeof ShareCards !== "undefined") {
           const canvas = ShareCards.generateReceiptCard({
             base: $("receiptBase").textContent,
@@ -1229,7 +1266,17 @@
 
   // Jeweller Bill Auditor & Bargaining Meter
   function auditJewellerBill() {
-    const rate = (state.live && Number(state.live.rate_22k)) || 14145;
+    const rate = currentMarketRate();
+    if (!rate) {
+      ["auditGoldVal", "auditFairMaking", "auditGstFee", "auditFairTotal"].forEach(id => {
+        if ($(id)) $(id).textContent = "—";
+      });
+      const badge = $("meterBadge");
+      const tip = $("auditBargainTip");
+      if (badge) { badge.className = "meter-badge moderate"; badge.textContent = "Rate unavailable"; }
+      if (tip) tip.textContent = "Bill comparison will appear when a verified Chennai 22K rate is available.";
+      return;
+    }
     const w = parseFloat($("auditWeight") ? $("auditWeight").value : 16) || 0;
     const quotedBill = parseFloat($("auditShopPrice") ? $("auditShopPrice").value : 0) || 0;
     const designType = $("auditType") ? $("auditType").value : "plain";
@@ -1282,7 +1329,13 @@
 
   // Old Gold Melt & Exchange Valuation
   function calculateOldGoldMelt() {
-    const rate = (state.live && Number(state.live.rate_22k)) || 14145;
+    const rate = currentMarketRate();
+    if (!rate) {
+      ["meltPureGrams", "meltLossGrams", "meltCashVal", "meltExchangeVal"].forEach(id => {
+        if ($(id)) $(id).textContent = "—";
+      });
+      return;
+    }
     const w = parseFloat($("meltWeight") ? $("meltWeight").value : 24) || 0;
     const purityKey = $("meltPurity") ? $("meltPurity").value : "916";
 
@@ -1316,7 +1369,17 @@
   // 8. TAB 4: SCHEMES & GOLD PORTFOLIO TRACKER
   // ==========================================================================
   function calculateGoldSchemeVsSip() {
-    const rate = (state.live && Number(state.live.rate_22k)) || 14145;
+    const rate = currentMarketRate();
+    if (!rate) {
+      ["schemeGoldGrams", "schemeXirrVal", "schemeSipGrams", "schemeSipXirr", "schemeTotalPaid", "schemeVaSavings", "schemeBreakevenRate", "schemeAdvantageGrams"].forEach(id => {
+        if ($(id)) $(id).textContent = "—";
+      });
+      const badge = $("schemeVerdictBadge");
+      const tip = $("schemeVerdictTip");
+      if (badge) { badge.className = "meter-badge moderate"; badge.textContent = "Rate unavailable"; }
+      if (tip) tip.textContent = "Scheme comparison will appear when a verified Chennai 22K rate is available.";
+      return;
+    }
     const monthlyAmt = parseFloat($("schemeMonthlyAmount") ? $("schemeMonthlyAmount").value : 10000) || 10000;
     const profile = $("schemeJewellerProfile") ? $("schemeJewellerProfile").value : "grt";
     const vaPct = parseFloat($("schemeVaPct") ? $("schemeVaPct").value : 14) || 14;
@@ -1414,7 +1477,9 @@
   function initPortfolio() {
     try {
       const storedLots = JSON.parse(localStorage.getItem("gold_portfolio_lots") || "[]");
-      state.portfolioLots = Array.isArray(storedLots) ? storedLots.filter(lot => lot && typeof lot === "object") : [];
+      state.portfolioLots = Array.isArray(storedLots) && typeof GoldLocalTools !== "undefined"
+        ? storedLots.map(GoldLocalTools.cleanLot).filter(Boolean).slice(0, GoldLocalTools.MAX_LOTS)
+        : [];
     } catch (_) {
       state.portfolioLots = [];
     }
@@ -1464,20 +1529,27 @@
         const d = (dateInput && dateInput.value) || todayISTDateStr();
         const n = ((noteInput && noteInput.value) || "Holding lot").trim();
 
-        if (!w || w <= 0) { showToast("Enter a valid gold weight"); return; }
-        if (!r || r <= 0) { showToast("Enter a valid buy rate"); return; }
+        if (state.portfolioLots.length >= GoldLocalTools.MAX_LOTS) {
+          showToast("Portfolio limit reached (500 lots). Export a backup before adding more.");
+          return;
+        }
+        if (!Number.isFinite(w) || !Number.isFinite(r) || !GoldLocalTools.validDate(d) || w <= 0 || r <= 0) {
+          showToast("Enter a valid purchase date, weight, and buy rate");
+          return;
+        }
 
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(15);
         if (typeof GoldAudio !== "undefined" && GoldAudio.playCoinChime) GoldAudio.playCoinChime(0.9);
 
-        const newLot = {
+        const newLot = GoldLocalTools.cleanLot({
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
           date: d,
           weight: w,
           rate: r,
           note: n,
           createdAt: new Date().toISOString()
-        };
+        });
+        if (!newLot) { showToast("Check the purchase weight and rate limits"); return; }
         state.portfolioLots.push(newLot);
 
         try {
@@ -1575,7 +1647,7 @@
     const headerSummaryEl = $("portfolioHeaderSummary");
 
     if (!tableBody) return;
-    const currentRate = (state.live && Number(state.live.rate_22k)) || 14145;
+    const currentRate = currentMarketRate();
 
     if (!state.portfolioLots.length) {
       tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px 0; color:var(--ink-muted);">No purchases saved yet. Add your first gold purchase above!</td></tr>`;
@@ -1600,14 +1672,14 @@
       const w = Number(lot.weight) || 0;
       const r = Number(lot.rate) || 0;
       const cost = w * r;
-      const cur = w * currentRate;
-      const pnl = cur - cost;
-      const pnlPct = cost > 0 ? (pnl / cost) * 100 : 0;
-      const isUp = pnl >= 0;
+      const cur = currentRate === null ? null : w * currentRate;
+      const pnl = cur === null ? null : cur - cost;
+      const pnlPct = pnl !== null && cost > 0 ? (pnl / cost) * 100 : 0;
+      const isUp = pnl !== null && pnl >= 0;
 
       totWeight += w;
       totCost += cost;
-      totVal += cur;
+      if (cur !== null) totVal += cur;
 
       const pDate = new Date(lot.date || nowMs);
       const days = Math.max(1, Math.round((nowMs - pDate.getTime()) / (1000 * 60 * 60 * 24)));
@@ -1620,15 +1692,15 @@
           <td><strong>${safeDate}</strong><br><small style="color:var(--ink-muted);">${safeNote}</small></td>
           <td><b>${w.toFixed(2)}g</b><br><small style="color:var(--ink-secondary);">${(w / 8).toFixed(2)} Sov</small></td>
           <td>${formatMoney(r)}<br><small style="color:var(--ink-muted);">${formatMoney(cost)}</small></td>
-          <td><b>${formatMoney(cur)}</b></td>
-          <td style="color:${isUp ? "var(--good)" : "var(--bad)"}; font-weight:700;">${isUp ? "+" : ""}${formatMoney(pnl)}<br><small>${isUp ? "+" : ""}${pnlPct.toFixed(1)}%</small></td>
+          <td><b>${cur === null ? "—" : formatMoney(cur)}</b></td>
+          <td style="color:${pnl === null ? "var(--ink-muted)" : isUp ? "var(--good)" : "var(--bad)"}; font-weight:700;">${pnl === null ? "—" : `${isUp ? "+" : ""}${formatMoney(pnl)}<br><small>${isUp ? "+" : ""}${pnlPct.toFixed(1)}%</small>`}</td>
           <td><button class="port-del-btn" data-idx="${idx}" type="button" title="Delete purchase lot" aria-label="Delete purchase lot" style="border:none;background:transparent;cursor:pointer;color:var(--ink-muted);font-size:14px;">✕</button></td>
         </tr>
       `;
     }).join("");
 
-    const netPnl = totVal - totCost;
-    const netPnlPct = totCost > 0 ? (netPnl / totCost) * 100 : 0;
+    const netPnl = currentRate === null ? null : totVal - totCost;
+    const netPnlPct = netPnl !== null && totCost > 0 ? (netPnl / totCost) * 100 : null;
     const avgDays = totCost > 0 ? weightedDays / totCost : 1;
     let cagr = 0;
     if (totCost > 0 && totVal > 0 && avgDays >= 30) {
@@ -1639,16 +1711,16 @@
     if (totalSovEl) totalSovEl.textContent = (totWeight / 8).toFixed(2) + " Sovereigns";
     if (totalInvestedEl) totalInvestedEl.textContent = formatMoney(totCost);
     if (avgBuyRateEl) avgBuyRateEl.textContent = totWeight > 0 ? `${formatMoney(totCost / totWeight)}/g avg` : "₹ 0/g";
-    if (totalCurrentEl) totalCurrentEl.textContent = formatMoney(totVal);
+    if (totalCurrentEl) totalCurrentEl.textContent = currentRate === null ? "—" : formatMoney(totVal);
     if (netProfitEl) {
-      netProfitEl.textContent = `${netPnl >= 0 ? "+" : ""}${formatMoney(netPnl)} (${netPnlPct >= 0 ? "+" : ""}${netPnlPct.toFixed(1)}%)`;
-      netProfitEl.className = "profit-val " + (netPnl >= 0 ? "positive" : "negative");
+      netProfitEl.textContent = netPnl === null ? "— (rate unavailable)" : `${netPnl >= 0 ? "+" : ""}${formatMoney(netPnl)} (${netPnlPct >= 0 ? "+" : ""}${netPnlPct.toFixed(1)}%)`;
+      netProfitEl.className = "profit-val " + (netPnl === null ? "" : netPnl >= 0 ? "positive" : "negative");
     }
     if (cagrEl) {
-      cagrEl.textContent = avgDays >= 30 ? `${cagr >= 0 ? "+" : ""}${cagr.toFixed(1)}% p.a. CAGR (${Math.round(avgDays)}d avg)` : `${netPnlPct >= 0 ? "+" : ""}${netPnlPct.toFixed(1)}% net gain`;
+      cagrEl.textContent = netPnl === null ? "Rate unavailable" : avgDays >= 30 ? `${cagr >= 0 ? "+" : ""}${cagr.toFixed(1)}% p.a. CAGR (${Math.round(avgDays)}d avg)` : `${netPnlPct >= 0 ? "+" : ""}${netPnlPct.toFixed(1)}% net gain`;
     }
     if (headerSummaryEl) {
-      headerSummaryEl.textContent = `${totWeight.toFixed(1)}g · ${netPnl >= 0 ? "+" : ""}${formatMoney(netPnl)}`;
+      headerSummaryEl.textContent = `${totWeight.toFixed(1)}g tracked · ${netPnl === null ? "value unavailable" : `${netPnl >= 0 ? "+" : ""}${formatMoney(netPnl)}`}`;
     }
   }
 
@@ -1835,7 +1907,9 @@
         if (typeof GoldAudio !== "undefined" && GoldAudio.haptic) GoldAudio.haptic(15);
         if (typeof ShareCards !== "undefined" && state.live) {
           const canvas = ShareCards.generateSnapshotCard(state.live);
-          await handleCanvasShare(canvas, "chennai-gold-snapshot.png", `🪙 Chennai 22K Gold Benchmark: ${formatMoney(state.live.rate_8g)} (1 Sov)`);
+          if (!canvas) { showToast("A verified market rate is not available for sharing"); return; }
+          const sovereignRate = Number(state.live.rate_8g) || Number(state.live.rate_22k) * 8;
+          await handleCanvasShare(canvas, "chennai-gold-snapshot.png", `🪙 Chennai 22K Gold Benchmark: ${formatMoney(sovereignRate)} (1 Sov)`);
         }
       };
     }
@@ -1902,6 +1976,13 @@
     boot("price watchdog", initTargetWatchdog);
     boot("sharing", initShareButtons);
     boot("live refresh", initLiveRefresh);
+    boot("price-dependent placeholder state", () => {
+      calculate();
+      auditJewellerBill();
+      calculateOldGoldMelt();
+      calculateGoldSchemeVsSip();
+      renderPortfolio();
+    });
 
     // Au Coin chime on brand badge tap
     const brandBadge = $("brandBadge");

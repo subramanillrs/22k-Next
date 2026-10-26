@@ -95,9 +95,9 @@ def test_mobile_alignment():
 
     # Service worker cache invalidation
     sw_js = (BASE_DIR / "sw.js").read_text()
-    assert 'CACHE_NAME = "gold-terminal-v33"' in sw_js
+    assert 'CACHE_NAME = "gold-terminal-v35"' in sw_js
     assert 'request.mode === "navigate"' in sw_js
-    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v33 and network-first navigation policy")
+    print("  ✓ [TEST 16] sw.js enforces gold-terminal-v35 and network-first navigation policy")
 
     assert "padding-inline: var(--mobile-gutter);" in upgrade_css
     assert ".masthead .icon-btn { width: 44px; height: 44px; }" in upgrade_css
@@ -105,15 +105,20 @@ def test_mobile_alignment():
     assert "grid-template-columns: minmax(0, 1fr); gap: 12px;" in upgrade_css
     assert "padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));" in upgrade_css
     assert "--page-max: 960px;" in (BASE_DIR / "css/design-system.css").read_text()
-    assert 'src="js/share-cards.js?v=33"' in index_html
+    assert 'src="js/share-cards.js?v=35"' in index_html
     assert ".tab-btn span {\n    display: block;" in upgrade_css
     assert ".meter-metric-item span,\n  .port-metric span" in upgrade_css
+    assert "|| 14145" not in app_js
+    assert "|| 14270" not in app_js
+    assert "function isValidGoldRate" in app_js
+    assert "Waiting for a verified Chennai 22K benchmark." in app_js
+    assert "rate_22k || 14145" not in (BASE_DIR / "js/share-cards.js").read_text()
     assert "fix-timeline-head .status-indicator" in upgrade_css
     assert "grid-template-columns: repeat(2, minmax(0, 1fr));" in upgrade_css
     assert ".sentiment-dial circle {\n  fill: none;" in upgrade_css
     assert ".dial-fill {\n  stroke: var(--brand-primary);" in upgrade_css
     assert 'id="marketQuoteTime"' in index_html and 'id="marketDate"' in index_html
-    assert "Loading latest market data…" in index_html
+    assert "Waiting for verified market data…" in index_html
     assert 'dataset.appReady === "true"' in index_html
     assert 'boot("navigation", initNavigation)' in (BASE_DIR / "js/app.js").read_text()
     assert '$("marketQuoteTime").textContent = quoteTimeLabel' in (BASE_DIR / "js/app.js").read_text()

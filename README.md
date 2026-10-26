@@ -1,13 +1,13 @@
 # Chennai 22K Gold Terminal Next
 
-An ultra-modern, institutional-grade bullion tracking terminal and quantitative analytics suite for the Chennai (MJDMA) 22K gold market. Built with cutting-edge PWA standards, zero vertical scroll fatigue via a 4-tab docked liquid glass interface, and clientside Machine Learning & stochastic quantitative models.
+An installable, mobile-first market and jewellery tool for Chennai's 22K MJDMA benchmark. Four focused tabs keep market data, analysis, purchase estimates, and local holdings easy to reach while the content scrolls naturally on phones.
 
 ---
 
 ## Key Highlights
 
-### 1. 4-Tab Docked Architecture (Zero Scroll Fatigue)
-- **Market**: Live MJDMA benchmark rates for 22K/24K/18K gold, Sowcarpet wholesale bullion discount vs. T. Nagar retail showroom spread, horizontal regional parity carousel (**Salem** `-₹10/g`, **Coimbatore** `-₹15/g`, **Madurai** `+₹15/g`, **Trichy** `-₹5/g`), and multi-source consensus.
+### 1. Four Focused Workspaces
+- **Market**: Verified MJDMA benchmark rates for 22K/24K/18K gold, Sowcarpet wholesale vs. T. Nagar retail estimates, regional Tamil Nadu parity, and multi-source context.
 - **Analytics**: Clientside ML forecasting suite with 1D/3D/7D/30D projections, Bayesian confidence intervals, GARCH(1,1) volatility cones, and 10,000-path Monte Carlo Value-at-Risk (VaR) & Expected Shortfall (CVaR).
 - **Calculator**: Institutional jewellery quotation generator itemizing wastage (VA%), stone deductions, 3% GST, plus an instant shop bill auditor benchmarked to raw bullion casting parity.
 - **Schemes**: Newton-Raphson XIRR optimizer comparing Weight Accumulation Schemes vs. Cash Bonus Schemes, solving for the exact breakeven price at maturity.
@@ -20,16 +20,16 @@ An ultra-modern, institutional-grade bullion tracking terminal and quantitative 
 - **Bayesian Consensus Engine**: Dynamic source reliability weighting and Modified Z-Score outlier filtering ($M_i = 0.6745 |x_i - \tilde{x}| / \text{MAD}$).
 - **Gaussian Kernel Density Estimation (KDE)**: Non-parametric probability modeling for AM and PM fix arrival times.
 
-### 3. Cutting-Edge UX & Mobile Hardware Features
+### 3. Mobile and Data Reliability
 - **Daily Fix Snapshot**: Shows today’s recorded low/high and change vs previous close, and stays blank when the latest market date is not today.
 - **Feed Freshness**: Shows when the price payload was checked; source disagreement keeps the last confirmed rate visible.
 - **Saved Calculator Setups**: Keep up to 30 named calculator configurations on this device.
 - **Portfolio Backup**: Export/import JSON backups; imports validate, deduplicate, and merge without replacing existing holdings. 22k-Pro backup files are accepted.
 - **English/Tamil Controls**: Toggle common navigation, calculator, and portfolio labels; market/quant detail remains English where not translated.
-- **2-Mode Luxury Design System**: Strict Day (`#faf6ed`/`#1c1712`) and Night (`#000000`/`#ffd700`) modes.
+- **Two themes**: Material 3 Expressive daylight (`#f7f7ff` canvas, indigo benchmark card) and optional OLED night mode.
 - **Physical Acoustic 22K Coin Chime**: Pure Web Audio API harmonic physical resonance synthesis (5420Hz harmonic coin drop) with haptic feedback.
 - **Dynamic High-DPI Share Cards**: Snapshot and itemized quotation receipt generators that dynamically adhere to the active Day or Night theme.
-- **Service Worker v17 & Instant Pre-Baking**: Instant bootstrap hydration; live-data cache keys are normalized so polling does not accumulate duplicate cache entries.
+- **Offline-aware PWA (cache v35)**: Bootstrap data renders immediately, market data revalidates in the background, and repeated polls reuse one cache entry per feed.
 
 ---
 
@@ -39,10 +39,10 @@ An ultra-modern, institutional-grade bullion tracking terminal and quantitative 
 Chennai-22k-gold-next/
 ├── .github/workflows/main.yml    # GitHub Actions 5-minute fallback monitoring
 ├── css/
-│   ├── design-system.css         # Luxury 2-mode Day/Night design tokens
-│   ├── navigation.css            # Masthead and liquid glass dock
+│   ├── design-system.css         # Material semantic tokens and themes
+│   ├── navigation.css            # Responsive masthead and four-tab dock
 │   ├── bento-grid.css            # Bento grid, chips, carousel, quote card
-│   └── upgrade.css               # Responsive/accessibility polish and new UI components
+│   └── upgrade.css               # Shared responsive and accessibility refinements
 ├── js/
 │   ├── ml-engine.js              # Kalman, GARCH, ARIMA, Monte Carlo risk, Bayesian consensus
 │   ├── scheme-optimizer.js       # Newton-Raphson XIRR & scheme comparator
@@ -61,7 +61,7 @@ Chennai-22k-gold-next/
 │   ├── test_live_price_worker.mjs # Minute-check parsing and confirmation tests
 │   └── test_quant_pipeline.py    # Python pipeline & bootstrap regression suite
 ├── index.html                    # 4-tab docked application shell
-├── sw.js                         # Offline Service Worker v17
+├── sw.js                         # Offline Service Worker (cache version 34)
 ├── manifest.webmanifest          # PWA manifest
 ├── update_gold.py                # Automated multi-source ingestion & quant pipeline
 └── workers/live-prices/          # Optional Cloudflare one-minute source checker + KV feed
@@ -89,20 +89,19 @@ python3 tests/test_quant_pipeline.py
 # Local calculator presets & portfolio backup tests
 /System/Library/Frameworks/JavaScriptCore.framework/Versions/Current/Helpers/jsc tests/test_local_tools.js
 
-# Cloudflare minute-check parser and source-agreement tests
+# Cloudflare scheduled-check parser and source-agreement tests
 node tests/test_live_price_worker.mjs
 ```
 
-The browser checks its feed every 15 seconds while visible. The optional Cloudflare Worker checks LiveChennai and GoodReturns once per minute during Chennai update windows, confirms source agreement, and serves the last confirmed price from KV. GitHub Actions remains the five-minute fallback and continues updating history and analytics. All schedules are best effort; no scheduler can make a third-party site publish sooner or guarantee a price within five minutes.
+The browser checks its feed every 60 seconds while visible. The Cloudflare Worker checks LiveChennai and GoodReturns every three minutes during Chennai update windows, confirms source agreement, and serves the last confirmed price from KV. GitHub Actions remains the five-minute fallback and updates history and analytics. All schedules are best effort; no scheduler can make a third-party site publish sooner or guarantee a price within five minutes. A separate read-only GitHub Actions quality workflow runs on pushes and pull requests; it does not scrape sources or write market data.
 
-### Enable the one-minute source checker
+### Enable the lower-usage source checker
 
 This scrapes the public source pages; it does not use a gold-price provider API. Deployment requires a Cloudflare account and is not active until configured:
 
-1. Create a KV namespace: `cd workers/live-prices && npx wrangler kv namespace create LIVE_PRICE_KV`.
-2. Replace `REPLACE_WITH_CLOUDFLARE_KV_NAMESPACE_ID` in `wrangler.jsonc` with the returned namespace ID.
-3. Deploy: `npx wrangler deploy`.
-4. Copy the Worker `/live` URL into `window.GOLD_LIVE_WORKER_URL` in `js/live-price-config.js`.
-5. Publish the updated app. If the Worker is unavailable or source prices disagree, the app keeps showing the last confirmed rate.
+1. The checked-in Worker config already names a KV namespace. If deploying to another Cloudflare account, create a namespace with `npx wrangler kv namespace create LIVE_PRICE_KV` and update the binding in `wrangler.jsonc`.
+2. Authenticate Wrangler and deploy from `workers/live-prices` with `npx wrangler deploy`.
+3. Configure the public Worker `/live` URL in `js/live-price-config.js` only if it differs from the current endpoint.
+4. Publish the app. If the Worker is unavailable or source prices disagree, the app keeps the last confirmed rate and labels the check state; it never invents a replacement quote.
 
-The Worker checks once per minute during 07:30–12:29 and 15:30–22:29 India time, with an hourly check outside those windows. It only publishes a changed price when both retail sources return valid, agreeing rates.
+The Worker checks every three minutes during 07:30–12:29 and 15:30–22:29 India time, with an hourly check outside those windows. That schedule is approximately 252 checks and KV writes per day (about 25.2% of the Workers Free 1,000/day KV write allowance), before any other account usage. It only publishes a changed price when both retail sources return valid, agreeing rates.

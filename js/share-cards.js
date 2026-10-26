@@ -40,6 +40,8 @@
    * Generates Market Snapshot Card (820 x 530)
    */
   function generateSnapshotCard(marketData = {}) {
+    const r22 = Number(marketData.rate_22k);
+    if (!Number.isInteger(r22) || r22 < 5000 || r22 > 50000) return null;
     const isNight = getActiveTheme() === "night";
     const canvas = document.createElement("canvas");
     const W = 820;
@@ -110,7 +112,7 @@
     ctx.fillText("Live MJDMA Official Benchmark · Institutional Feed", 86, 68);
 
     // Top Right Date Pill
-    const dateStr = marketData.date || "Today";
+    const dateStr = marketData.date || "Date unavailable";
     const sessionStr = marketData.session ? `${marketData.session} Fix` : "Official Fix";
     const pillText = `${dateStr} · ${sessionStr}`;
 
@@ -147,9 +149,9 @@
     ctx.font = "600 14px 'Roboto', Arial, sans-serif";
     ctx.fillText("One sovereign, eight grams", 36, 122);
 
-    const r8 = marketData.rate_8g || 113160;
-    const r22 = marketData.rate_22k || 14145;
-    const chg = marketData.change || -125;
+    const candidateRate8 = Number(marketData.rate_8g);
+    const r8 = Number.isInteger(candidateRate8) && candidateRate8 > 0 ? candidateRate8 : r22 * 8;
+    const chg = Number.isFinite(Number(marketData.change)) ? Number(marketData.change) : 0;
 
     ctx.fillStyle = isNight ? "#ffffff" : "#1b1b22";
     ctx.font = "700 52px 'Roboto', Arial, sans-serif";
@@ -423,7 +425,7 @@
 
     ctx.textAlign = "right";
     ctx.fillStyle = isNight ? "#d4ab63" : "#6b5223";
-    ctx.fillText(receiptData.date || "Today", W - 36, footY);
+    ctx.fillText(receiptData.date || "Date unavailable", W - 36, footY);
 
     ctx.textAlign = "center";
     ctx.font = "500 11px 'Inter', sans-serif";
