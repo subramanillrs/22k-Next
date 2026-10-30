@@ -1,5 +1,5 @@
 {
-  "calculated_at": "2026-10-30T02:59:06.821633+05:30",
+  "calculated_at": "2026-10-30T06:55:48.420696+05:30",
   "price_points_used": 30,
   "rsi": {
     "rsi_14": 27.14,
@@ -35,7 +35,7 @@
       "rsi_score": 27.14,
       "momentum_score": 34.82,
       "var_risk_score": 68.0,
-      "spread_score": 78.3
+      "spread_score": 79.9
     }
   }
 }
