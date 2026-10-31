@@ -15,8 +15,8 @@ assert.equal(extractGoodReturns(goodReturns), 13880);
 assert.equal(extractGoodReturns(`<table><tr><th>Gram</th><th>22K</th></tr><tr><td>8</td><td>110000</td></tr></table>`), null);
 
 const workerConfig = await readFile(new URL("../workers/live-prices/wrangler.jsonc", import.meta.url), "utf8");
-assert.match(workerConfig, /"\*\/3 2-6 \* \* \*"/);
-assert.match(workerConfig, /"\*\/3 10-16 \* \* \*"/);
+assert.match(workerConfig, /"\*\/4 2-6 \* \* \*"/);
+assert.match(workerConfig, /"\*\/4 10-16 \* \* \*"/);
 assert.match(workerConfig, /"0 0,1,7-9,17-23 \* \* \*"/);
 const indexHtml = await readFile(new URL("../index.html", import.meta.url), "utf8");
 assert.ok(indexHtml.indexOf("live-price-config.js") < indexHtml.indexOf("js/app.js"), "Worker URL config loads before app logic");

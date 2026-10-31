@@ -64,7 +64,7 @@ Chennai-22k-gold-next/
 ├── sw.js                         # Offline Service Worker (cache version 34)
 ├── manifest.webmanifest          # PWA manifest
 ├── update_gold.py                # Automated multi-source ingestion & quant pipeline
-└── workers/live-prices/          # Optional Cloudflare one-minute source checker + KV feed
+└── workers/live-prices/          # Optional Cloudflare four-minute source checker + KV feed
 ```
 
 ---
@@ -93,7 +93,7 @@ python3 tests/test_quant_pipeline.py
 node tests/test_live_price_worker.mjs
 ```
 
-The browser checks its feed every 60 seconds while visible. The Cloudflare Worker checks LiveChennai and GoodReturns every three minutes during Chennai update windows, confirms source agreement, and serves the last confirmed price from KV. GitHub Actions remains the five-minute fallback and updates history and analytics. All schedules are best effort; no scheduler can make a third-party site publish sooner or guarantee a price within five minutes. A separate read-only GitHub Actions quality workflow runs on pushes and pull requests; it does not scrape sources or write market data.
+The browser checks its feed every 60 seconds while visible. The Cloudflare Worker checks LiveChennai and GoodReturns every four minutes during Chennai update windows, confirms source agreement, and serves the last confirmed price from KV. GitHub Actions remains the five-minute fallback and updates history and analytics. With an on-time Worker check and browser refresh, the expected source-to-screen delay is at most about five minutes. Schedules are best effort; no scheduler can guarantee that an external publisher updates on time or that the app always displays a change within five minutes. A separate read-only GitHub Actions quality workflow runs on pushes and pull requests; it does not scrape sources or write market data.
 
 ### Enable the lower-usage source checker
 
@@ -104,4 +104,4 @@ This scrapes the public source pages; it does not use a gold-price provider API.
 3. Configure the public Worker `/live` URL in `js/live-price-config.js` only if it differs from the current endpoint.
 4. Publish the app. If the Worker is unavailable or source prices disagree, the app keeps the last confirmed rate and labels the check state; it never invents a replacement quote.
 
-The Worker checks every three minutes during 07:30–12:29 and 15:30–22:29 India time, with an hourly check outside those windows. That schedule is approximately 252 checks and KV writes per day (about 25.2% of the Workers Free 1,000/day KV write allowance), before any other account usage. It only publishes a changed price when both retail sources return valid, agreeing rates.
+The Worker checks every four minutes during 07:30–12:29 and 15:30–22:29 India time, with an hourly check outside those windows. That schedule is approximately 192 checks and KV writes per day (about 19.2% of the Workers Free 1,000/day KV write allowance), before any other account usage. It only publishes a changed price when both retail sources return valid, agreeing rates. If multiple Workers use KV on the same Cloudflare account, their usage adds together; check account-level KV analytics if alert emails continue.
