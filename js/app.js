@@ -23,7 +23,8 @@
     portfolioLots: [],
     language: "en"
   };
-  const LIVE_DATA_POLL_INTERVAL_MS = 60_000;
+  const LIVE_ACTIVE_POLL_INTERVAL_MS = 60_000;
+  const LIVE_IDLE_POLL_INTERVAL_MS = 15 * 60_000;
 
   const $ = id => document.getElementById(id);
   const $$ = sel => document.querySelectorAll(sel);
@@ -346,12 +347,47 @@
     updateFeedFreshness();
     window.setInterval(updateFeedFreshness, 30_000);
 
-    window.setInterval(() => {
-      if (document.visibilityState === "visible") refreshLiveData();
-    }, LIVE_DATA_POLL_INTERVAL_MS);
+    let livePollTimer = null;
+    const scheduleNextPoll = () => {
+      if (livePollTimer !== null) window.clearTimeout(livePollTimer);
+      livePollTimer = null;
+      if (document.visibilityState !== "visible") return;
+
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23"
+      }).formatToParts(new Date());
+      const clock = Object.fromEntries(parts.map(part => [part.type, part.value]));
+      const minuteOfDay = Number(clock.hour) * 60 + Number(clock.minute) + Number(clock.second) / 60;
+      const inMorningFixWindow = minuteOfDay >= 450 && minuteOfDay < 750;
+      const inEveningFixWindow = minuteOfDay >= 930 && minuteOfDay < 1350;
+      let delay = LIVE_ACTIVE_POLL_INTERVAL_MS;
+
+      if (!inMorningFixWindow && !inEveningFixWindow) {
+        const nextWindowStart = minuteOfDay < 450 ? 450 : minuteOfDay < 930 ? 930 : 1890;
+        const timeUntilNextWindow = Math.max(1_000, (nextWindowStart - minuteOfDay) * 60_000);
+        delay = Math.min(LIVE_IDLE_POLL_INTERVAL_MS, timeUntilNextWindow);
+      }
+
+      livePollTimer = window.setTimeout(() => {
+        livePollTimer = null;
+        refreshLiveData().finally(scheduleNextPoll);
+      }, delay);
+    };
+
+    scheduleNextPoll();
 
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") refreshLiveData();
+      if (document.visibilityState === "visible") {
+        refreshLiveData();
+        scheduleNextPoll();
+      } else if (livePollTimer !== null) {
+        window.clearTimeout(livePollTimer);
+        livePollTimer = null;
+      }
     });
   }
 
