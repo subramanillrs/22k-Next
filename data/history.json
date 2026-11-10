@@ -17120,5 +17120,30 @@
     "chennai_premium_pct": 1.01,
     "sowcarpet_wholesale_22k": 13210,
     "retail_showroom_spread": 180
+  },
+  {
+    "date": "2026-11-10",
+    "time": "14:23:39",
+    "timestamp": "2026-11-10T14:23:39.803174+05:30",
+    "session": "PM",
+    "rate_22k": 13210,
+    "rate_24k": 14411,
+    "weight_1g": 13210,
+    "weight_8g": 105680,
+    "rate_8g": 105680,
+    "previous_close_22k": 13255,
+    "change": -45,
+    "changed": true,
+    "source": "LiveChennai (MJDMA verified)",
+    "source_url": "https://www.livechennai.com/gold_silverrate.asp",
+    "type": "intraday",
+    "agreement": true,
+    "livechennai_rate": 13210,
+    "goodreturns_rate": 13210,
+    "ibja_rate_22k": 13046,
+    "chennai_premium_amount": 164,
+    "chennai_premium_pct": 1.26,
+    "sowcarpet_wholesale_22k": 13165,
+    "retail_showroom_spread": 180
   }
 ]
