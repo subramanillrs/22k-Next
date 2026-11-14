@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-14",
+  "date": "2026-11-15",
   "rate_22k": 12489,
   "rate_24k": 13624,
   "rate_22k_10g": 124888,
@@ -13,7 +13,7 @@
   "purity_24k": "999",
   "source": "IBJA Benchmark Mirror (GoodReturns National)",
   "url": "https://www.goodreturns.in/gold-rates/",
-  "fetched_at": "2026-11-14T19:21:25.117476+05:30",
+  "fetched_at": "2026-11-15T02:18:12.689724+05:30",
   "status": "degraded_mirror",
   "is_fallback": true
 }
