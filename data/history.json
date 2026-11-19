@@ -17798,8 +17798,8 @@
   },
   {
     "date": "2026-11-20",
-    "time": "00:19:00",
-    "timestamp": "2026-11-20T00:19:00.703517+05:30",
+    "time": "04:50:25",
+    "timestamp": "2026-11-20T04:50:25.500345+05:30",
     "session": "PM",
     "rate_22k": 11980,
     "rate_24k": 13069,
@@ -17815,9 +17815,9 @@
     "agreement": true,
     "livechennai_rate": 11980,
     "goodreturns_rate": 11980,
-    "ibja_rate_22k": 11907,
-    "chennai_premium_amount": 73,
-    "chennai_premium_pct": 0.61,
+    "ibja_rate_22k": 11860,
+    "chennai_premium_amount": 120,
+    "chennai_premium_pct": 1.01,
     "sowcarpet_wholesale_22k": 11935,
     "retail_showroom_spread": 180
   }
